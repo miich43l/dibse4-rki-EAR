@@ -33,7 +33,7 @@ deploy:
   variables:
     HEROKU_API_KEY: $HEROKU_PRODUCTION_KEY
   script:
-    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_PRODUCTION_KEY
-    - heroku run rails db:migrate --exit-code --app $HEROKU_APP_NAME # obsolete?
+    - dpl heroku api --api-key $HEROKU_PRODUCTION_KEY --app $HEROKU_APP_NAME
+  #    - heroku run rails db:migrate --exit-code --app $HEROKU_APP_NAME # obsolete?!
   only:
     - master
