@@ -22,7 +22,7 @@ test:
 
 .before_script_deploy:
   before_script:
-    - curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
+    - curl https://cli-assets.heroku.com/install.sh | sh
     - gem install dpl
 
 # This deploy job uses a simple deploy flow to Heroku, other providers, e.g. AWS Elastic Beanstalk
