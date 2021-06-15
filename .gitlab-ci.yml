@@ -1,0 +1,40 @@
+image: miich43l/vaddinn123:latest
+variables:
+  MAVEN_CLI_OPTIONS: "--batch-mode"
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTIONS clean package -Pproduction -e
+  artifacts:
+    paths:
+      - target/*.jar
+
+test:
+  stage: test
+  script:
+    - mvn test -e
+
+.before_script_deploy:
+  before_script:
+    - curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
+    - gem install dpl
+
+# This deploy job uses a simple deploy flow to Heroku, other providers, e.g. AWS Elastic Beanstalk
+# are supported too: https://github.com/travis-ci/dpl
+deploy:
+  stage: deploy
+  extends: .before_script_deploy
+  environment: production
+  variables:
+    HEROKU_API_KEY: $HEROKU_PRODUCTION_KEY
+  script:
+    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_PRODUCTION_KEY
+    - heroku run rails db:migrate --exit-code --app $HEROKU_APP_NAME # obsolete?
+  only:
+    - main
