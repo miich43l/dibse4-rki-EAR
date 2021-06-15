@@ -14,11 +14,6 @@ build:
     paths:
       - target/*.jar
 
-test:
-  stage: test
-  script:
-    - mvn test -e
-
 .before_script_deploy:
   before_script:
     - curl https://cli-assets.heroku.com/install.sh | sh
