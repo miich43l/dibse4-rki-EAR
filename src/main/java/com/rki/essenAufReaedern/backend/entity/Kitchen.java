@@ -6,6 +6,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 
@@ -24,20 +26,20 @@ public class Kitchen implements Serializable {
 
     @NotNull
     @NotEmpty
-    private String name;
+    private String name = "";
 
     @NotNull
     private Status status;
 
     @OneToMany(mappedBy = "kitchen")
-    private Set<Employee> employees;
+    private List<Employee> employees = new ArrayList<>();
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     private Address address;
 
     @OneToMany(mappedBy = "kitchen")
-    private Set<Order> orders;
+    private List<Order> orders = new ArrayList<>();
 
     public Kitchen() {
     }
@@ -66,11 +68,11 @@ public class Kitchen implements Serializable {
         this.status = status;
     }
 
-    public Set<Employee> getEmployees() {
+    public List<Employee> getEmployees() {
         return this.employees;
     }
 
-    public void setEmployees(Set<Employee> employees) {
+    public void setEmployees(List<Employee> employees) {
         this.employees = employees;
     }
 
@@ -96,11 +98,11 @@ public class Kitchen implements Serializable {
         this.address = address;
     }
 
-    public Set<Order> getOrders() {
+    public List<Order> getOrders() {
         return this.orders;
     }
 
-    public void setOrders(Set<Order> orders) {
+    public void setOrders(List<Order> orders) {
         this.orders = orders;
     }
 

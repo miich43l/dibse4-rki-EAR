@@ -1,6 +1,10 @@
 FROM openjdk:16-jdk-alpine
 
+<<<<<<< HEAD
 RUN apk --no-cache add nodejs npm curl ruby-dev
+=======
+RUN apk --no-cache add nodejs npm curl ruby-dev bash
+>>>>>>> 027a48ff056510fdf68edf64bc893dc388f52b4d
 
 ARG MAVEN_VERSION=3.6.3
 ARG USER_HOME_DIR="/root"

@@ -210,6 +210,7 @@
           </execution>
         </executions>
       </plugin>
+<<<<<<< HEAD
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -218,6 +219,16 @@
           <target>15</target>
         </configuration>
       </plugin>
+=======
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>15</source>
+                <target>15</target>
+            </configuration>
+        </plugin>
+>>>>>>> 027a48ff056510fdf68edf64bc893dc388f52b4d
     </plugins>
   </build>
 

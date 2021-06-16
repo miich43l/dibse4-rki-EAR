@@ -12,7 +12,10 @@ import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.tutorial.crm.ui.views.dashboard.DashboardView;
+import com.vaadin.tutorial.crm.ui.views.delivery.DeliveryView;
 import com.vaadin.tutorial.crm.ui.views.list.ListView;
+import com.vaadin.tutorial.crm.ui.views.olmap.geocoding.GeocodingView;
+import com.vaadin.tutorial.crm.ui.views.olmap.tsp.TravelingSalesmanView;
 
 @PWA(
     name = "Vaadin CRM",
@@ -52,7 +55,10 @@ public class MainLayout extends AppLayout {
 
         addToDrawer(new VerticalLayout(
             listLink,
-            new RouterLink("Dashboard", DashboardView.class)
+            new RouterLink("Dashboard", DashboardView.class),
+            new RouterLink("Geocoding", GeocodingView.class),
+            new RouterLink("Traveling salesman", TravelingSalesmanView.class),
+            new RouterLink("Delivery", DeliveryView.class)
         ));
     }
 
