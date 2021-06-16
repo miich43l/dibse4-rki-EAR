@@ -6,7 +6,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 
@@ -30,33 +32,33 @@ public class Person implements Serializable {
     @NotNull
     @NotEmpty
     @Column(name = "first_name")
-    private String firstName;
+    private String firstName = "";
 
     @NotNull
     @NotEmpty
     @Column(name = "last_name")
-    private String lastName;
+    private String lastName = "";
 
     @NotNull
     private Status status;
 
     @OneToMany(mappedBy = "person")
-    private Set<AdditionalInformation> additionalInformation;
+    private List<AdditionalInformation> additionalInformation = new ArrayList<>();
 
     @OneToMany(mappedBy = "contactPersonFrom")
-    private Set<ContactPerson> contactPersonFrom;
+    private List<ContactPerson> contactPersonFrom = new ArrayList<>();
 
     @OneToMany(mappedBy = "person")
-    private Set<ContactPerson> Person;
+    private List<ContactPerson> Person = new ArrayList<>();
 
     @OneToMany(mappedBy = "person")
-    private Set<Employee> employees;
+    private List<Employee> employees = new ArrayList<>();
 
     @OneToMany(mappedBy = "person")
-    private Set<OrderInformation> orderInformation;
+    private List<OrderInformation> orderInformation = new ArrayList<>();
 
     @OneToMany(mappedBy = "person")
-    private Set<Order> orders;
+    private List<Order> orders = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
@@ -67,7 +69,7 @@ public class Person implements Serializable {
     private PersonType personType;
 
     @OneToMany(mappedBy = "person")
-    private Set<User> users;
+    private List<User> users = new ArrayList<>();
 
     public Person() {
     }
@@ -112,11 +114,11 @@ public class Person implements Serializable {
         this.status = status;
     }
 
-    public Set<AdditionalInformation> getAdditionalInformation() {
+    public List<AdditionalInformation> getAdditionalInformation() {
         return this.additionalInformation;
     }
 
-    public void setAdditionalInformation(Set<AdditionalInformation> additionalInformation) {
+    public void setAdditionalInformation(List<AdditionalInformation> additionalInformation) {
         this.additionalInformation = additionalInformation;
     }
 
@@ -134,11 +136,11 @@ public class Person implements Serializable {
         return additionalInformation;
     }
 
-    public Set<ContactPerson> getContactPersonFrom() {
+    public List<ContactPerson> getContactPersonFrom() {
         return this.contactPersonFrom;
     }
 
-    public void setContactPersonFrom(Set<ContactPerson> contactPersonFrom) {
+    public void setContactPersonFrom(List<ContactPerson> contactPersonFrom) {
         this.contactPersonFrom = contactPersonFrom;
     }
 
@@ -156,19 +158,19 @@ public class Person implements Serializable {
         return contactPersonFrom;
     }
 
-    public Set<ContactPerson> getPerson() {
+    public List<ContactPerson> getPerson() {
         return this.Person;
     }
 
-    public void setPerson(Set<ContactPerson> Person) {
+    public void setPerson(List<ContactPerson> Person) {
         this.Person = Person;
     }
 
-    public Set<Employee> getEmployees() {
+    public List<Employee> getEmployees() {
         return this.employees;
     }
 
-    public void setEmployees(Set<Employee> employees) {
+    public void setEmployees(List<Employee> employees) {
         this.employees = employees;
     }
 
@@ -186,11 +188,11 @@ public class Person implements Serializable {
         return employee;
     }
 
-    public Set<OrderInformation> getOrderInformation() {
+    public List<OrderInformation> getOrderInformation() {
         return this.orderInformation;
     }
 
-    public void setOrderInformation(Set<OrderInformation> orderInformation) {
+    public void setOrderInformation(List<OrderInformation> orderInformation) {
         this.orderInformation = orderInformation;
     }
 
@@ -208,11 +210,11 @@ public class Person implements Serializable {
         return orderInformation;
     }
 
-    public Set<Order> getOrders() {
+    public List<Order> getOrders() {
         return this.orders;
     }
 
-    public void setOrders(Set<Order> orders) {
+    public void setOrders(List<Order> orders) {
         this.orders = orders;
     }
 
@@ -246,11 +248,11 @@ public class Person implements Serializable {
         this.personType = personType;
     }
 
-    public Set<User> getUsers() {
+    public List<User> getUsers() {
         return this.users;
     }
 
-    public void setUsers(Set<User> users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 

@@ -102,4 +102,11 @@ public class Address implements Serializable {
         this.zipCode = this.zipCode;
     }
 
+    @Override
+    public String toString() {
+        return getZipCode()
+                + " " + getCity()
+                + " " + getStreet()
+                + " " + getHouseNumber();
+    }
 }
