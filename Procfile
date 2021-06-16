@@ -1,0 +1,1 @@
+web: java -jar target/Essen-auf-Raedern-1.0-SNAPSHOT.jar $PORT
