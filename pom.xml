@@ -12,7 +12,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <vaadin.version>14.4.4</vaadin.version>
+    <vaadin.version>14.6.1</vaadin.version>
 
   </properties>
 
@@ -173,6 +173,10 @@
       <artifactId>vaadin-ordered-layout-flow</artifactId>
       <version>14.6.1</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -205,6 +209,14 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>15</source>
+          <target>15</target>
+        </configuration>
       </plugin>
     </plugins>
   </build>
