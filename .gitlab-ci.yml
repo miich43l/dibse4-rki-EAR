@@ -1,3 +1,7 @@
+image: miich43l/vaddinn123:latest
+variables:
+  MAVEN_CLI_OPTIONS: "--batch-mode"
+
 stages:
   - build
 
