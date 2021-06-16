@@ -1,6 +1,6 @@
 package com.vaadin.tutorial.crm.ui.components.orders;
 
-import com.rki.essenAufReaedern.backend.entity.Order;
+import com.vaadin.tutorial.crm.backend.entity.Order;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;

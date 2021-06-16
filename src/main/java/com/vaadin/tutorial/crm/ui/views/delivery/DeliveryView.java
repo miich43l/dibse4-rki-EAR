@@ -1,11 +1,11 @@
 package com.vaadin.tutorial.crm.ui.views.delivery;
 
-import com.rki.essenAufReaedern.backend.entity.Address;
-import com.rki.essenAufReaedern.backend.entity.Kitchen;
-import com.rki.essenAufReaedern.backend.entity.Order;
-import com.rki.essenAufReaedern.backend.entity.Person;
-import com.rki.essenAufReaedern.backend.service.OrderService;
-import com.rki.essenAufReaedern.backend.service.PersonService;
+import com.vaadin.tutorial.crm.backend.entity.Address;
+import com.vaadin.tutorial.crm.backend.entity.Kitchen;
+import com.vaadin.tutorial.crm.backend.entity.Order;
+import com.vaadin.tutorial.crm.backend.entity.Person;
+import com.vaadin.tutorial.crm.backend.service.OrderService;
+import com.vaadin.tutorial.crm.backend.service.PersonService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -133,13 +133,13 @@ public class DeliveryView extends VerticalLayout {
 
         Address address1 = new Address();
         address1.setCity("Innsbruck");
-        address1.setHouseNumber(26);
+        address1.setHouseNumber("26");
         address1.setStreet("Anichstraße");
         address1.setZipCode("6020");
 
         Address address2 = new Address();
         address2.setCity("Innsbruck");
-        address2.setHouseNumber(7);
+        address2.setHouseNumber("7");
         address2.setStreet("Schießstandgasse");
         address2.setZipCode("6020");
 
@@ -159,7 +159,7 @@ public class DeliveryView extends VerticalLayout {
 
         Address kitchenAddress = new Address();
         kitchenAddress.setCity("Innsbruck");
-        kitchenAddress.setHouseNumber(123);
+        kitchenAddress.setHouseNumber("123");
         kitchenAddress.setStreet("Tiergartenstraße");
         kitchenAddress.setZipCode("6020");
 

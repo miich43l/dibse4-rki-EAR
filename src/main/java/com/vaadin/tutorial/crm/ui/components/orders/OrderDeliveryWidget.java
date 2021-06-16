@@ -1,8 +1,8 @@
 package com.vaadin.tutorial.crm.ui.components.orders;
 
-import com.rki.essenAufReaedern.backend.entity.Address;
-import com.rki.essenAufReaedern.backend.entity.Order;
-import com.rki.essenAufReaedern.backend.entity.Person;
+import com.vaadin.tutorial.crm.backend.entity.Address;
+import com.vaadin.tutorial.crm.backend.entity.Order;
+import com.vaadin.tutorial.crm.backend.entity.Person;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
