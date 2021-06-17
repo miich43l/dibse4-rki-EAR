@@ -5,12 +5,14 @@ import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 
-public class OrderDeliveryActionsComponent extends HorizontalLayout {
-    private Button startButton = new Button("Start");
-    private Button endButton = new Button("Fertig");
+public class OrderDeliveryActionsComponent extends VerticalLayout {
+    private Button deliveredButton = new Button("Geliefert");
+    private Button notDeliveredButton = new Button("Nicht Geliefert");
+    private Button callContactPersonButton = new Button("Kontaktperson");
 
     private Binder<Order> binder = new Binder(Order.class);
 
@@ -20,19 +22,22 @@ public class OrderDeliveryActionsComponent extends HorizontalLayout {
 
         addEventListener();
 
-        add(startButton, endButton);
+        deliveredButton.setWidthFull();
+        notDeliveredButton.setWidthFull();
+        callContactPersonButton.setWidthFull();
+
+        add(deliveredButton, notDeliveredButton, callContactPersonButton);
 
         updateUI();
     }
     private void addEventListener() {
-        startButton.addClickListener(event -> fireEvent(new StartEvent(this, binder.getBean())));
-        endButton.addClickListener(event -> fireEvent(new EndEvent(this, binder.getBean())));
+        deliveredButton.addClickListener(event -> fireEvent(new DeliveredEvent(this, binder.getBean())));
+        notDeliveredButton.addClickListener(event -> fireEvent(new NotDeliveredEvent(this, binder.getBean())));
+        callContactPersonButton.addClickListener(event -> fireEvent(new CallContactPersonEvent(this, binder.getBean())));
     }
 
     private  void updateUI() {
         //TODO: request status...
-        startButton.setEnabled(true);
-        endButton.setEnabled(false);
     }
 
     // -- EVENTS:
@@ -49,14 +54,20 @@ public class OrderDeliveryActionsComponent extends HorizontalLayout {
         }
     }
 
-    public static class StartEvent extends OrderDeliveryActionsComponent.OrderDeliveryActionEvent {
-        protected StartEvent(OrderDeliveryActionsComponent source, Order order) {
+    public static class DeliveredEvent extends OrderDeliveryActionsComponent.OrderDeliveryActionEvent {
+        protected DeliveredEvent(OrderDeliveryActionsComponent source, Order order) {
             super(source, order);
         }
     }
 
-    public static class EndEvent extends OrderDeliveryActionsComponent.OrderDeliveryActionEvent {
-        protected EndEvent(OrderDeliveryActionsComponent source, Order order) {
+    public static class NotDeliveredEvent extends OrderDeliveryActionsComponent.OrderDeliveryActionEvent {
+        protected NotDeliveredEvent(OrderDeliveryActionsComponent source, Order order) {
+            super(source, order);
+        }
+    }
+
+    public static class CallContactPersonEvent extends OrderDeliveryActionsComponent.OrderDeliveryActionEvent {
+        protected CallContactPersonEvent(OrderDeliveryActionsComponent source, Order order) {
             super(source, order);
         }
     }
