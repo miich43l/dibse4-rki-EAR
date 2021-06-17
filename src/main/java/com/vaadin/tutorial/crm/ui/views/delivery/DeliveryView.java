@@ -1,11 +1,11 @@
 package com.vaadin.tutorial.crm.ui.views.delivery;
 
-import com.rki.essenAufReaedern.backend.entity.Address;
-import com.rki.essenAufReaedern.backend.entity.Kitchen;
-import com.rki.essenAufReaedern.backend.entity.Order;
-import com.rki.essenAufReaedern.backend.entity.Person;
-import com.rki.essenAufReaedern.backend.service.OrderService;
-import com.rki.essenAufReaedern.backend.service.PersonService;
+import com.vaadin.tutorial.crm.backend.entity.Address;
+import com.vaadin.tutorial.crm.backend.entity.Kitchen;
+import com.vaadin.tutorial.crm.backend.entity.Order;
+import com.vaadin.tutorial.crm.backend.entity.Person;
+import com.vaadin.tutorial.crm.backend.service.OrderService;
+import com.vaadin.tutorial.crm.backend.service.PersonService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
