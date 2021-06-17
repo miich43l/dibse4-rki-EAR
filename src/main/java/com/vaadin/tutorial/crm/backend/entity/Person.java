@@ -1,9 +1,5 @@
 package com.vaadin.tutorial.crm.backend.entity;
-
-<<<<<<< HEAD:src/main/java/com/vaadin/tutorial/crm/backend/entity/Person.java
-=======
 import com.vaadin.tutorial.crm.backend.utility.PersonType;
->>>>>>> master:src/main/java/com/rki/essenAufReaedern/backend/entity/Person.java
 import com.vaadin.tutorial.crm.backend.utility.Status;
 
 import javax.persistence.*;
