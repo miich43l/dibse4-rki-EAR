@@ -24,7 +24,6 @@ public class Order implements Serializable {
     private Long id;
 
     @NotNull
-    @Temporal(TemporalType.DATE)
     private Date dt;
 
     private Timestamp delivered;

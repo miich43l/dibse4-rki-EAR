@@ -1,5 +1,9 @@
 package com.vaadin.tutorial.crm.backend.entity;
 
+<<<<<<< HEAD:src/main/java/com/vaadin/tutorial/crm/backend/entity/Person.java
+=======
+import com.vaadin.tutorial.crm.backend.utility.PersonType;
+>>>>>>> master:src/main/java/com/rki/essenAufReaedern/backend/entity/Person.java
 import com.vaadin.tutorial.crm.backend.utility.Status;
 
 import javax.persistence.*;
@@ -38,6 +42,14 @@ public class Person implements Serializable {
     private String lastName = "";
 
     @NotNull
+    @NotEmpty
+    @Column(name = "phone_number")
+    private String phoneNumber = "";
+
+    @NotNull
+    private PersonType personType;
+
+    @NotNull
     private Status status;
 
     @OneToMany(mappedBy = "person")
@@ -47,7 +59,7 @@ public class Person implements Serializable {
     private List<ContactPerson> contactPersonFrom = new ArrayList<>();
 
     @OneToMany(mappedBy = "person")
-    private List<ContactPerson> Person = new ArrayList<>();
+    private List<ContactPerson> contactPerson = new ArrayList<>();
 
     @OneToMany(mappedBy = "person")
     private List<Employee> employees = new ArrayList<>();
@@ -62,9 +74,6 @@ public class Person implements Serializable {
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_type_id")
-    private PersonType personType;
 
     @OneToMany(mappedBy = "person")
     private List<User> users = new ArrayList<>();
@@ -102,6 +111,14 @@ public class Person implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public Status getStatus() {
@@ -156,12 +173,12 @@ public class Person implements Serializable {
         return contactPersonFrom;
     }
 
-    public List<ContactPerson> getPerson() {
-        return this.Person;
+    public List<ContactPerson> getContactPerson() {
+        return this.contactPerson;
     }
 
-    public void setPerson(List<ContactPerson> Person) {
-        this.Person = Person;
+    public void setContactPerson(List<ContactPerson> contactPerson) {
+        this.contactPerson = contactPerson;
     }
 
     public List<Employee> getEmployees() {

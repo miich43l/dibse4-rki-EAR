@@ -4,7 +4,6 @@ variables:
 
 stages:
   - build
-  - deploy
 
 build:
   stage: build
@@ -13,22 +12,3 @@ build:
   artifacts:
     paths:
       - target/*.jar
-
-.before_script_deploy:
-  before_script:
-    - curl https://cli-assets.heroku.com/install.sh | sh
-    - gem install dpl --pre
-    - gem install bundler
-
-# This deploy job uses a simple deploy flow to Heroku, other providers, e.g. AWS Elastic Beanstalk
-# are supported too: https://github.com/travis-ci/dpl
-deploy:
-  stage: deploy
-  extends: .before_script_deploy
-  environment: production
-  variables:
-    HEROKU_API_KEY: $HEROKU_PRODUCTION_KEY
-  script:
-    - dpl heroku api --api-key $HEROKU_PRODUCTION_KEY --app $HEROKU_APP_NAME
-  only:
-    - master
