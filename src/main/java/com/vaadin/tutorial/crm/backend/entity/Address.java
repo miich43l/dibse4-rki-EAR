@@ -28,11 +28,11 @@ public class Address implements Serializable {
     private Integer floor;
 
     @Column(name = "house_number")
-    private String houseNumber;
+    private Integer houseNumber;
 
     @NotNull
     @NotEmpty
-    private String country;
+    private String state;
 
     @NotNull
     @NotEmpty
@@ -70,20 +70,20 @@ public class Address implements Serializable {
         this.floor = floor;
     }
 
-    public String getHouseNumber() {
+    public Integer getHouseNumber() {
         return this.houseNumber;
     }
 
-    public void setHouseNumber(String houseNumber) {
+    public void setHouseNumber(Integer houseNumber) {
         this.houseNumber = houseNumber;
     }
 
     public String getState() {
-        return this.country;
+        return this.state;
     }
 
     public void setState(String state) {
-        this.country = country;
+        this.state = state;
     }
 
     public String getStreet() {

@@ -1,4 +1,5 @@
 package com.vaadin.tutorial.crm.backend.entity;
+
 import com.vaadin.tutorial.crm.backend.utility.PersonType;
 import com.vaadin.tutorial.crm.backend.utility.Status;
 
