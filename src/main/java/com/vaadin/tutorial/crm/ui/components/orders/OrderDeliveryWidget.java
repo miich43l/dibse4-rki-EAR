@@ -1,8 +1,5 @@
 package com.vaadin.tutorial.crm.ui.components.orders;
 
-import com.vaadin.tutorial.crm.backend.entity.Address;
-import com.vaadin.tutorial.crm.backend.entity.Order;
-import com.vaadin.tutorial.crm.backend.entity.Person;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
@@ -10,6 +7,9 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.tutorial.crm.backend.entity.Address;
+import com.vaadin.tutorial.crm.backend.entity.Order;
+import com.vaadin.tutorial.crm.backend.entity.Person;
 
 public class OrderDeliveryWidget extends VerticalLayout {
     private Label personNameLabel = new Label("Name");

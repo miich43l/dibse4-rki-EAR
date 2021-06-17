@@ -1,5 +1,7 @@
 package com.vaadin.tutorial.crm.it;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import com.vaadin.testbench.IPAddress;
 import com.vaadin.testbench.ScreenshotOnFailureRule;
 import com.vaadin.testbench.parallel.ParallelTest;
@@ -8,9 +10,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 
 
 public abstract class AbstractTest extends ParallelTest {

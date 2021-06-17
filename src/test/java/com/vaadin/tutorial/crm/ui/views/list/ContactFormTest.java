@@ -1,5 +1,7 @@
 package com.vaadin.tutorial.crm.ui.views.list;
 
+import com.vaadin.tutorial.crm.backend.entity.Company;
+import com.vaadin.tutorial.crm.backend.entity.Contact;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

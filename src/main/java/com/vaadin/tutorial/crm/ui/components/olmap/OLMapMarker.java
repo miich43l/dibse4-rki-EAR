@@ -1,6 +1,7 @@
 package com.vaadin.tutorial.crm.ui.components.olmap;
 
 import com.google.gson.Gson;
+
 import java.awt.geom.Point2D;
 
 public class OLMapMarker {

@@ -1,6 +1,5 @@
 package com.vaadin.tutorial.crm.ui.components.orders;
 
-import com.vaadin.tutorial.crm.backend.entity.Order;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Text;
@@ -8,6 +7,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.shared.Registration;
+import com.vaadin.tutorial.crm.backend.entity.Order;
 
 import java.util.List;
 import java.util.Set;

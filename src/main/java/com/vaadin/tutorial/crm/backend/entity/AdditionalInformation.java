@@ -25,7 +25,8 @@ public class AdditionalInformation implements Serializable {
     private String value;
 
     @NotNull
-    @Column(name = "information_type_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "information_type_id")
     private InformationType informationType;
 
     @NotNull

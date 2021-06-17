@@ -29,6 +29,11 @@ public class ContactPerson implements Serializable {
     @JoinColumn(name = "contact_person_id")
     private Person contactPersonFrom;
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id")
+    private Person person;
+
     public ContactPerson() {
     }
 
@@ -56,4 +61,11 @@ public class ContactPerson implements Serializable {
         this.contactPersonFrom = contactPersonFrom;
     }
 
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
 }

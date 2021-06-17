@@ -1,13 +1,5 @@
 package com.vaadin.tutorial.crm.ui.views.olmap.tsp;
 
-import com.vaadin.tutorial.crm.algorithm.tsp.TSP;
-import com.vaadin.tutorial.crm.algorithm.tsp.api.IRoutingService;
-import com.vaadin.tutorial.crm.algorithm.tsp.api.RoutingServiceFactory;
-import com.vaadin.tutorial.crm.algorithm.tsp.util.TspPath;
-import com.vaadin.tutorial.crm.algorithm.tsp.util.TspPathSequence;
-import com.vaadin.tutorial.crm.ui.components.olmap.OLMap;
-import com.vaadin.tutorial.crm.ui.components.olmap.OLMapMarker;
-import com.vaadin.tutorial.crm.ui.components.olmap.OLMapRoute;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
@@ -18,7 +10,15 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.tutorial.crm.algorithm.tsp.TSP;
+import com.vaadin.tutorial.crm.algorithm.tsp.api.IRoutingService;
+import com.vaadin.tutorial.crm.algorithm.tsp.api.RoutingServiceFactory;
+import com.vaadin.tutorial.crm.algorithm.tsp.util.TspPath;
+import com.vaadin.tutorial.crm.algorithm.tsp.util.TspPathSequence;
 import com.vaadin.tutorial.crm.ui.MainLayout;
+import com.vaadin.tutorial.crm.ui.components.olmap.OLMap;
+import com.vaadin.tutorial.crm.ui.components.olmap.OLMapMarker;
+import com.vaadin.tutorial.crm.ui.components.olmap.OLMapRoute;
 
 import java.awt.geom.Point2D;
 import java.util.Comparator;
