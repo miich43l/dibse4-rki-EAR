@@ -27,7 +27,6 @@ public class Order implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date dt;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp delivered;
 
     private String prepared;

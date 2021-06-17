@@ -1,11 +1,5 @@
 package com.vaadin.tutorial.crm.ui.views.delivery;
 
-import com.vaadin.tutorial.crm.backend.entity.Address;
-import com.vaadin.tutorial.crm.backend.entity.Kitchen;
-import com.vaadin.tutorial.crm.backend.entity.Order;
-import com.vaadin.tutorial.crm.backend.entity.Person;
-import com.vaadin.tutorial.crm.backend.service.OrderService;
-import com.vaadin.tutorial.crm.backend.service.PersonService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -17,6 +11,12 @@ import com.vaadin.tutorial.crm.algorithm.tsp.api.IRoutingService;
 import com.vaadin.tutorial.crm.algorithm.tsp.api.RoutingServiceFactory;
 import com.vaadin.tutorial.crm.algorithm.tsp.util.TspPath;
 import com.vaadin.tutorial.crm.algorithm.tsp.util.TspPathSequence;
+import com.vaadin.tutorial.crm.backend.entity.Address;
+import com.vaadin.tutorial.crm.backend.entity.Kitchen;
+import com.vaadin.tutorial.crm.backend.entity.Order;
+import com.vaadin.tutorial.crm.backend.entity.Person;
+import com.vaadin.tutorial.crm.backend.service.OrderService;
+import com.vaadin.tutorial.crm.backend.service.PersonService;
 import com.vaadin.tutorial.crm.ui.MainLayout;
 import com.vaadin.tutorial.crm.ui.components.olmap.OLMap;
 import com.vaadin.tutorial.crm.ui.components.olmap.OLMapMarker;
@@ -24,7 +24,10 @@ import com.vaadin.tutorial.crm.ui.components.olmap.OLMapRoute;
 import com.vaadin.tutorial.crm.ui.components.orders.OrderDeliveriesWidget;
 
 import java.awt.geom.Point2D;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @PageTitle("Delivery")
