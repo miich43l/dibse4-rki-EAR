@@ -4,10 +4,6 @@ variables:
 
 stages:
   - build
-<<<<<<< HEAD
-  - test
-=======
->>>>>>> 027a48ff056510fdf68edf64bc893dc388f52b4d
   - deploy
 
 build:
@@ -18,23 +14,11 @@ build:
     paths:
       - target/*.jar
 
-<<<<<<< HEAD
-test:
-  stage: test
-  script:
-    - mvn test -e
-
-.before_script_deploy:
-  before_script:
-    - curl https://cli-assets.heroku.com/install.sh | sh
-    - gem install dpl
-=======
 .before_script_deploy:
   before_script:
     - curl https://cli-assets.heroku.com/install.sh | sh
     - gem install dpl --pre
     - gem install bundler
->>>>>>> 027a48ff056510fdf68edf64bc893dc388f52b4d
 
 # This deploy job uses a simple deploy flow to Heroku, other providers, e.g. AWS Elastic Beanstalk
 # are supported too: https://github.com/travis-ci/dpl
@@ -45,13 +29,6 @@ deploy:
   variables:
     HEROKU_API_KEY: $HEROKU_PRODUCTION_KEY
   script:
-<<<<<<< HEAD
-    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_PRODUCTION_KEY
-    - heroku run rails db:migrate --exit-code --app $HEROKU_APP_NAME # obsolete?
-  only:
-    - development
-=======
     - dpl heroku api --api-key $HEROKU_PRODUCTION_KEY --app $HEROKU_APP_NAME
   only:
->>>>>>> 027a48ff056510fdf68edf64bc893dc388f52b4d
     - master
