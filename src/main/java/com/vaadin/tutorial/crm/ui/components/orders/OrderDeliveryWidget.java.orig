@@ -10,10 +10,13 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
+<<<<<<< HEAD
 import com.vaadin.flow.shared.Registration;
+=======
 import com.vaadin.tutorial.crm.backend.entity.Address;
 import com.vaadin.tutorial.crm.backend.entity.Order;
 import com.vaadin.tutorial.crm.backend.entity.Person;
+>>>>>>> development
 
 public class OrderDeliveryWidget extends VerticalLayout {
     private Label personNameLabel = new Label("Name");

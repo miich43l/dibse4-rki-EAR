@@ -1,13 +1,12 @@
 package com.vaadin.tutorial.crm.ui.components.person;
 
-import com.rki.essenAufReaedern.backend.entity.AdditionalInformation;
-import com.rki.essenAufReaedern.backend.entity.Person;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.tutorial.crm.backend.entity.AdditionalInformation;
+import com.vaadin.tutorial.crm.backend.entity.Person;
 
 public class AdditionalInformationComponent extends VerticalLayout {
 

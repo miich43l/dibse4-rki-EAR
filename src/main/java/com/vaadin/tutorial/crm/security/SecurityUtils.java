@@ -1,15 +1,13 @@
 package com.vaadin.tutorial.crm.security;
 
-import java.util.stream.Stream;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.vaadin.flow.server.HandlerHelper.RequestType;
 import com.vaadin.flow.shared.ApplicationConstants;
-
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.stream.Stream;
 
 /**
  * SecurityUtils takes care of all such static operations that have to do with
