@@ -1,4 +1,4 @@
-package com.vaadin.tutorial.crm.utility;
+package com.vaadin.tutorial.crm.backend.utility;
 
 /**
  * @author arthurwaldner

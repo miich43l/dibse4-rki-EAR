@@ -1,6 +1,6 @@
 package com.vaadin.tutorial.crm.backend.entity;
 
-import com.vaadin.tutorial.crm.utility.Status;
+import com.vaadin.tutorial.crm.backend.utility.Status;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
