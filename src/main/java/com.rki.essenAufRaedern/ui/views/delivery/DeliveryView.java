@@ -14,6 +14,8 @@ import com.rki.essenAufRaedern.backend.service.PersonService;
 import com.rki.essenAufRaedern.ui.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Unit;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -47,6 +49,10 @@ public class DeliveryView extends VerticalLayout {
     public DeliveryView() {
         createDummyData();
 
+        setWidthFull();
+        setHeight("85vh");
+        setPadding(false);
+
         add(createMainLayout());
 
         addEventListener();
@@ -62,7 +68,7 @@ public class DeliveryView extends VerticalLayout {
     }
 
     private Component createMapView() {
-        mapComponent.setHeight(500, Unit.PIXELS);
+        mapComponent.setHeight(100, Unit.PERCENTAGE);
         mapComponent.setWidthFull();
 
         List<Point2D> pointsToVisit = new ArrayList<>();
@@ -106,8 +112,11 @@ public class DeliveryView extends VerticalLayout {
     }
 
     private void addEventListener() {
-        deliveriesWidget.addListener(OrderDeliveriesWidget.StartEvent.class, event -> this.onStartDelivery(event.getOrder()));
-        deliveriesWidget.addListener(OrderDeliveriesWidget.EndEvent.class, event -> this.onEndDelivery(event.getOrder()));
+        deliveriesWidget.addListener(OrderDeliveriesWidget.DeliveredEvent.class, event -> this.onDeliveredPressed(event.getOrder()));
+        deliveriesWidget.addListener(OrderDeliveriesWidget.NotDeliveredEvent.class, event -> this.onNotDeliveredPressed(event.getOrder()));
+        deliveriesWidget.addListener(OrderDeliveriesWidget.CallContactPersonEvent.class, event -> this.onCallContactPersonPressed(event.getOrder()));
+        deliveriesWidget.addListener(OrderDeliveriesWidget.DidSelectEvent.class, event -> this.onDidSelectDelivery(event.getOrder()));
+        deliveriesWidget.addListener(OrderDeliveriesWidget.InfoButtonPressedEvent.class, event -> this.onAdditionalInfoButtonPressed(event.getOrder()));
         deliveriesWidget.addListener(OrderDeliveriesWidget.DidSelectEvent.class, event -> this.onDidSelectDelivery(event.getOrder()));
     }
 
@@ -121,18 +130,54 @@ public class DeliveryView extends VerticalLayout {
         mapComponent.setZoom(15);
     }
 
-    private void onStartDelivery(Order order) {
-        System.out.println("Started delivery of: " + order);
+    private void onDeliveredPressed(Order order) {
+        order.setDelivered(new Timestamp(new Date().getTime()));
+        Notification.show("Menü zugestellt.", 2000, Notification.Position.BOTTOM_START);
     }
 
-    private void onEndDelivery(Order order) {
-        System.out.println("Finished delivery of: " + order);
+    private void onNotDeliveredPressed(Order order) {
+        Notification.show("Menü NICHT zugestellt.", 2000, Notification.Position.BOTTOM_START);
     }
+
+    private void onCallContactPersonPressed(Order order) {
+        List<ContactPerson> contactPersons = order.getPerson().getContactPersonFrom();
+
+        if(contactPersons.isEmpty()) {
+            Notification.show("Keine Kontaktperson vorhanden!", 2000, Notification.Position.MIDDLE);
+            return;
+        }
+
+        ContactPerson firstContactPerson = contactPersons.get(0);
+        //TODO: Get phonenumber...
+
+        Notification.show("Not supported yet! :-(", 2000, Notification.Position.MIDDLE);
+    }
+
+
+    private void onAdditionalInfoButtonPressed(Order order) {
+        Dialog dialog = new Dialog();
+        AdditionalInformationComponent infoComponent = new AdditionalInformationComponent();
+        infoComponent.setPerson(order.getPerson());
+
+        dialog.setWidth(50, Unit.PERCENTAGE);
+        dialog.setHeight("70vh");
+        dialog.add(infoComponent);
+        dialog.open();
+    }
+
 
     private void createDummyData() {
         Person oPerson1 = new Person();
         oPerson1.setFirstName("Max");
         oPerson1.setLastName("Mustermann");
+
+        AdditionalInformation info1 = new AdditionalInformation();
+        info1.setValue("Schlüssel links neben der Tür.");
+        AdditionalInformation info2 = new AdditionalInformation();
+        info2.setValue("Beim Fenster klopfen.");
+        oPerson1.addAdditionalInformation(info1);
+        oPerson1.addAdditionalInformation(info2);
+
 
         Address address1 = new Address();
         address1.setCity("Innsbruck");
@@ -154,11 +199,26 @@ public class DeliveryView extends VerticalLayout {
 
         oPerson2.setAddress(address2);
 
+        Person oPerson3 = new Person();
+        oPerson3.setFirstName("Rosi");
+        oPerson3.setLastName("Hauser");
+
+        Address address3 = new Address();
+        address3.setCity("Innsbruck");
+        address3.setHouseNumber("60");
+        address3.setStreet("Schneeburggasse");
+        address3.setZipCode("6020");
+
+        oPerson3.setAddress(address3);
+
         Order oOrder1 = new Order();
         oPerson1.addOrder(oOrder1);
 
         Order order2 = new Order();
         oPerson2.addOrder(order2);
+
+        Order order3 = new Order();
+        oPerson3.addOrder(order3);
 
         Address kitchenAddress = new Address();
         kitchenAddress.setCity("Innsbruck");
@@ -171,5 +231,6 @@ public class DeliveryView extends VerticalLayout {
         kitchen.setName("Küche");
         kitchen.addOrder(oOrder1);
         kitchen.addOrder(order2);
+        kitchen.addOrder(order3);
     }
 }
