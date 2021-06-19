@@ -24,7 +24,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         login.setAction("login");
 
         add(
-            new H1("Vaadin CRM"),
+            new H1("Österreichisches Rotes Kreuz"),
             login
         );
     }

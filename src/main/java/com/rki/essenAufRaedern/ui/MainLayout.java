@@ -18,7 +18,7 @@ import com.rki.essenAufRaedern.ui.views.olmap.geocoding.GeocodingView;
 import com.rki.essenAufRaedern.ui.views.olmap.tsp.TravelingSalesmanView;
 
 @PWA(
-    name = "Vaadin CRM",
+    name = "Österreichisches Rotes Kreuz",
     shortName = "CRM",
     offlineResources = {
         "./styles/offline.css",
@@ -35,7 +35,7 @@ public class MainLayout extends AppLayout {
     }
 
     private void createHeader() {
-        H1 logo = new H1("Vaadin CRM");
+        H1 logo = new H1("Österreichisches Rotes Kreuz");
         logo.addClassName("logo");
 
         Anchor logout = new Anchor("/logout", "Log out");
