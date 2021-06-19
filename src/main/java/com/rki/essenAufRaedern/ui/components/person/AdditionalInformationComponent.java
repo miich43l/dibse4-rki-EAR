@@ -1,12 +1,12 @@
-package com.vaadin.tutorial.crm.ui.components.person;
+package com.rki.essenAufRaedern.ui.components.person;
 
-import com.rki.essenAufRaedern.backend.entity.AdditionalInformation;
-import com.rki.essenAufRaedern.backend.entity.Person;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.rki.essenAufRaedern.backend.entity.AdditionalInformation;
+import com.rki.essenAufRaedern.backend.entity.Person;
 
 public class AdditionalInformationComponent extends VerticalLayout {
 
@@ -37,3 +37,4 @@ public class AdditionalInformationComponent extends VerticalLayout {
         return mainLayout;
     }
 }
+
