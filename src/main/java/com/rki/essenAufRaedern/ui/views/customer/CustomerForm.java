@@ -1,15 +1,14 @@
 package com.rki.essenAufRaedern.ui.views.customer;
 
-import com.rki.essenAufRaedern.backend.entity.Company;
-import com.rki.essenAufRaedern.backend.entity.ContactPerson;
+import com.rki.essenAufRaedern.backend.entity.Address;
 import com.rki.essenAufRaedern.backend.entity.Person;
+import com.rki.essenAufRaedern.ui.components.address.AddressEditorComponent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -20,9 +19,6 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.LocalDateToDateConverter;
 import com.vaadin.flow.shared.Registration;
-import org.springframework.data.convert.Jsr310Converters;
-
-import java.util.List;
 
 public class CustomerForm extends FormLayout{
 
@@ -33,6 +29,8 @@ public class CustomerForm extends FormLayout{
     EmailField email = new EmailField("Email");
     TextField firstNameContact = new TextField("Kontaktperson Vorname");
     TextField lastNameContact = new TextField("Kontaktperson Nachname");
+    AddressEditorComponent addressEditorComponent = new AddressEditorComponent();
+
     //ComboBox<Person.Status> status = new ComboBox<>("Status");
     //ComboBox<Company> company = new ComboBox<>("Company");
 
@@ -40,15 +38,18 @@ public class CustomerForm extends FormLayout{
     Button delete = new Button("Delete");
     Button close = new Button("Cancel");
 
-    Binder<Person> binder = new BeanValidationBinder<>(Person.class);
+    Binder<Person> personBinder = new BeanValidationBinder<>(Person.class);
     private Person person;
+
 
 
     public CustomerForm() {
         addClassName("customer-form");
 
-        binder.forField(birthdate).withConverter(new LocalDateToDateConverter()).bind(Person::getBirthdate, Person::setBirthdate);
-        binder.bindInstanceFields(this);
+        birthdate.setLabel("Geburtsdatum");
+
+        personBinder.forField(birthdate).withConverter(new LocalDateToDateConverter()).bind(Person::getBirthdate, Person::setBirthdate);
+        personBinder.bindInstanceFields(this);
 
 
         //status.setItems(Person.Status.values());
@@ -62,13 +63,14 @@ public class CustomerForm extends FormLayout{
                 email,
                 firstNameContact,
                 lastNameContact,
+                addressEditorComponent,
                 createButtonsLayout()
         );
     }
 
     public void setPerson(Person person) {
         this.person = person;
-        binder.readBean(person);
+        personBinder.readBean(person);
     }
 
     private Component createButtonsLayout() {
@@ -83,7 +85,7 @@ public class CustomerForm extends FormLayout{
         delete.addClickListener(click -> fireEvent(new com.rki.essenAufRaedern.ui.views.customer.CustomerForm.DeleteEvent(this, person)));
         close.addClickListener(click -> fireEvent(new com.rki.essenAufRaedern.ui.views.customer.CustomerForm.CloseEvent(this)));
 
-        binder.addStatusChangeListener(evt -> save.setEnabled(binder.isValid()));
+        personBinder.addStatusChangeListener(evt -> save.setEnabled(personBinder.isValid()));
 
         return new HorizontalLayout(save, delete, close);
     }
@@ -91,7 +93,7 @@ public class CustomerForm extends FormLayout{
     private void validateAndSave() {
 
         try {
-            binder.writeBean(person);
+            personBinder.writeBean(person);
             fireEvent(new com.rki.essenAufRaedern.ui.views.customer.CustomerForm.SaveEvent(this, person));
         } catch (ValidationException e) {
             e.printStackTrace();
