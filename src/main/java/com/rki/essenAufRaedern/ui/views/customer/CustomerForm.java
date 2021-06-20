@@ -1,6 +1,7 @@
 package com.rki.essenAufRaedern.ui.views.customer;
 
 import com.rki.essenAufRaedern.backend.entity.Company;
+import com.rki.essenAufRaedern.backend.entity.ContactPerson;
 import com.rki.essenAufRaedern.backend.entity.Person;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -24,7 +25,10 @@ public class CustomerForm extends FormLayout{
 
     TextField firstName = new TextField("Vorname");
     TextField lastName = new TextField("Nachname");
+
     EmailField email = new EmailField("Email");
+    TextField firstNameContact = new TextField("Kontaktperson Vorname");
+    TextField lastNameContact = new TextField("Kontaktperson Nachname");
     //ComboBox<Person.Status> status = new ComboBox<>("Status");
     //ComboBox<Company> company = new ComboBox<>("Company");
 
@@ -34,6 +38,7 @@ public class CustomerForm extends FormLayout{
 
     Binder<Person> binder = new BeanValidationBinder<>(Person.class);
     private Person person;
+
 
     public CustomerForm() {
         addClassName("customer-form");
@@ -47,6 +52,8 @@ public class CustomerForm extends FormLayout{
                 firstName,
                 lastName,
                 email,
+                firstNameContact,
+                lastNameContact,
                 createButtonsLayout()
         );
     }
