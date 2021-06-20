@@ -23,6 +23,7 @@ public class Person{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    // ##AOB @arthur fehlt hier nicht die @Column Notation?
     private Date birthdate;
 
     @NotNull
@@ -56,7 +57,7 @@ public class Person{
     @OneToMany(mappedBy = "person")
     private List<Order> orders = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
     private Address address;
 

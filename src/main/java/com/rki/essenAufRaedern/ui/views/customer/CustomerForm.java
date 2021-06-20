@@ -10,7 +10,6 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
@@ -26,7 +25,7 @@ public class CustomerForm extends FormLayout{
 
     TextField firstName = new TextField("Vorname");
     TextField lastName = new TextField("Nachname");
-    //DatePicker birthdate = new DatePicker("Geboren am");
+
     EmailField email = new EmailField("Email");
     TextField firstNameContact = new TextField("Kontaktperson Vorname");
     TextField lastNameContact = new TextField("Kontaktperson Nachname");
@@ -52,7 +51,6 @@ public class CustomerForm extends FormLayout{
         add(
                 firstName,
                 lastName,
-                //birthdate,
                 email,
                 firstNameContact,
                 lastNameContact,

@@ -12,9 +12,6 @@ import com.rki.essenAufRaedern.backend.service.PersonService;
 import com.rki.essenAufRaedern.ui.MainLayout;
 import com.rki.essenAufRaedern.ui.views.customer.CustomerForm;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.checkbox.CheckboxGroup;
-import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
@@ -34,7 +31,6 @@ public class CustomerView extends VerticalLayout{
     CustomerForm form;
     Grid<Person> grid = new Grid<>(Person.class);
     TextField filterText = new TextField();
-    CheckboxGroup<String> checkboxGroup = new CheckboxGroup<>();
 
     PersonService personService;
 
@@ -50,32 +46,24 @@ public class CustomerView extends VerticalLayout{
         form.addListener(CustomerForm.DeleteEvent.class, this::deletePerson);
         form.addListener(CustomerForm.CloseEvent.class, e -> closeEditor());
 
-        checkboxGroup.setLabel("Liefertage");
-        checkboxGroup.setItems("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag");
-        //checkboxGroup.addThemeVariants(CheckboxGroupVariant.LUMO_VERTICAL);
-
         Div content = new Div(grid, form);
         content.addClassName("content");
         content.setSizeFull();
 
-        Div checkboxWeekdays = new Div(checkboxGroup);
-        checkboxWeekdays.addClassName("checkboxWeekdays");
-        checkboxWeekdays.setSizeFull();
-
-        add(getToolBar(), content, checkboxGroup);
-        updateList();
+        add(getToolBar(), content);
+        //updateList();
         closeEditor();
     }
 
     private void deletePerson(CustomerForm.DeleteEvent evt) {
         personService.delete(evt.getPerson());
-        updateList();
+        //updateList();
         closeEditor();
     }
 
     private void savePerson(CustomerForm.SaveEvent evt) {
         personService.save(evt.getPerson());
-        updateList();
+        //updateList();
         closeEditor();
     }
 
@@ -128,8 +116,8 @@ public class CustomerView extends VerticalLayout{
         removeClassName("editing");
     }
 
-    private void updateList() {
-        grid.setItems(personService.findAll());
-    }
+    /*private void updateList() {
+        grid.setItems(personService.findAll(filterText.getValue()));
+    }*/
 
 }

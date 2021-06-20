@@ -1,5 +1,8 @@
 package com.rki.essenAufRaedern.ui.components.orders;
 
+import com.rki.essenAufRaedern.backend.entity.Address;
+import com.rki.essenAufRaedern.backend.entity.Order;
+import com.rki.essenAufRaedern.backend.entity.Person;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -11,9 +14,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
-import com.rki.essenAufRaedern.backend.entity.Address;
-import com.rki.essenAufRaedern.backend.entity.Order;
-import com.rki.essenAufRaedern.backend.entity.Person;
 
 public class OrderDeliveryWidget extends VerticalLayout {
     private Label personNameLabel = new Label("Name");
@@ -74,7 +74,7 @@ public class OrderDeliveryWidget extends VerticalLayout {
     }
 
     private void onInfoButtonPressed() {
-        fireEvent(new InfoButtonPressedEvent(this, orderBinder.getBean()));
+        fireEvent(new OrderDeliveryWidget.InfoButtonPressedEvent(this, orderBinder.getBean()));
     }
 
 

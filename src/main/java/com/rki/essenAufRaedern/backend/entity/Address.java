@@ -77,11 +77,11 @@ public class Address{
         this.houseNumber = houseNumber;
     }
 
-    public String getState() {
+    public String getCountry() {
         return this.country;
     }
 
-    public void setState(String country) {
+    public void setCountry(String country) {
         this.country = country;
     }
 

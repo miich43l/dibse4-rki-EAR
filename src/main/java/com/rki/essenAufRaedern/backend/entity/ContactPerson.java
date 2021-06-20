@@ -1,5 +1,7 @@
 package com.rki.essenAufRaedern.backend.entity;
 
+import com.rki.essenAufRaedern.backend.utility.ContactPersonType;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -18,17 +20,16 @@ public class ContactPerson {
     private Long id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contact_person_type_id")
+    @Column(name = "contact_person_type")
     private ContactPersonType contactPersonType;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "contact_person_id")
     private Person contactPersonFrom;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id")
     private Person person;
 
