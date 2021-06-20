@@ -16,15 +16,15 @@ a[highlight] {
 
 
 /* List view */
-.list-view .content {
+.list-view .content .customer-view {
     display: flex;
 }
 
-.list-view .contact-grid {
+.list-view .contact-grid .customer-view .customer-grid {
     flex: 2;
 }
 
-.list-view .contact-form {
+.list-view .contact-form .customer-view .customer-form  {
     flex: 1;
     padding: var(--lumo-space-m);
 }
