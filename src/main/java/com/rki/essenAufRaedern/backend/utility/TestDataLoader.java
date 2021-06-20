@@ -31,16 +31,22 @@ public class TestDataLoader {
         System.out.println("Create test data...");
 
         Address kitchenAddress = new Address();
-        kitchenAddress.setCity("Innsbruck");
+/*      kitchenAddress.setCity("Innsbruck");
         kitchenAddress.setHouseNumber("123");
         kitchenAddress.setStreet("Tiergartenstraße");
         kitchenAddress.setZipCode("6020");
+        kitchenAddress.setFloor("1");
+        kitchenAddress.setCountry("Österreich");*/
+        kitchenAddress.setCity("Oetz");
+        kitchenAddress.setHouseNumber("9");
+        kitchenAddress.setStreet("Platzleweg");
+        kitchenAddress.setZipCode("6433");
         kitchenAddress.setFloor("1");
         kitchenAddress.setCountry("Österreich");
         addressRepository.save(kitchenAddress);
 
         Kitchen kitchen = new Kitchen();
-        kitchen.setName("The Kitchen");
+        kitchen.setName("Kitchen Altersheim Ötz");
         kitchen.setAddress(kitchenAddress);
         kitchen.setStatus(Status.Active);
         kitchenRepository.save(kitchen);
@@ -55,10 +61,27 @@ public class TestDataLoader {
             // PersonType: Administration, Kitchen, Driver, Client, ContactPerson, LocalCommunity
 
             List<String> personStrings = new ArrayList<>();
-            personStrings.add("Max;Mustermann;Client");
-            personStrings.add("Anna;Mustermann;Client");
+            personStrings.add("Arian;Schneider;Client");
+            personStrings.add("Armin;Schuster;Client");
+            personStrings.add("Arthur;Schwarz;Client");
+            personStrings.add("ASMIN;Stadler;Client");
+            personStrings.add("Aurelia;Steiner;Client");
+            personStrings.add("AYLIN;Strasser;Client");
+            personStrings.add("AZRA;Wagner;Client");
+            personStrings.add("BASTIAN;Wallner;Client");
+            personStrings.add("Ben;Weber;Client");
+            personStrings.add("Benedikt;Weiss;Client");
+            personStrings.add("Benjamin;Wieser;Client");
+            personStrings.add("BERAT;Wimmer;Client");
             personStrings.add("Hans;Dummy;Driver");
             personStrings.add("Maria;Mustermann;ContactPerson");
+            personStrings.add("Christina;Binder;ContactPerson");
+            personStrings.add("CHRISTOF;Brunner;ContactPerson");
+            personStrings.add("Christoph;Ebner;ContactPerson");
+            personStrings.add("CLARA;Eder;ContactPerson");
+            personStrings.add("CLAUDIA;Egger;ContactPerson");
+            personStrings.add("Clemens;Fischer;ContactPerson");
+
 
             List<Person> clients = new ArrayList<>();
             for (int nP = 0; nP < personStrings.size(); nP++) {
@@ -127,10 +150,32 @@ public class TestDataLoader {
         List<Address> addresses = new ArrayList<>();
         {
             List<String> addressStrings = new ArrayList<>();
+/*
             addressStrings.add("Österreich;6020;Innsbruck;Anichstraße;26;1");
             addressStrings.add("Österreich;6020;Innsbruck;Wopfnerstraße;48;1");
             addressStrings.add("Österreich;6067;Absam;Schulstraße;4;1");
             addressStrings.add("Österreich;6167;Neustift im Stubaital;Fichtenweg;6;1");
+*/
+            addressStrings.add("Austria;6450;Sölden;Uferweg;1;2a");
+            addressStrings.add("Austria;6450;Zwieselstein;Roanweg;14;1");
+            addressStrings.add("Austria;6450;Sölden;Alpenweg;4;1");
+            addressStrings.add("Austria;6450;Sölden;Hainbachweg;19;1");
+            addressStrings.add("Austria;6450;Sölden;Dorfblickweg;6;0");
+            addressStrings.add("Austria;6450;Sölden;Platterstraße;17;keine Angabe");
+            addressStrings.add("Austria;6450;Sölden;Blumenweg;9;x");
+            addressStrings.add("Austria;6450;Sölden;Wildmoosstraße;4;0");
+            addressStrings.add("Austria;6450;Sölden;Gewerbestraße;2;0");
+            addressStrings.add("Austria;6456;Obergurgl;Gaisbergweg;23;0");
+            addressStrings.add("Austria;6456;Obergurgl;Kressbrunnenweg;6a;0");
+            addressStrings.add("Austria;6456;Obergurgl;Schlossweg;7;0");
+            addressStrings.add("Austria;6444;Längenfeld;Unterlängenfeld;88a;0");
+            addressStrings.add("Austria;6444;Längenfeld;Unterlängenfeld;154;0");
+            addressStrings.add("Austria;6444;Längenfeld;Oberlängenfeld;42;0");
+            addressStrings.add("Austria;6444;Längenfeld;Oberlängenfeld;100a;0");
+            addressStrings.add("Austria;6444;Längenfeld;Unterlängenfeld;91a;0");
+            addressStrings.add("Austria;6441;Umhausen;Sandgasse;5;0");
+            addressStrings.add("Austria;6441;Umhausen;Lehngasse;32;0");
+            addressStrings.add("Austria;6441;Umhausen;Achrainweg;28;0");
 
             addressStrings.forEach(line -> {
                 String[] elements = line.split(";");
@@ -149,5 +194,4 @@ public class TestDataLoader {
 
         return addresses;
     }
-
 }
