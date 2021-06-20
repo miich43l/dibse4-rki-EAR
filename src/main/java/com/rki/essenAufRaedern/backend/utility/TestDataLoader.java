@@ -45,14 +45,19 @@ public class TestDataLoader {
         kitchen.setStatus(Status.Active);
         kitchenRepository.save(kitchen);
 
+        System.out.println("Kitchen address: " + kitchen.getAddress());
+        System.out.println("Kitchen address: " + kitchenRepository.findAll().get(0).getAddress());
+
         List<Address> addresses = createAddressData();
 
         // Create persons:
         {
+            // PersonType: Administration, Kitchen, Driver, Client, ContactPerson, LocalCommunity
+
             List<String> personStrings = new ArrayList<>();
-            personStrings.add("Max;Mustermann;Klient");
-            personStrings.add("Anna;Mustermann;Klient");
-            personStrings.add("Hans;Dummy;Fahrer");
+            personStrings.add("Max;Mustermann;Client");
+            personStrings.add("Anna;Mustermann;Client");
+            personStrings.add("Hans;Dummy;Driver");
             personStrings.add("Maria;Mustermann;ContactPerson");
 
             List<Person> clients = new ArrayList<>();
@@ -61,11 +66,12 @@ public class TestDataLoader {
                 String[] elements = name.split(";");
                 String firstName = elements[0];
                 String lastName = elements[1];
-                String type = elements[2];
+                String typeString = elements[2];
+                PersonType type = PersonType.fromString(typeString);
 
                 Calendar c = Calendar.getInstance();
                 c.setTime(new Date());
-                c.add(Calendar.HOUR, new Random().nextInt(2000));
+                c.add(Calendar.HOUR, -(300000 + new Random().nextInt(200000)));
 
                 Person person = new Person();
                 person.setFirstName(firstName);
@@ -73,35 +79,45 @@ public class TestDataLoader {
                 person.setBirthdate(c.getTime());
                 person.setAddress(addresses.get(nP));
                 person.setStatus(Status.Active);
+                person.setPersonType(type);
 
                 // Create an order if type == Klient:
-                if(type.equals("Klient")) {
-                    person.setPersonType(PersonType.Client);
-                    personRepository.save(person);
+                switch(type) {
+                    case Administration -> {
+                    }
+                    case Kitchen -> {
+                    }
+                    case Driver -> {
+                        personRepository.save(person);
 
-                    Order order = new Order();
-                    order.setKitchen(kitchen);
-                    order.setPerson(person);
-                    order.setDt(new Date()); // today
-                    orderRepository.save(order);
+                        Employee employee = new Employee();
+                        employee.setPerson(person);
+                        employee.setKitchen(kitchen);
+                        employee.setStatus(Status.Active);
 
-                    clients.add(person);
-                } else if(type.equals("Fahrer")) {
-                    person.setPersonType(PersonType.Driver);
-                    personRepository.save(person);
+                        employeeRepository.save(employee);
+                    }
+                    case Client -> {
+                        personRepository.save(person);
 
-                    Employee employee = new Employee();
-                    employee.setPerson(person);
-                    employee.setKitchen(kitchen);
-                    employee.setStatus(Status.Active);
+                        Order order = new Order();
+                        order.setKitchen(kitchen);
+                        order.setPerson(person);
+                        order.setDt(new Date()); // today
+                        orderRepository.save(order);
 
-                    employeeRepository.save(employee);
-                }/* else if(type.equals("ContactPerson")) {
-                    ContactPerson contactPerson = new ContactPerson();
-                    contactPerson.setContactPersonFrom(clients.get(new Random().nextInt(clients.size())));
+                        clients.add(person);
+                    }
+                    case ContactPerson -> {
+                        ContactPerson contactPerson = new ContactPerson();
+                        contactPerson.setContactPersonType(ContactPersonType.FamilyMember);
+                        contactPerson.setContactPersonFrom(clients.get(new Random().nextInt(clients.size())));
 
-                    personRepository.save(person);
-                }*/
+                        personRepository.save(person);
+                    }
+                    case LocalCommunity -> {
+                    }
+                }
             }
         }
     }
