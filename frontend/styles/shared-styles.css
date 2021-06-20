@@ -16,15 +16,15 @@ a[highlight] {
 
 
 /* List view */
-.list-view .content .customer-view {
+.list-view .content {
     display: flex;
 }
 
-.list-view .contact-grid .customer-view .customer-grid {
+.list-view .contact-grid {
     flex: 2;
 }
 
-.list-view .contact-form .customer-view .customer-form  {
+.list-view .contact-form {
     flex: 1;
     padding: var(--lumo-space-m);
 }
@@ -40,3 +40,26 @@ a[highlight] {
     font-size: 4em;
     margin: 1em 0;
 }
+
+ /* Customer view */
+    .customer-view .content {
+        display: flex;
+    }
+
+    .customer-view .customer-grid {
+        flex: 2;
+    }
+
+    .customer-view .customer-form {
+        flex: 1;
+        padding: var(--lumo-space-m);
+    }
+
+    @media all and (max-width: 1100px) {
+        .customer-view.editing .toolbar,
+        .customer-view.editing .customer-grid {
+            display: none;
+        }
+}
+
+

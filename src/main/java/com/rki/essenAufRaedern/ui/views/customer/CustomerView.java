@@ -68,12 +68,12 @@ public class CustomerView extends VerticalLayout{
     }
 
     private HorizontalLayout getToolBar() {
-        filterText.setPlaceholder("Filter by name...");
+        filterText.setPlaceholder("nach Namen filtern...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         //filterText.addValueChangeListener(e -> updateList());
 
-        Button addPersonButton = new Button("Add person", click -> addPerson());
+        Button addPersonButton = new Button("Kunde hinzufügen", click -> addPerson());
 
         HorizontalLayout toolbar = new HorizontalLayout(filterText, addPersonButton);
         toolbar.addClassName("toolbar");
