@@ -1,5 +1,11 @@
 package com.rki.essenAufRaedern.ui;
 
+import com.rki.essenAufRaedern.ui.views.TestRepo;
+import com.rki.essenAufRaedern.ui.views.dashboard.DashboardView;
+import com.rki.essenAufRaedern.ui.views.delivery.DeliveryView;
+import com.rki.essenAufRaedern.ui.views.list.ListView;
+import com.rki.essenAufRaedern.ui.views.olmap.geocoding.GeocodingView;
+import com.rki.essenAufRaedern.ui.views.olmap.tsp.TravelingSalesmanView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -11,20 +17,15 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
-import com.rki.essenAufRaedern.ui.views.dashboard.DashboardView;
-import com.rki.essenAufRaedern.ui.views.delivery.DeliveryView;
-import com.rki.essenAufRaedern.ui.views.list.ListView;
-import com.rki.essenAufRaedern.ui.views.olmap.geocoding.GeocodingView;
-import com.rki.essenAufRaedern.ui.views.olmap.tsp.TravelingSalesmanView;
 
 @PWA(
-    name = "Vaadin CRM",
-    shortName = "CRM",
-    offlineResources = {
-        "./styles/offline.css",
-        "./images/offline.png"
-    },
-    enableInstallPrompt = false
+        name = "Vaadin CRM",
+        shortName = "CRM",
+        offlineResources = {
+                "./styles/offline.css",
+                "./images/offline.png"
+        },
+        enableInstallPrompt = false
 )
 @CssImport("./styles/shared-styles.css")
 public class MainLayout extends AppLayout {
@@ -54,11 +55,13 @@ public class MainLayout extends AppLayout {
         listLink.setHighlightCondition(HighlightConditions.sameLocation());
 
         addToDrawer(new VerticalLayout(
-            listLink,
-            new RouterLink("Dashboard", DashboardView.class),
-            new RouterLink("Geocoding", GeocodingView.class),
-            new RouterLink("Traveling salesman", TravelingSalesmanView.class),
-            new RouterLink("Delivery", DeliveryView.class)
+                listLink,
+                new RouterLink("Dashboard", DashboardView.class),
+                new RouterLink("Geocoding", GeocodingView.class),
+                new RouterLink("Traveling salesman", TravelingSalesmanView.class),
+                new RouterLink("Delivery", DeliveryView.class),
+                new RouterLink("TestRepo", TestRepo.class)
+
         ));
     }
 

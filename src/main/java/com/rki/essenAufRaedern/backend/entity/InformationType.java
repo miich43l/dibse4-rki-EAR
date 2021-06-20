@@ -11,9 +11,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "information_type")
-@NamedQuery(name = "InformationType.findAll", query = "SELECT i FROM InformationType i")
-public class InformationType implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class InformationType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

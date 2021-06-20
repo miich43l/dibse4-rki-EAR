@@ -1,5 +1,6 @@
 package com.rki.essenAufRaedern.backend.entity;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -11,9 +12,7 @@ import java.io.Serializable;
  * The persistent class for the address database table.
  */
 @Entity
-@NamedQuery(name = "Address.findAll", query = "SELECT a FROM Address a")
-public class Address implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Address{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -109,4 +108,5 @@ public class Address implements Serializable {
                 + " " + getStreet()
                 + " " + getHouseNumber();
     }
+
 }
