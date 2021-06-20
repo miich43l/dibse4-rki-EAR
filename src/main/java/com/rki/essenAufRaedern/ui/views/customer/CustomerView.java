@@ -9,6 +9,8 @@ import com.rki.essenAufRaedern.backend.service.CompanyService;
 
 import com.rki.essenAufRaedern.backend.service.PersonService;
 import com.rki.essenAufRaedern.backend.service.PersonService;
+import com.rki.essenAufRaedern.backend.utility.PersonType;
+import com.rki.essenAufRaedern.backend.utility.Status;
 import com.rki.essenAufRaedern.ui.MainLayout;
 import com.rki.essenAufRaedern.ui.views.customer.CustomerForm;
 import com.vaadin.flow.component.button.Button;
@@ -51,19 +53,22 @@ public class CustomerView extends VerticalLayout{
         content.setSizeFull();
 
         add(getToolBar(), content);
-        //updateList();
+        updateList();
         closeEditor();
     }
 
     private void deletePerson(CustomerForm.DeleteEvent evt) {
         personService.delete(evt.getPerson());
-        //updateList();
+        updateList();
         closeEditor();
     }
 
     private void savePerson(CustomerForm.SaveEvent evt) {
+        evt.getPerson().setPersonType(PersonType.Client);
+        evt.getPerson().setStatus(Status.Active);
+
         personService.save(evt.getPerson());
-        //updateList();
+        updateList();
         closeEditor();
     }
 
@@ -116,8 +121,8 @@ public class CustomerView extends VerticalLayout{
         removeClassName("editing");
     }
 
-    /*private void updateList() {
-        grid.setItems(personService.findAll(filterText.getValue()));
-    }*/
+    private void updateList() {
+        grid.setItems(personService.findAll());
+    }
 
 }
