@@ -57,7 +57,7 @@ public class Person{
     @OneToMany(mappedBy = "person")
     private List<Order> orders = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
     private Address address;
 

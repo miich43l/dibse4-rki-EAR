@@ -32,7 +32,7 @@ public class Kitchen {
     private List<Employee> employees = new ArrayList<>();
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Address address;
 
     @OneToMany(mappedBy = "kitchen")
