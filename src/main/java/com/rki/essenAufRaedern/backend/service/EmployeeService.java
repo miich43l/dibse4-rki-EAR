@@ -27,6 +27,8 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
+    public List<Employee> findByKitchenId(Long id) { return employeeRepository.findByKitchenId(id);}
+
     public long count() {
         return employeeRepository.count();
     }
@@ -43,4 +45,6 @@ public class EmployeeService {
         }
         employeeRepository.save(employee);
     }
+
+
 }

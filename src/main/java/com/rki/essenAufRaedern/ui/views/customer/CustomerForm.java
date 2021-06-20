@@ -10,6 +10,7 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
@@ -17,7 +18,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.converter.LocalDateToDateConverter;
 import com.vaadin.flow.shared.Registration;
+import org.springframework.data.convert.Jsr310Converters;
 
 import java.util.List;
 
@@ -26,6 +29,7 @@ public class CustomerForm extends FormLayout{
     TextField firstName = new TextField("Vorname");
     TextField lastName = new TextField("Nachname");
 
+    DatePicker birthdate = new DatePicker();
     EmailField email = new EmailField("Email");
     TextField firstNameContact = new TextField("Kontaktperson Vorname");
     TextField lastNameContact = new TextField("Kontaktperson Nachname");
@@ -43,7 +47,10 @@ public class CustomerForm extends FormLayout{
     public CustomerForm() {
         addClassName("customer-form");
 
+        binder.forField(birthdate).withConverter(new LocalDateToDateConverter()).bind(Person::getBirthdate, Person::setBirthdate);
         binder.bindInstanceFields(this);
+
+
         //status.setItems(Person.Status.values());
         //company.setItems(companies);
         //company.setItemLabelGenerator(Company::getName);
@@ -51,6 +58,7 @@ public class CustomerForm extends FormLayout{
         add(
                 firstName,
                 lastName,
+                birthdate,
                 email,
                 firstNameContact,
                 lastNameContact,
