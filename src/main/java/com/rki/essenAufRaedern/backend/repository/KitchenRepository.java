@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.persistence.NamedQuery;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -15,4 +16,5 @@ import java.util.List;
 
 public interface KitchenRepository extends JpaRepository<Kitchen, Long> {
 
+    Optional<Kitchen> findByName(String name);
 }

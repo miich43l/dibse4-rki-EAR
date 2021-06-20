@@ -15,9 +15,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "orders")
-@NamedQuery(name = "Order.findAll", query = "SELECT o FROM Order o")
-public class Order implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Order{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

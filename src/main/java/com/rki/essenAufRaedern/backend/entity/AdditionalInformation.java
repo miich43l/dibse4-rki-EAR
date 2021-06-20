@@ -12,9 +12,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "additional_information")
-@NamedQuery(name = "AdditionalInformation.findAll", query = "SELECT a FROM AdditionalInformation a")
-public class AdditionalInformation implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class AdditionalInformation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
