@@ -1,6 +1,7 @@
 package com.rki.essenAufRaedern.ui;
 
 import com.rki.essenAufRaedern.ui.views.TestRepo;
+import com.rki.essenAufRaedern.ui.views.customer.CustomerView;
 import com.rki.essenAufRaedern.ui.views.dashboard.DashboardView;
 import com.rki.essenAufRaedern.ui.views.delivery.DeliveryView;
 import com.rki.essenAufRaedern.ui.views.list.ListView;
@@ -56,6 +57,7 @@ public class MainLayout extends AppLayout {
 
         addToDrawer(new VerticalLayout(
                 listLink,
+                new RouterLink("Kunde", CustomerView.class),
                 new RouterLink("Dashboard", DashboardView.class),
                 new RouterLink("Geocoding", GeocodingView.class),
                 new RouterLink("Traveling salesman", TravelingSalesmanView.class),
