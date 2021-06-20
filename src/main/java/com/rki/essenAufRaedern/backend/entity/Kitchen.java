@@ -28,9 +28,6 @@ public class Kitchen {
     @NotNull
     private Status status;
 
-    @OneToMany(mappedBy = "kitchen")
-    private List<Employee> employees = new ArrayList<>();
-
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private Address address;
@@ -63,28 +60,6 @@ public class Kitchen {
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    public List<Employee> getEmployees() {
-        return this.employees;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
-
-    public Employee addEmployee(Employee employee) {
-        getEmployees().add(employee);
-        employee.setKitchen(this);
-
-        return employee;
-    }
-
-    public Employee removeEmployee(Employee employee) {
-        getEmployees().remove(employee);
-        employee.setKitchen(null);
-
-        return employee;
     }
 
     public Address getAddress() {
