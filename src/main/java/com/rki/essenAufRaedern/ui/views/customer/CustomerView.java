@@ -5,6 +5,7 @@ import com.rki.essenAufRaedern.backend.entity.Company;
 //import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.entity.Person;
+import com.rki.essenAufRaedern.backend.service.AddressService;
 import com.rki.essenAufRaedern.backend.service.CompanyService;
 
 import com.rki.essenAufRaedern.backend.service.PersonService;
@@ -35,9 +36,11 @@ public class CustomerView extends VerticalLayout{
     TextField filterText = new TextField();
 
     PersonService personService;
+    AddressService addressService;
 
-    public CustomerView(PersonService personService) {
+    public CustomerView(PersonService personService, AddressService addressService) {
         this.personService = personService;
+        this.addressService = addressService;
         addClassName("customer-view");
         setSizeFull();
         configureGrid();
@@ -67,6 +70,10 @@ public class CustomerView extends VerticalLayout{
         evt.getPerson().setPersonType(PersonType.Client);
         evt.getPerson().setStatus(Status.Active);
 
+        System.out.println("Address: " + evt.getAddress());
+
+        addressService.save(evt.getAddress());
+        evt.getPerson().setAddress(evt.getAddress());
         personService.save(evt.getPerson());
         updateList();
         closeEditor();
