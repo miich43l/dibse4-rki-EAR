@@ -29,6 +29,9 @@ public class TestDataLoader {
     @Autowired
     private ContactPersonRepository contactPersonRepository;
 
+    @Autowired
+    private AdditionalInformationRepository additionalInformationRepository;
+
     @PostConstruct
     public void loadData() {
         System.out.println("Create test data...");
@@ -125,8 +128,19 @@ public class TestDataLoader {
                         order.setPerson(person);
                         order.setDt(new Date()); // today
                         orderRepository.save(order);
-
                         clients.add(person);
+
+/*                      InformationType informationTypeDriver = InformationType.fromString("Driver");
+                        AdditionalInformation additionalInformationDriver = new AdditionalInformation();
+                        additionalInformationDriver.setInformationType(informationTypeDriver);
+                        additionalInformationDriver.setValue("Essen an der Türe abgeben");
+                        additionalInformationRepository.save(additionalInformationDriver);
+
+                        InformationType informationTypeKitchen = InformationType.fromString("Kitchen");
+                        AdditionalInformation additionalInformationKitchen = new AdditionalInformation();
+                        additionalInformationKitchen.setInformationType(informationTypeKitchen);
+                        additionalInformationKitchen.setValue("Lieblingsspeise Kaiserschmarrn");
+                        additionalInformationRepository.save(additionalInformationKitchen);*/
                     }
                     case ContactPerson -> {
                         ContactPerson contactPerson = new ContactPerson();
