@@ -1,12 +1,14 @@
 package com.rki.essenAufRaedern.backend.service;
 
 import com.rki.essenAufRaedern.backend.entity.Address;
+import com.rki.essenAufRaedern.backend.entity.Kitchen;
 import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.repository.AddressRepository;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,6 +23,9 @@ public class AddressService {
     private static final Logger LOGGER = Logger.getLogger(AddressService.class.getName());
     private AddressRepository addressRepository;
 
+    public AddressService(AddressRepository addressRepository) {
+        this.addressRepository = addressRepository;
+    }
 
     public void save(Address address) {
         if (address == null) {
@@ -29,5 +34,10 @@ public class AddressService {
             return;
         }
         addressRepository.save(address);
+    }
+
+    public List<Address> findAll() {
+        System.out.println("Find all Address...");
+        return addressRepository.findAll();
     }
 }

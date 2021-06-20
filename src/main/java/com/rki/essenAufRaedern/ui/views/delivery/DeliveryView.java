@@ -6,6 +6,8 @@ import com.rki.essenAufRaedern.algorithm.tsp.api.RoutingServiceFactory;
 import com.rki.essenAufRaedern.algorithm.tsp.util.TspPath;
 import com.rki.essenAufRaedern.algorithm.tsp.util.TspPathSequence;
 import com.rki.essenAufRaedern.backend.entity.*;
+import com.rki.essenAufRaedern.backend.service.AddressService;
+import com.rki.essenAufRaedern.backend.service.KitchenService;
 import com.rki.essenAufRaedern.backend.service.OrderService;
 import com.rki.essenAufRaedern.backend.service.PersonService;
 import com.rki.essenAufRaedern.ui.MainLayout;
@@ -22,12 +24,15 @@ import com.rki.essenAufRaedern.ui.components.olmap.OLMap;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMapMarker;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMapRoute;
 import com.rki.essenAufRaedern.ui.components.orders.OrderDeliveriesWidget;
+import org.springframework.context.annotation.Scope;
 
 import java.awt.geom.Point2D;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@org.springframework.stereotype.Component
+@Scope("prototype")
 @PageTitle("Delivery")
 @Route(value = "delivery", layout = MainLayout.class)
 public class DeliveryView extends VerticalLayout {
@@ -37,28 +42,49 @@ public class DeliveryView extends VerticalLayout {
 
     private PersonService personService;
     private OrderService orderService;
+    private KitchenService kitchenService;
+    private AddressService addressService;
 
     private Kitchen kitchen;
     private Map<Order, OLMapMarker> mapMarkers = new HashMap<>();
     private OLMapMarker kitchenMarker;
 
-    public DeliveryView() {
-        createDummyData();
+    public DeliveryView(KitchenService kitchenService, AddressService addressService) {
+        this.kitchenService = kitchenService;
+        this.addressService = addressService;
+
+        addClassName("delivery-view");
+        setSizeFull();
 
         setWidthFull();
         setHeight("85vh");
         setPadding(false);
+
+        loadData();
 
         add(createMainLayout());
 
         addEventListener();
     }
 
+    private void loadData() {
+        System.out.println("Load data...");
+        List<Kitchen> kitchens = kitchenService.findAll();
+        System.out.println("Kitchens: " + kitchens);
+
+        this.kitchen = kitchens.get(0);
+
+        System.out.println(" ==> all addresses: " + addressService.findAll());
+
+        System.out.println("Kitchen add: " + kitchen.getAddress());
+    }
+
     private Component createMainLayout() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setWidthFull();
         layout.setHeightFull();
-        layout.add(createMapView(), createDeliveryListComponent());
+        layout.add(createMapView());
+        //layout.add(createMapView(), createDeliveryListComponent());
 
         return layout;
     }
@@ -104,6 +130,8 @@ public class DeliveryView extends VerticalLayout {
         deliveriesWidget.setOrders(kitchen.getOrders());
         deliveriesWidget.setWidthFull();
         deliveriesWidget.setMaxWidth(400, Unit.PIXELS);
+        deliveriesWidget.setPadding(false);
+
         return deliveriesWidget;
     }
 
@@ -114,6 +142,7 @@ public class DeliveryView extends VerticalLayout {
         deliveriesWidget.addListener(OrderDeliveriesWidget.DidSelectEvent.class, event -> this.onDidSelectDelivery(event.getOrder()));
         deliveriesWidget.addListener(OrderDeliveriesWidget.InfoButtonPressedEvent.class, event -> this.onAdditionalInfoButtonPressed(event.getOrder()));
         deliveriesWidget.addListener(OrderDeliveriesWidget.DidSelectEvent.class, event -> this.onDidSelectDelivery(event.getOrder()));
+        deliveriesWidget.addListener(OrderDeliveriesWidget.InfoButtonPressedEvent.class, event -> this.onAdditionalInfoButtonPressed(event.getOrder()));
     }
 
     private void onDidSelectDelivery(Order order) {

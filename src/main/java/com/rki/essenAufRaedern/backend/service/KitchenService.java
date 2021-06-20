@@ -44,8 +44,9 @@ public class KitchenService {
         this.employeeRepository = employeeRepository;
     }
 
-    public List<Person> findAll() {
-        return personRepository.findAll();
+    public List<Kitchen> findAll() {
+        System.out.println("Find all kitchens...");
+        return kitchenRepository.findAll();
     }
 
     public Optional<Kitchen> findByName(String name) {
