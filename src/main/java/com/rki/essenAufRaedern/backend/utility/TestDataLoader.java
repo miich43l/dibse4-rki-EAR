@@ -26,17 +26,14 @@ public class TestDataLoader {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private ContactPersonRepository contactPersonRepository;
+
     @PostConstruct
     public void loadData() {
         System.out.println("Create test data...");
 
         Address kitchenAddress = new Address();
-/*      kitchenAddress.setCity("Innsbruck");
-        kitchenAddress.setHouseNumber("123");
-        kitchenAddress.setStreet("Tiergartenstraße");
-        kitchenAddress.setZipCode("6020");
-        kitchenAddress.setFloor("1");
-        kitchenAddress.setCountry("Österreich");*/
         kitchenAddress.setCity("Oetz");
         kitchenAddress.setHouseNumber("9");
         kitchenAddress.setStreet("Platzleweg");
@@ -73,7 +70,7 @@ public class TestDataLoader {
             personStrings.add("Benedikt;Weiss;Client");
             personStrings.add("Benjamin;Wieser;Client");
             personStrings.add("BERAT;Wimmer;Client");
-            personStrings.add("Hans;Dummy;Driver");
+            personStrings.add("Sebastian;Vettel;Driver");
             personStrings.add("Maria;Mustermann;ContactPerson");
             personStrings.add("Christina;Binder;ContactPerson");
             personStrings.add("CHRISTOF;Brunner;ContactPerson");
@@ -94,7 +91,7 @@ public class TestDataLoader {
 
                 Calendar c = Calendar.getInstance();
                 c.setTime(new Date());
-                c.add(Calendar.HOUR, -(300000 + new Random().nextInt(200000)));
+                c.add(Calendar.HOUR, -(400000 + new Random().nextInt(300000)));
 
                 Person person = new Person();
                 person.setFirstName(firstName);
@@ -104,7 +101,7 @@ public class TestDataLoader {
                 person.setStatus(Status.Active);
                 person.setPersonType(type);
 
-                // Create an order if type == Klient:
+                // Create an order if type == Client:
                 switch (type) {
                     case Administration -> {
                     }
@@ -134,9 +131,10 @@ public class TestDataLoader {
                     case ContactPerson -> {
                         ContactPerson contactPerson = new ContactPerson();
                         contactPerson.setContactPersonType(ContactPersonType.FamilyMember);
+                        contactPerson.setPerson(person);
                         contactPerson.setContactPersonFrom(clients.get(new Random().nextInt(clients.size())));
-
                         personRepository.save(person);
+                        contactPersonRepository.save(contactPerson);
                     }
                     case LocalCommunity -> {
                     }
@@ -176,6 +174,21 @@ public class TestDataLoader {
             addressStrings.add("Austria;6441;Umhausen;Sandgasse;5;0");
             addressStrings.add("Austria;6441;Umhausen;Lehngasse;32;0");
             addressStrings.add("Austria;6441;Umhausen;Achrainweg;28;0");
+            addressStrings.add("Austria;6432;Sautens;Wiedumgasse;3;0");
+            addressStrings.add("Austria;6432;Sautens;Dorfstrasse;49;0");
+            addressStrings.add("Austria;6432;Sautens;Silbergasse;6b;0");
+            addressStrings.add("Austria;6432;Sautens;Lafeld;9;0");
+            addressStrings.add("Austria;6432;Sautens;Kirchweg;19;0");
+            addressStrings.add("Austria;6432;Sautens;Pirchhof;68;0");
+            addressStrings.add("Austria;6430;Ötztal Bahnhof;Ambergstrasse;20;0");
+            addressStrings.add("Austria;6430;Ötztal Bahnhof;Waldstrasse;12;0");
+            addressStrings.add("Austria;6430;Ötztal Bahnhof;Sandbichlweg;17;0");
+            addressStrings.add("Austria;6430;Ötztal Bahnhof;Bahnrain;16a;0");
+            addressStrings.add("Austria;6430;Ötztal Bahnhof;Birkenstrasse;9;0");
+            addressStrings.add("Austria;6441;Umhausen;Tumpen;250;0");
+            addressStrings.add("Austria;6441;Umhausen;Tumpen;228;2");
+            addressStrings.add("Austria;6441;Umhausen;Tumpen;71a;0");
+            addressStrings.add("Austria;6441;Umhausen;Tumpen;120;1");
 
             addressStrings.forEach(line -> {
                 String[] elements = line.split(";");
