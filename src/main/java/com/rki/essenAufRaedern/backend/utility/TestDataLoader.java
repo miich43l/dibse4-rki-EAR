@@ -58,30 +58,10 @@ public class TestDataLoader {
             personStrings.add("Max;Mustermann;Client");
             personStrings.add("Anna;Mustermann;Client");
             personStrings.add("Hans;Dummy;Driver");
-            personStrings.add("Arian;Schneider;Client");
-            personStrings.add("Armin;Schuster;Client");
-            personStrings.add("Arthur;Schwarz;Client");
-            personStrings.add("ASMIN;Stadler;Client");
-            personStrings.add("Aurelia;Steiner;Client");
-            personStrings.add("AYLIN;Strasser;Client");
-            personStrings.add("AZRA;Wagner;Client");
-            personStrings.add("BASTIAN;Wallner;Client");
-            personStrings.add("Ben;Weber;Client");
-            personStrings.add("Benedikt;Weiss;Client");
-            personStrings.add("Benjamin;Wieser;Client");
-            personStrings.add("BERAT;Wimmer;Client");
-            personStrings.add("Carina;Winkler;Client");
-            personStrings.add("Carla;Winter;Client");
-            personStrings.add("Carolina;Wolf;Client");
-            personStrings.add("Celina;Aigner;Client");
-            personStrings.add("CELINE;Auer;Client");
-            personStrings.add("Charlotte;Bauer;Client");
-            personStrings.add("Chiara;Baumgartner;Client");
-            personStrings.add("Christian;Berger;Client");
             personStrings.add("Maria;Mustermann;ContactPerson");
 
             List<Person> clients = new ArrayList<>();
-            for(int nP = 0; nP < personStrings.size(); nP++) {
+            for (int nP = 0; nP < personStrings.size(); nP++) {
                 String name = personStrings.get(nP);
                 String[] elements = name.split(";");
                 String firstName = elements[0];
@@ -102,7 +82,7 @@ public class TestDataLoader {
                 person.setPersonType(type);
 
                 // Create an order if type == Klient:
-                switch(type) {
+                switch (type) {
                     case Administration -> {
                     }
                     case Kitchen -> {

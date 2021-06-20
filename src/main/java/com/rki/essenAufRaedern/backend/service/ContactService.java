@@ -1,9 +1,9 @@
 package com.rki.essenAufRaedern.backend.service;
 
+import com.rki.essenAufRaedern.backend.entity.Company;
 import com.rki.essenAufRaedern.backend.entity.Contact;
 import com.rki.essenAufRaedern.backend.repository.CompanyRepository;
 import com.rki.essenAufRaedern.backend.repository.ContactRepository;
-import com.rki.essenAufRaedern.backend.entity.Company;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -17,8 +17,8 @@ import java.util.stream.Stream;
 @Service
 public class ContactService {
     private static final Logger LOGGER = Logger.getLogger(ContactService.class.getName());
-    private ContactRepository contactRepository;
-    private CompanyRepository companyRepository;
+    private final ContactRepository contactRepository;
+    private final CompanyRepository companyRepository;
 
     public ContactService(ContactRepository contactRepository,
                           CompanyRepository companyRepository) {
@@ -31,10 +31,10 @@ public class ContactService {
     }
 
     public List<Contact> findAll(String filterText) {
-        if(filterText == null || filterText.isEmpty()) {
+        if (filterText == null || filterText.isEmpty()) {
             return contactRepository.findAll();
-        } else  {
-            return  contactRepository.search(filterText);
+        } else {
+            return contactRepository.search(filterText);
         }
     }
 
@@ -49,7 +49,7 @@ public class ContactService {
     public void save(Contact contact) {
         if (contact == null) {
             LOGGER.log(Level.SEVERE,
-                "Contact is null. Are you sure you have connected your form to the application?");
+                    "Contact is null. Are you sure you have connected your form to the application?");
             return;
         }
         contactRepository.save(contact);
@@ -59,33 +59,33 @@ public class ContactService {
     public void populateTestData() {
         if (companyRepository.count() == 0) {
             companyRepository.saveAll(
-                Stream.of("Path-Way Electronics", "E-Tech Management", "Path-E-Tech Management")
-                    .map(Company::new)
-                    .collect(Collectors.toList()));
+                    Stream.of("Path-Way Electronics", "E-Tech Management", "Path-E-Tech Management")
+                            .map(Company::new)
+                            .collect(Collectors.toList()));
         }
 
         if (contactRepository.count() == 0) {
             Random r = new Random(0);
             List<Company> companies = companyRepository.findAll();
             contactRepository.saveAll(
-                Stream.of("Gabrielle Patel", "Brian Robinson", "Eduardo Haugen",
-                    "Koen Johansen", "Alejandro Macdonald", "Angel Karlsson", "Yahir Gustavsson", "Haiden Svensson",
-                    "Emily Stewart", "Corinne Davis", "Ryann Davis", "Yurem Jackson", "Kelly Gustavsson",
-                    "Eileen Walker", "Katelyn Martin", "Israel Carlsson", "Quinn Hansson", "Makena Smith",
-                    "Danielle Watson", "Leland Harris", "Gunner Karlsen", "Jamar Olsson", "Lara Martin",
-                    "Ann Andersson", "Remington Andersson", "Rene Carlsson", "Elvis Olsen", "Solomon Olsen",
-                    "Jaydan Jackson", "Bernard Nilsen")
-                    .map(name -> {
-                        String[] split = name.split(" ");
-                        Contact contact = new Contact();
-                        contact.setFirstName(split[0]);
-                        contact.setLastName(split[1]);
-                        contact.setCompany(companies.get(r.nextInt(companies.size())));
-                        contact.setStatus(Contact.Status.values()[r.nextInt(Contact.Status.values().length)]);
-                        String email = (contact.getFirstName() + "." + contact.getLastName() + "@" + contact.getCompany().getName().replaceAll("[\\s-]", "") + ".com").toLowerCase();
-                        contact.setEmail(email);
-                        return contact;
-                    }).collect(Collectors.toList()));
+                    Stream.of("Gabrielle Patel", "Brian Robinson", "Eduardo Haugen",
+                            "Koen Johansen", "Alejandro Macdonald", "Angel Karlsson", "Yahir Gustavsson", "Haiden Svensson",
+                            "Emily Stewart", "Corinne Davis", "Ryann Davis", "Yurem Jackson", "Kelly Gustavsson",
+                            "Eileen Walker", "Katelyn Martin", "Israel Carlsson", "Quinn Hansson", "Makena Smith",
+                            "Danielle Watson", "Leland Harris", "Gunner Karlsen", "Jamar Olsson", "Lara Martin",
+                            "Ann Andersson", "Remington Andersson", "Rene Carlsson", "Elvis Olsen", "Solomon Olsen",
+                            "Jaydan Jackson", "Bernard Nilsen")
+                            .map(name -> {
+                                String[] split = name.split(" ");
+                                Contact contact = new Contact();
+                                contact.setFirstName(split[0]);
+                                contact.setLastName(split[1]);
+                                contact.setCompany(companies.get(r.nextInt(companies.size())));
+                                contact.setStatus(Contact.Status.values()[r.nextInt(Contact.Status.values().length)]);
+                                String email = (contact.getFirstName() + "." + contact.getLastName() + "@" + contact.getCompany().getName().replaceAll("[\\s-]", "") + ".com").toLowerCase();
+                                contact.setEmail(email);
+                                return contact;
+                            }).collect(Collectors.toList()));
         }
     }
 }

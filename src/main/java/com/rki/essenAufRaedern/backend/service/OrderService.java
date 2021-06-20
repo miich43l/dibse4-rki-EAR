@@ -1,12 +1,11 @@
 package com.rki.essenAufRaedern.backend.service;
 
-import com.rki.essenAufRaedern.backend.entity.Address;
 import com.rki.essenAufRaedern.backend.entity.Order;
-import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -28,5 +27,20 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
+    public long count() {
+        return orderRepository.count();
+    }
 
+    public void delete(Order order) {
+        orderRepository.delete(order);
+    }
+
+    public void save(Order order) {
+        if (order == null) {
+            LOGGER.log(Level.SEVERE,
+                    "Order is null");
+            return;
+        }
+        orderRepository.save(order);
+    }
 }

@@ -2,9 +2,7 @@ package com.rki.essenAufRaedern.backend.repository;
 
 import com.rki.essenAufRaedern.backend.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Service;
 
-import javax.persistence.NamedQuery;
 import java.util.List;
 
 
