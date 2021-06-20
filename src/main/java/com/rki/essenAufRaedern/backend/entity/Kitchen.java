@@ -35,7 +35,7 @@ public class Kitchen {
     @ManyToOne(fetch = FetchType.EAGER)
     private Address address;
 
-    @OneToMany(mappedBy = "kitchen")
+    @OneToMany(mappedBy = "kitchen", fetch = FetchType.EAGER)
     private List<Order> orders = new ArrayList<>();
 
     public Kitchen() {

@@ -83,8 +83,8 @@ public class DeliveryView extends VerticalLayout {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setWidthFull();
         layout.setHeightFull();
-        layout.add(createMapView());
-        //layout.add(createMapView(), createDeliveryListComponent());
+        //layout.add(createMapView());
+        layout.add(createMapView(), createDeliveryListComponent());
 
         return layout;
     }
