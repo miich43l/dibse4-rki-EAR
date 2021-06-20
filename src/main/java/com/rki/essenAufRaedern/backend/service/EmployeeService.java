@@ -1,9 +1,11 @@
 package com.rki.essenAufRaedern.backend.service;
 
 import com.rki.essenAufRaedern.backend.entity.Employee;
+import com.rki.essenAufRaedern.backend.entity.Order;
 import com.rki.essenAufRaedern.backend.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 
@@ -16,4 +18,13 @@ import java.util.logging.Logger;
 public class EmployeeService {
     private static final Logger LOGGER = Logger.getLogger(EmployeeService.class.getName());
     private EmployeeRepository employeeRepository;
+
+    public EmployeeService(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
+
+    public List<Employee> findAll() {
+        return employeeRepository.findAll();
+    }
+
 }
