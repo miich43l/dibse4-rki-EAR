@@ -13,10 +13,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "employees")
-@NamedQuery(name = "Employee.findAll", query = "SELECT e FROM Employee e")
-public class Employee implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

@@ -15,9 +15,7 @@ import java.util.List;
  * The persistent class for the kitchen database table.
  */
 @Entity
-@NamedQuery(name = "Kitchen.findAll", query = "SELECT k FROM Kitchen k")
-public class Kitchen implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Kitchen {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

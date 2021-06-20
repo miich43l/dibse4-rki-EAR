@@ -11,9 +11,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "contact_person_type")
-@NamedQuery(name = "ContactPersonType.findAll", query = "SELECT c FROM ContactPersonType c")
-public class ContactPersonType implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class ContactPersonType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -1,5 +1,5 @@
 package com.rki.essenAufRaedern.backend.utility;
 
 public enum PersonType {
-    Administration, Kitchen, Driver, Customer, LocalCommunity
+    Administration, Kitchen, Driver, Client, LocalCommunity
 }

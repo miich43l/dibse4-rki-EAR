@@ -17,10 +17,7 @@ import java.util.List;
  * The persistent class for the person database table.
  */
 @Entity
-@NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p")
-public class Person implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class Person{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
