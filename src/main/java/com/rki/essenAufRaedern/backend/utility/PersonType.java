@@ -5,12 +5,18 @@ public enum PersonType {
 
     public static PersonType fromString(String val) {
         switch (val) {
-            case "Administrator": return Administration;
-            case "Kitchen": return Kitchen;
-            case "Driver": return Driver;
-            case "Client": return Client;
-            case "ContactPerson": return ContactPerson;
-            case "LocalCommunity": return LocalCommunity;
+            case "Administrator":
+                return Administration;
+            case "Kitchen":
+                return Kitchen;
+            case "Driver":
+                return Driver;
+            case "Client":
+                return Client;
+            case "ContactPerson":
+                return ContactPerson;
+            case "LocalCommunity":
+                return LocalCommunity;
         }
 
         throw new IllegalArgumentException("Invalid enum type!");

@@ -1,5 +1,7 @@
 package com.rki.essenAufRaedern.backend.entity;
 
+import com.rki.essenAufRaedern.backend.utility.InformationType;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -23,8 +25,7 @@ public class AdditionalInformation {
     private String value;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "information_type_id")
+    @Column(name = "information_type")
     private InformationType informationType;
 
     @NotNull

@@ -3,8 +3,6 @@ package com.rki.essenAufRaedern.backend.repository;
 import com.rki.essenAufRaedern.backend.entity.OrderInformation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 
 /**
  * @author arthurwaldner

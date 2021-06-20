@@ -5,6 +5,7 @@ import com.rki.essenAufRaedern.backend.repository.AdditionalInformationRepositor
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -15,6 +16,30 @@ import java.util.logging.Logger;
 @Service
 public class AdditionalInformationService {
     private static final Logger LOGGER = Logger.getLogger(AdditionalInformationService.class.getName());
-    private AdditionalInformationRepository additionalInformationRepository;
+    private final AdditionalInformationRepository additionalInformationRepository;
 
+    public AdditionalInformationService(AdditionalInformationRepository additionalInformationRepository) {
+        this.additionalInformationRepository = additionalInformationRepository;
+    }
+
+    public List<AdditionalInformation> findAll() {
+        return additionalInformationRepository.findAll();
+    }
+
+    public long count() {
+        return additionalInformationRepository.count();
+    }
+
+    public void delete(AdditionalInformation additionalInformation) {
+        additionalInformationRepository.delete(additionalInformation);
+    }
+
+    public void save(AdditionalInformation additionalInformation) {
+        if (additionalInformation == null) {
+            LOGGER.log(Level.SEVERE,
+                    "Additional information is null");
+            return;
+        }
+        additionalInformationRepository.save(additionalInformation);
+    }
 }

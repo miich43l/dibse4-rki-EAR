@@ -61,7 +61,7 @@ public class TestDataLoader {
             personStrings.add("Maria;Mustermann;ContactPerson");
 
             List<Person> clients = new ArrayList<>();
-            for(int nP = 0; nP < personStrings.size(); nP++) {
+            for (int nP = 0; nP < personStrings.size(); nP++) {
                 String name = personStrings.get(nP);
                 String[] elements = name.split(";");
                 String firstName = elements[0];
@@ -82,7 +82,7 @@ public class TestDataLoader {
                 person.setPersonType(type);
 
                 // Create an order if type == Klient:
-                switch(type) {
+                switch (type) {
                     case Administration -> {
                     }
                     case Kitchen -> {

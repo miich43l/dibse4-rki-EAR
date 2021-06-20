@@ -11,7 +11,7 @@ import java.util.Map;
 @Service
 public class CompanyService {
 
-    private CompanyRepository companyRepository;
+    private final CompanyRepository companyRepository;
 
     public CompanyService(CompanyRepository companyRepository) {
         this.companyRepository = companyRepository;
@@ -24,7 +24,7 @@ public class CompanyService {
     public Map<String, Integer> getStats() {
         HashMap<String, Integer> stats = new HashMap<>();
         findAll().forEach(company ->
-            stats.put(company.getName(), company.getEmployees().size()));
+                stats.put(company.getName(), company.getEmployees().size()));
         return stats;
     }
 }
