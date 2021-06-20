@@ -4,8 +4,6 @@ import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,4 +23,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     List<Person> findByPersonTypeAndStatus(PersonType personType, Status status);
 
     Optional<Person> findByIdAndPersonTypeAndStatus(Long id, PersonType personType, Status status);
+
+    List<Person> findByPersonType(PersonType client);
 }

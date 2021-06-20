@@ -36,19 +36,6 @@ public class PersonService {
     public Optional<Person> findByFirstnameOrLastname(String name) {
         return personRepository.findByFirstNameContainingOrLastNameContaining(name, name);
     }
-
-    public Optional<Person> findById(Long id) {
-        return personRepository.findById(id);
-    }
-
-    public long count() {
-        return personRepository.count();
-    }
-
-    public List<Person> getActiveClients() {
-        return personRepository.findByPersonTypeAndStatus(PersonType.Client, Status.Active);
-    }
-
     public void delete(Person person) {
         person.setStatus(Status.Inactive);
         personRepository.save(person);
@@ -62,4 +49,21 @@ public class PersonService {
         }
         personRepository.save(person);
     }
+    public Optional<Person> findById(Long id) {
+        return personRepository.findById(id);
+    }
+
+    public long count() {
+        return personRepository.count();
+    }
+
+    public List<Person> getActiveClients() {
+        return personRepository.findByPersonTypeAndStatus(PersonType.Client, Status.Active);
+    }
+
+    public List<Person> getClients() {
+        return personRepository.findByPersonType(PersonType.Client);
+    }
+
+
 }
