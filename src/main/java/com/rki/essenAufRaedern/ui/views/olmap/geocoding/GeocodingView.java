@@ -73,7 +73,7 @@ public class GeocodingView extends VerticalLayout {
 
             OLMapMarker newMarker = new OLMapMarker(addressField.getValue(), coordinate);
             map.addMarker(newMarker);
-            map.setZoom(10);
+            map.setZoom(15);
             map.setCenter(coordinate);
             markersGrid.setItems(map.getMarkers());
         });
