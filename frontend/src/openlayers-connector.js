@@ -85,11 +85,12 @@ window.Vaadin.Flow.openLayersConnector = {
         c.$connector.mapLayers = {}
 
         c.addMarker = function(json) {
-            json = JSON.parse(json)
-            var lat = json.coordinates.x
-            var lon = json.coordinates.y
-            var title = json.title
-            var id = json.id
+            json = JSON.parse(json);
+            var lat = json.coordinates.x;
+            var lon = json.coordinates.y;
+            var title = json.title;
+            var id = json.id;
+            var icon = json.icon;
 
             var pointFeature = new Feature({
                   geometry: new Point(fromLonLat([lon, lat])),
@@ -98,7 +99,7 @@ window.Vaadin.Flow.openLayersConnector = {
             pointFeature.setStyle(
               new Style({
                 text: new Text({text: title, offsetY: -28, padding: [2, 10, 2, 10], fill: new Fill({color: 'black'}), backgroundFill: new Fill({color: 'white'}), font: '16px sans-serif'}),
-                image: new Icon({center: [0, 0], scale: 0.3, src: 'icons/marker_red.png'})
+                image: new Icon({center: [0, 0], scale: 0.3, src: 'icons/' + icon})
               })
             );
 

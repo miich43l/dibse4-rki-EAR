@@ -1,5 +1,6 @@
 package com.rki.essenAufRaedern.ui.components.person;
 
+import com.rki.essenAufRaedern.backend.utility.InformationType;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.grid.Grid;
@@ -13,6 +14,8 @@ public class AdditionalInformationComponent extends VerticalLayout {
     private Person person;
     private Grid<AdditionalInformation> infoGrid = new Grid();
 
+    private InformationType informationTypeFilter = null;
+
     public AdditionalInformationComponent() {
         add(createInfoComponent());
         setPadding(false);
@@ -20,16 +23,18 @@ public class AdditionalInformationComponent extends VerticalLayout {
 
     public void setPerson(Person person) {
         this.person = person;
-        this.infoGrid.setItems(person.getAdditionalInformation());
+        this.infoGrid.setItems(informationTypeFilter == null ? person.getAdditionalInformation()
+                                                             : person.getAdditionalInformation(informationTypeFilter));
+    }
+
+    public void setFilterType(InformationType type) {
+        this.informationTypeFilter = type;
     }
 
     private Component createInfoComponent() {
         VerticalLayout mainLayout = new VerticalLayout();
 
-        infoGrid.addColumn(new ComponentRenderer<>(info -> {
-            return new Text("TODO");
-        })).setHeader("Type");
-
+        infoGrid.addColumn(new ComponentRenderer<>(info -> new Text(info.getInformationType().toString()))).setHeader("Type");
         infoGrid.addColumn(AdditionalInformation::getValue).setHeader("Information");
 
         mainLayout.add(infoGrid);

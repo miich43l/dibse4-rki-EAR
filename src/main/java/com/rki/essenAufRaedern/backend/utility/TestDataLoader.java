@@ -55,6 +55,8 @@ public class TestDataLoader {
         System.out.println("Kitchen address: " + kitchenRepository.findAll().get(0).getAddress());
 
         List<Address> addresses = createAddressData();
+        int orderCtn = 0;
+        int maxOrders = 3;
 
         // Create persons:
         {
@@ -123,11 +125,18 @@ public class TestDataLoader {
                     case Client -> {
                         personRepository.save(person);
 
-                        Order order = new Order();
-                        order.setKitchen(kitchen);
-                        order.setPerson(person);
-                        order.setDt(new Date()); // today
-                        orderRepository.save(order);
+                        // do not always create an order...
+                        if(orderCtn < maxOrders) {
+                            Order order = new Order();
+                            order.setKitchen(kitchen);
+                            order.setPerson(person);
+                            order.setDt(new Date()); // today
+                            order.setStatus(Status.Active);
+                            orderRepository.save(order);
+
+                            orderCtn++;
+                        }
+
                         clients.add(person);
 
                         createRandomAdditionalInformationForPerson(person);
@@ -213,7 +222,6 @@ public class TestDataLoader {
     }
 
     private void createRandomAdditionalInformationForPerson(Person person) {
-        List<AdditionalInformation> lst = new ArrayList<>();
         List<String> additionalInformations = new ArrayList<>();
         additionalInformations.add("Schlüssen links am Fenster;Driver");
         additionalInformations.add("Am Fenster klopfen;Driver");

@@ -45,6 +45,7 @@ public class OrderDeliveryWidget extends VerticalLayout {
         Person person = personBinder.getBean();
 
         personNameLabel.setText(person.getFirstName() + " " + person.getLastName());
+        personNameLabel.setClassName("font-size-l");
 
         if(personBinder.getBean().getAddress() != null) {
             Address address = personBinder.getBean().getAddress();

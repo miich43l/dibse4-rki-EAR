@@ -1,5 +1,6 @@
 package com.rki.essenAufRaedern.backend.entity;
 
+import com.rki.essenAufRaedern.backend.utility.InformationType;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 
@@ -8,8 +9,10 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -101,6 +104,10 @@ public class Person{
         return this.lastName;
     }
 
+    public String getFullName() {
+        return getFirstName() + " " + getLastName();
+    }
+
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
@@ -113,7 +120,13 @@ public class Person{
         this.status = status;
     }
 
-    public List<AdditionalInformation> getAdditionalInformation() {
+    public List<AdditionalInformation> getAdditionalInformation(InformationType ... type) {
+        if(type.length > 0) {
+            return additionalInformation.stream()
+                                        .filter(item -> Arrays.stream(type).anyMatch(item_ -> item.getInformationType() == item_))
+                                        .collect(Collectors.toList());
+        }
+
         return this.additionalInformation;
     }
 
