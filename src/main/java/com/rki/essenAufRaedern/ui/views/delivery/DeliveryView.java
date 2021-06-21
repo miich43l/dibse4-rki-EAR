@@ -103,6 +103,11 @@ public class DeliveryView extends VerticalLayout {
 
         pointsToVisit.add(kitchenCoordinates);
 
+        // No orders => return;
+        if(kitchen.getOrders().isEmpty()) {
+            return mapComponent;
+        }
+
         for(Order order : kitchen.getOrders()) {
             Person person = order.getPerson();
             Address address = person.getAddress();
@@ -114,6 +119,12 @@ public class DeliveryView extends VerticalLayout {
             mapComponent.addMarker(marker);
             mapMarkers.put(order, marker);
             pointsToVisit.add(coordinates);
+        }
+
+        // TODO: Only 5 points are allowed:
+        while(pointsToVisit.size() > 4) { // 4 because of the kitchen...
+            System.out.println("WARNING: Remove point: " + pointsToVisit.get(pointsToVisit.size() - 1));
+            pointsToVisit.remove(pointsToVisit.size() - 1);
         }
 
         TSP tsp = new TSP();
@@ -188,74 +199,5 @@ public class DeliveryView extends VerticalLayout {
         dialog.setHeight("70vh");
         dialog.add(infoComponent);
         dialog.open();
-    }
-
-
-    private void createDummyData() {
-        Person oPerson1 = new Person();
-        oPerson1.setFirstName("Max");
-        oPerson1.setLastName("Mustermann");
-
-        AdditionalInformation info1 = new AdditionalInformation();
-        info1.setValue("Schlüssel links neben der Tür.");
-        AdditionalInformation info2 = new AdditionalInformation();
-        info2.setValue("Beim Fenster klopfen.");
-        oPerson1.addAdditionalInformation(info1);
-        oPerson1.addAdditionalInformation(info2);
-
-
-        Address address1 = new Address();
-        address1.setCity("Innsbruck");
-        address1.setHouseNumber("26");
-        address1.setStreet("Anichstraße");
-        address1.setZipCode("6020");
-
-        Address address2 = new Address();
-        address2.setCity("Innsbruck");
-        address2.setHouseNumber("7");
-        address2.setStreet("Schießstandgasse");
-        address2.setZipCode("6020");
-
-        oPerson1.setAddress(address1);
-
-        Person oPerson2 = new Person();
-        oPerson2.setFirstName("Anna");
-        oPerson2.setLastName("Mustermann");
-
-        oPerson2.setAddress(address2);
-
-        Person oPerson3 = new Person();
-        oPerson3.setFirstName("Rosi");
-        oPerson3.setLastName("Hauser");
-
-        Address address3 = new Address();
-        address3.setCity("Innsbruck");
-        address3.setHouseNumber("60");
-        address3.setStreet("Schneeburggasse");
-        address3.setZipCode("6020");
-
-        oPerson3.setAddress(address3);
-
-        Order oOrder1 = new Order();
-        oPerson1.addOrder(oOrder1);
-
-        Order order2 = new Order();
-        oPerson2.addOrder(order2);
-
-        Order order3 = new Order();
-        oPerson3.addOrder(order3);
-
-        Address kitchenAddress = new Address();
-        kitchenAddress.setCity("Innsbruck");
-        kitchenAddress.setHouseNumber("123");
-        kitchenAddress.setStreet("Tiergartenstraße");
-        kitchenAddress.setZipCode("6020");
-
-        kitchen = new Kitchen();
-        kitchen.setAddress(kitchenAddress);
-        kitchen.setName("Küche");
-        kitchen.addOrder(oOrder1);
-        kitchen.addOrder(order2);
-        kitchen.addOrder(order3);
     }
 }

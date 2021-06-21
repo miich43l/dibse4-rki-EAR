@@ -42,7 +42,7 @@ public class Person{
     @NotNull
     private Status status;
 
-    @OneToMany(mappedBy = "person")
+    @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
     private List<AdditionalInformation> additionalInformation = new ArrayList<>();
 
     @OneToMany(mappedBy = "contactPersonFrom")
