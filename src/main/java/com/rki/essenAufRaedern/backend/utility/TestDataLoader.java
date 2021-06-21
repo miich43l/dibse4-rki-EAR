@@ -130,17 +130,7 @@ public class TestDataLoader {
                         orderRepository.save(order);
                         clients.add(person);
 
-/*                      InformationType informationTypeDriver = InformationType.fromString("Driver");
-                        AdditionalInformation additionalInformationDriver = new AdditionalInformation();
-                        additionalInformationDriver.setInformationType(informationTypeDriver);
-                        additionalInformationDriver.setValue("Essen an der Türe abgeben");
-                        additionalInformationRepository.save(additionalInformationDriver);
-
-                        InformationType informationTypeKitchen = InformationType.fromString("Kitchen");
-                        AdditionalInformation additionalInformationKitchen = new AdditionalInformation();
-                        additionalInformationKitchen.setInformationType(informationTypeKitchen);
-                        additionalInformationKitchen.setValue("Lieblingsspeise Kaiserschmarrn");
-                        additionalInformationRepository.save(additionalInformationKitchen);*/
+                        createRandomAdditionalInformationForPerson(person);
                     }
                     case ContactPerson -> {
                         ContactPerson contactPerson = new ContactPerson();
@@ -220,5 +210,41 @@ public class TestDataLoader {
         }
 
         return addresses;
+    }
+
+    private void createRandomAdditionalInformationForPerson(Person person) {
+        List<AdditionalInformation> lst = new ArrayList<>();
+        List<String> additionalInformations = new ArrayList<>();
+        additionalInformations.add("Schlüssen links am Fenster;Driver");
+        additionalInformations.add("Am Fenster klopfen;Driver");
+
+        additionalInformations.add("Vegetarisch;Kitchen");
+        additionalInformations.add("Kleine Portion;Kitchen");
+        additionalInformations.add("Keine Vorspeise;Kitchen");
+
+        int numberOfInfosToCreate = new Random().nextInt(4);
+        if(additionalInformations.size() < numberOfInfosToCreate) {
+            numberOfInfosToCreate = additionalInformations.size();
+        }
+
+        List<Integer> lstInfos = new ArrayList<>();
+        for(int nHowMany = 0; nHowMany < numberOfInfosToCreate; nHowMany++) {
+            int nRandIdx = new Random().nextInt(additionalInformations.size());
+
+            while(lstInfos.contains(nRandIdx)) {
+                nRandIdx = new Random().nextInt(additionalInformations.size());
+            }
+
+            lstInfos.add(nRandIdx);
+
+            String line = additionalInformations.get(nRandIdx);
+            String[] elements = line.split(";");
+            AdditionalInformation info = new AdditionalInformation();
+            info.setValue(elements[0]);
+            info.setInformationType(InformationType.fromString(elements[1]));
+            info.setPerson(person);
+
+            additionalInformationRepository.save(info);
+        }
     }
 }
