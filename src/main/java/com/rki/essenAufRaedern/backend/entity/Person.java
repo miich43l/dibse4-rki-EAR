@@ -23,7 +23,7 @@ public class Person{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    // ##AOB @arthur fehlt hier nicht die @Column Notation?
+    @Temporal(TemporalType.DATE)
     private Date birthdate;
 
     @NotNull
@@ -36,6 +36,9 @@ public class Person{
     @Column(name = "last_name")
     private String lastName = "";
 
+    //Todo add @NotNull and @NotEmpty
+    @Column(name = "phone_number")
+    private String phoneNumber;
     @NotNull
     private Status status;
 
@@ -252,6 +255,14 @@ public class Person{
         this.users = users;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public User addUser(User user) {
         getUsers().add(user);
         user.setPerson(this);
@@ -266,4 +277,16 @@ public class Person{
         return user;
     }
 
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id +
+                ", birthdate=" + birthdate +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", status=" + status +
+                ", address=" + address +
+                ", personType=" + personType +
+                '}';
+    }
 }

@@ -27,6 +27,8 @@ public class Order{
 
     private Timestamp delivered;
 
+    private Timestamp notDeliverable ;
+
     private String prepared;
 
     private Status status;
@@ -99,4 +101,11 @@ public class Order{
         this.person = person;
     }
 
+    public Timestamp getNotDeliverable() {
+        return notDeliverable;
+    }
+
+    public void setNotDeliverable(Timestamp notDeliverable) {
+        this.notDeliverable = notDeliverable;
+    }
 }

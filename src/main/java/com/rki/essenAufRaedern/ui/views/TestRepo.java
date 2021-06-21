@@ -62,7 +62,8 @@ public class TestRepo extends VerticalLayout {
         
 
         System.out.println("personService.getActiveClients().stream().findFirst() = " + personService.getActiveClients().stream().findFirst());
-        kitchenService.findAll().forEach(k -> employeeService.findByKitchenId(k.getId()).forEach(e -> System.out.println(e.getPerson().getFirstName())));
+        System.out.println("personService.getActiveClientsByName(null, null)");
+        System.out.println(personService.getActiveClientsByName("Arian", "Schneider"));
         //end test
 
         addClassName("TestRepo");
