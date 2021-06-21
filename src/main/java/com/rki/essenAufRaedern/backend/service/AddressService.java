@@ -1,7 +1,9 @@
 package com.rki.essenAufRaedern.backend.service;
 
 import com.rki.essenAufRaedern.backend.entity.Address;
+import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.repository.AddressRepository;
+import com.rki.essenAufRaedern.backend.utility.Status;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +32,14 @@ public class AddressService {
             return;
         }
         addressRepository.save(address);
+    }
+
+    public void delete(Address address) {
+        if(address == null) {
+            return;
+        }
+
+        addressRepository.delete(address);
     }
 
     public List<Address> findAll() {

@@ -46,11 +46,10 @@ public class AddressEditorComponent extends FormLayout {
     }
 
     public Address getAddress() {
-        try {
-            addressBinder.writeBean(address);
-        } catch (ValidationException e) {
-            e.printStackTrace();
-        }
         return address;
+    }
+
+    public void validateAndSave() throws ValidationException {
+        addressBinder.writeBean(address);
     }
 }
