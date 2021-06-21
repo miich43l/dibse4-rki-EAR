@@ -9,10 +9,17 @@ public class OLMapMarker {
     private String title;
     private Point2D.Double coordinates = new Point2D.Double();
     private int id;
+    private String icon = "marker_red.png";
 
     public OLMapMarker(String title, Point2D coordinates) {
         this.title = title;
         this.coordinates.setLocation(coordinates);
+    }
+
+    public OLMapMarker(String title, Point2D coordinates, String icon) {
+        this.title = title;
+        this.coordinates.setLocation(coordinates);
+        this.icon = icon;
     }
 
     public String toJson() {

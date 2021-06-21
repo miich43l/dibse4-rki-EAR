@@ -47,6 +47,7 @@ public class OrderDeliveriesWidget extends VerticalLayout {
     private void onDidSelectOrderItem() {
         Set<Order> selectedItems = ordersGrid.getSelectedItems();
         if(selectedItems.isEmpty()) {
+            fireEvent(new DidSelectEvent(this, null));
             return;
         }
 

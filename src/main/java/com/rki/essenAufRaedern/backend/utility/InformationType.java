@@ -14,4 +14,13 @@ public enum InformationType {
         }
         throw new IllegalArgumentException("Invalid enum type!");
     }
+
+    @Override
+    public String toString() {
+        return switch (this) {
+            case Kitchen -> "Kitchen";
+            case Driver -> "Driver";
+            case Administration -> "Administration";
+        };
+    }
 }

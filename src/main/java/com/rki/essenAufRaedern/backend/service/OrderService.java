@@ -4,6 +4,8 @@ import com.rki.essenAufRaedern.backend.entity.Order;
 import com.rki.essenAufRaedern.backend.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,5 +44,11 @@ public class OrderService {
             return;
         }
         orderRepository.save(order);
+    }
+
+    public void markAsDelivered(Order order) {
+        order.setDelivered(new Timestamp(new Date().getTime()));
+        orderRepository.save(order);
+        orderRepository.delete(order);
     }
 }

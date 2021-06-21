@@ -3,17 +3,12 @@ package com.rki.essenAufRaedern.backend.service;
 import com.rki.essenAufRaedern.backend.entity.Employee;
 import com.rki.essenAufRaedern.backend.entity.Kitchen;
 import com.rki.essenAufRaedern.backend.entity.Person;
-import com.rki.essenAufRaedern.backend.repository.AddressRepository;
-import com.rki.essenAufRaedern.backend.repository.EmployeeRepository;
-import com.rki.essenAufRaedern.backend.repository.KitchenRepository;
-import com.rki.essenAufRaedern.backend.repository.PersonRepository;
+import com.rki.essenAufRaedern.backend.repository.*;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,13 +25,15 @@ public class KitchenService {
     private final AddressRepository addressRepository;
     private final PersonRepository personRepository;
     private final EmployeeRepository employeeRepository;
+    private final OrderRepository orderRepository;
 
 
-    public KitchenService(KitchenRepository kitchenRepository, AddressRepository addressRepository, PersonRepository personRepository, EmployeeRepository employeeRepository) {
+    public KitchenService(KitchenRepository kitchenRepository, AddressRepository addressRepository, PersonRepository personRepository, EmployeeRepository employeeRepository, OrderRepository orderRepository) {
         this.kitchenRepository = kitchenRepository;
         this.addressRepository = addressRepository;
         this.personRepository = personRepository;
         this.employeeRepository = employeeRepository;
+        this.orderRepository = orderRepository;
     }
 
     public List<Kitchen> findAll() {
