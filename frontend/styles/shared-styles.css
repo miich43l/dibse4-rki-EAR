@@ -63,3 +63,34 @@ a[highlight] {
 }
 
 
+html {
+  --lumo-border-radius: 0.5em;
+  --lumo-shade-5pct: rgba(26, 26, 26, 0.05);
+  --lumo-shade-10pct: rgba(26, 26, 26, 0.1);
+  --lumo-shade-20pct: rgba(26, 26, 26, 0.2);
+  --lumo-shade-30pct: rgba(26, 26, 26, 0.3);
+  --lumo-shade-40pct: rgba(26, 26, 26, 0.4);
+  --lumo-shade-50pct: rgba(26, 26, 26, 0.5);
+  --lumo-shade-60pct: rgba(26, 26, 26, 0.6);
+  --lumo-shade-70pct: rgba(26, 26, 26, 0.7);
+  --lumo-shade-80pct: rgba(26, 26, 26, 0.8);
+  --lumo-shade-90pct: rgba(26, 26, 26, 0.9);
+  --lumo-primary-text-color: rgb(231, 76, 60);
+  --lumo-primary-color-50pct: rgba(231, 76, 60, 0.5);
+  --lumo-primary-color-10pct: rgba(231, 76, 60, 0.1);
+  --lumo-error-text-color: rgb(192, 57, 43);
+  --lumo-error-color-50pct: rgba(192, 57, 43, 0.5);
+  --lumo-error-color-10pct: rgba(192, 57, 43, 0.1);
+  --lumo-success-text-color: #3498db;
+  --lumo-success-color-50pct: rgba(52, 152, 219, 0.5);
+  --lumo-success-color-10pct: rgba(52, 152, 219, 0.1);
+  --lumo-shade: hsl(0, 0%, 10%);
+  --lumo-primary-color: #e74c3c;
+  --lumo-error-color: #c0392b;
+  --lumo-success-color: #3498db;
+  --lumo-success-contrast-color: hsl(159, 29%, 10%);
+}
+
+[theme~="dark"] {
+}
+
