@@ -57,6 +57,10 @@ public class PersonService {
     }
 
     public void delete(Person person) {
+        if(person == null) {
+            return;
+        }
+
         person.setStatus(Status.Inactive);
         personRepository.save(person);
     }
