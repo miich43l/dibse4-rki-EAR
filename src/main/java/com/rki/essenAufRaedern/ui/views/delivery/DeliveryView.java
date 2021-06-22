@@ -53,7 +53,8 @@ public class DeliveryView extends VerticalLayout {
 
     private Kitchen kitchen;
     private List<Order> orders = new ArrayList<>();
-    private Map<Order, OLMapMarker> mapMarkers = new HashMap<>();
+    private Map<Long, OLMapMarker> mapMarkers = new HashMap<>();
+    private Map<Integer, Order> mapMarkerToOrder = new HashMap<>();
     private OLMapMarker kitchenMarker;
 
     public DeliveryView(KitchenService kitchenService, AddressService addressService, OrderService orderService) {
@@ -99,7 +100,8 @@ public class DeliveryView extends VerticalLayout {
             return (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
                         && c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
                         && c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH))
-                    && order.getStatus() == Status.Active;
+                    && (order.getDelivered() == null
+                        && order.getNotDeliverable() == null);
         };
 
         orders = kitchen.getOrders().stream().filter(orderPredicate).collect(Collectors.toList());
@@ -117,6 +119,25 @@ public class DeliveryView extends VerticalLayout {
     private Component createMapView() {
         mapComponent.setHeight(100, Unit.PERCENTAGE);
         mapComponent.setWidthFull();
+        mapComponent.addMarkerVisitedListener(e -> {
+            if(!mapMarkerToOrder.containsKey(e.getMarkerId())) {
+                return;
+            }
+
+            Order order = mapMarkerToOrder.get(e.getMarkerId());
+            deliveriesWidget.selectOrder(order);
+            Notification.show("Visited: " + order.getPerson().getFullName());
+        });
+
+        mapComponent.addMarkerLeaveListener(e -> {
+            if(!mapMarkerToOrder.containsKey(e.getMarkerId())) {
+                return;
+            }
+
+            Order order = mapMarkerToOrder.get(e.getMarkerId());
+            Notification.show("Leave: " + order.getPerson().getFullName());
+        });
+
 
         List<Point2D> pointsToVisit = new ArrayList<>();
 
@@ -142,7 +163,9 @@ public class DeliveryView extends VerticalLayout {
             OLMapMarker marker = createMapMarkerForOrder(order, coordinates);
 
             mapComponent.addMarker(marker);
-            mapMarkers.put(order, marker);
+            mapMarkers.put(order.getId(), marker);
+            mapMarkerToOrder.put(marker.getId(), order);
+            System.out.println("Marker: " + marker.getId() + " -> " + order.getPerson().getFullName());
             pointsToVisit.add(coordinates);
         }
 
@@ -154,6 +177,7 @@ public class DeliveryView extends VerticalLayout {
             OLMapRoute route = new OLMapRoute(tspRoute.getPoints());
 
             mapComponent.addRoute(route);
+            mapComponent.startPositionSimulation(route);
         } catch (Exception exception) {
             Notification.show("Failed to calculate TSP!");
         }
@@ -166,6 +190,10 @@ public class DeliveryView extends VerticalLayout {
         String strIcons = "marker_red.png";
 
         if(order.getDelivered() != null) {
+            strIcons = "marker_green.png";
+        }
+
+        if(order.getNotDeliverable() != null) {
             strIcons = "marker_gray.png";
         }
 
@@ -173,11 +201,8 @@ public class DeliveryView extends VerticalLayout {
     }
 
     private void resetMapCenterAndZoom() {
-        if(kitchenMarker == null) {
-            return;
-        }
-
-        mapComponent.setCenter(kitchenMarker.getCoordinates());
+        //mapComponent.setCenter(kitchenMarker.getCoordinates());
+        mapComponent.lockPosition();
         mapComponent.setZoom(10);
     }
 
@@ -203,13 +228,28 @@ public class DeliveryView extends VerticalLayout {
         deliveriesWidget.setOrders(orders);
     }
 
+    private void updateMapMarker(Order order) {
+        if (mapMarkers.containsKey(order.getId())) {
+            OLMapMarker marker = mapMarkers.get(order.getId());
+            mapComponent.removeMarker(marker);
+            mapMarkers.remove(order.getId());
+            mapMarkerToOrder.remove(marker.getId());
+
+            OLMapMarker newMarker = createMapMarkerForOrder(order, marker.getCoordinates());
+            mapComponent.addMarker(newMarker);
+            mapMarkers.put(order.getId(), marker);
+            mapMarkerToOrder.put(marker.getId(), order);
+        }
+    }
+
     private void onDidSelectDelivery(Order order) {
-        if(order == null || !mapMarkers.containsKey(order)) {
+        if(order == null || !mapMarkers.containsKey(order.getId())) {
             resetMapCenterAndZoom();
             return;
         }
 
-        Point2D coordinates = mapMarkers.get(order).getCoordinates();
+        Point2D coordinates = mapMarkers.get(order.getId()).getCoordinates();
+        mapComponent.unlockPosition();
         mapComponent.setCenter(coordinates);
         mapComponent.setZoom(15);
     }
@@ -217,13 +257,7 @@ public class DeliveryView extends VerticalLayout {
     private void onDeliveredPressed(Order order) {
         orderService.markAsDelivered(order);
 
-        if(mapMarkers.containsKey(order)) {
-            OLMapMarker marker = mapMarkers.get(order);
-            mapComponent.removeMarker(marker);
-
-            OLMapMarker newMarker = createMapMarkerForOrder(order, marker.getCoordinates());
-            mapComponent.addMarker(newMarker);
-        }
+        updateMapMarker(order);
 
         updateUI();
 
@@ -231,6 +265,12 @@ public class DeliveryView extends VerticalLayout {
     }
 
     private void onNotDeliveredPressed(Order order) {
+        orderService.markAsNotDelivered(order);
+
+        updateMapMarker(order);
+
+        updateUI();
+
         Notification.show("Menü NICHT zugestellt.", 2000, Notification.Position.BOTTOM_START);
     }
 

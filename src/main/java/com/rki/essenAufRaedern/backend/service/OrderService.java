@@ -49,6 +49,10 @@ public class OrderService {
     public void markAsDelivered(Order order) {
         order.setDelivered(new Timestamp(new Date().getTime()));
         orderRepository.save(order);
-        orderRepository.delete(order);
+    }
+
+    public void markAsNotDelivered(Order order) {
+        order.setNotDeliverable(new Timestamp(new Date().getTime()));
+        orderRepository.save(order);
     }
 }
