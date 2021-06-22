@@ -1,15 +1,19 @@
 package com.rki.essenAufRaedern.ui.views.customer;
 
 //import com.rki.essenAufRaedern.backend.entity.Person;
+import com.rki.essenAufRaedern.backend.entity.AdditionalInformation;
 import com.rki.essenAufRaedern.backend.entity.Address;
 import com.rki.essenAufRaedern.backend.entity.Person;
-        import com.rki.essenAufRaedern.backend.service.AddressService;
+import com.rki.essenAufRaedern.backend.service.AdditionalInformationService;
+import com.rki.essenAufRaedern.backend.service.AddressService;
 
         import com.rki.essenAufRaedern.backend.service.PersonService;
         import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import com.rki.essenAufRaedern.ui.MainLayout;
 import com.rki.essenAufRaedern.ui.components.address.AddressEditorComponent;
+import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationComponent;
+import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationForm;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
@@ -39,6 +43,8 @@ public class CustomerView extends VerticalLayout{
 
     CustomerForm personForm;
     AddressEditorComponent addressForm;
+    AdditionalInformationComponent additionalInformationForm;
+    AdditionalInformationForm addAdditionalInformationForm;
     Grid<Person> grid = new Grid<>(Person.class);
     TextField filterText = new TextField();
     Dialog editDialog;
@@ -46,10 +52,12 @@ public class CustomerView extends VerticalLayout{
 
     PersonService personService;
     AddressService addressService;
+    AdditionalInformationService additionalInformationService;
 
-    public CustomerView(PersonService personService, AddressService addressService) {
+    public CustomerView(PersonService personService, AddressService addressService, AdditionalInformationService additionalInformationService) {
         this.personService = personService;
         this.addressService = addressService;
+        this.additionalInformationService = additionalInformationService;
         addClassName("customer-view");
         setSizeFull();
         configureGrid();
@@ -118,6 +126,7 @@ public class CustomerView extends VerticalLayout{
         grid.addClassName("customer-grid");
         grid.setSizeFull();
         grid.setColumns("firstName", "lastName", "address");
+        grid.getColumnByKey("firstName").setHeader("Vorname");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(evt -> editPerson(evt.getValue()));
     }
@@ -154,12 +163,48 @@ public class CustomerView extends VerticalLayout{
         // Address:
         {
             Tab tab = new Tab();
-            tab.setLabel("Addresse");
+            tab.setLabel("Adresse");
 
             VerticalLayout tabLayout = new VerticalLayout();
             addressForm = new AddressEditorComponent();
             addressForm.setAddress(person.getAddress());
             tabLayout.add(addressForm);
+            tabLayout.setVisible(false);
+
+            tabs.add(tab);
+            dialog.add(tabLayout);
+            tabViews.put(tab, tabLayout);
+        }
+
+        // AdditionalInformation:
+        {
+            Tab tab = new Tab();
+            tab.setLabel("Zusatzinformationen");
+
+            VerticalLayout tabLayout = new VerticalLayout();
+            HorizontalLayout addLayout = new HorizontalLayout();
+            addLayout.setDefaultVerticalComponentAlignment(Alignment.END);
+            addAdditionalInformationForm = new AdditionalInformationForm();
+            addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
+            Button addInfoButton = new Button("Information hinzufügen", click -> {
+               if (!addAdditionalInformationForm.isValid()){
+                   return;
+               }
+               person.addAdditionalInformation(addAdditionalInformationForm.getAdditionalInformation());
+               additionalInformationService.save(addAdditionalInformationForm.getAdditionalInformation());
+               additionalInformationForm.setPerson(person);
+            });
+            addLayout.add(addAdditionalInformationForm, addInfoButton);
+            tabLayout.add(addLayout);
+            additionalInformationForm = new AdditionalInformationComponent();
+            additionalInformationForm.setPerson(person);
+            additionalInformationForm.setWidthFull();
+            additionalInformationForm.addListener(AdditionalInformationComponent.DeleteButtonPressedEvent.class,event ->{
+                System.out.println("Event received");
+                additionalInformationService.delete(event.getAdditionalInformation());
+                additionalInformationForm.setPerson(person);
+            });
+            tabLayout.add(additionalInformationForm);
             tabLayout.setVisible(false);
 
             tabs.add(tab);

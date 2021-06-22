@@ -257,6 +257,7 @@ public class DeliveryView extends VerticalLayout {
         Dialog dialog = new Dialog();
         AdditionalInformationComponent infoComponent = new AdditionalInformationComponent();
         infoComponent.setFilterType(InformationType.Driver);
+        infoComponent.setActionColumnVisible(false);
         infoComponent.setPerson(order.getPerson());
 
         dialog.setWidth(50, Unit.PERCENTAGE);
