@@ -45,7 +45,7 @@ public class AdditionalInformationComponent extends VerticalLayout {
     }
 
     public void setActionColumnVisible(boolean visible){
-        infoGrid.getColumnByKey("Actions").setVisible(visible);
+        infoGrid.getColumnByKey("actions").setVisible(visible);
     }
 
     private Component createInfoComponent() {
@@ -59,7 +59,7 @@ public class AdditionalInformationComponent extends VerticalLayout {
             Button deleteButton = new Button(icon);
             deleteButton.addClickListener(e ->{System.out.println("before fire event");fireEvent(new DeleteButtonPressedEvent(this, info));});
             return deleteButton;
-        })).setHeader("Actions");
+        })).setHeader("Actions").setKey("actions");
 
         mainLayout.add(infoGrid);
         mainLayout.setPadding(false);
