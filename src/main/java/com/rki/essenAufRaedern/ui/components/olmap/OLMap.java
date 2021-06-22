@@ -1,16 +1,19 @@
 package com.rki.essenAufRaedern.ui.components.olmap;
 
-import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.function.SerializableConsumer;
+import com.vaadin.flow.shared.Registration;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Tag("openlayers")
 @NpmPackage(value = "ol", version = "6.1.1")
@@ -21,7 +24,7 @@ import java.util.List;
 public class OLMap extends Div {
 
     int nextLayerId = 0;
-    List<OLMapMarker> markers = new ArrayList<>();
+    Map<Integer, OLMapMarker> markers = new HashMap<>();
     List<OLMapRoute> routes = new ArrayList<>();
 
     public OLMap() {
@@ -31,7 +34,7 @@ public class OLMap extends Div {
     public void addMarker(OLMapMarker marker) {
         marker.setMap(this);
         marker.setId(nextLayerId);
-        markers.add(markers.size(), marker);
+        markers.put(marker.getId(), marker);
 
         getElement().callJsFunction("addMarker", marker.toJson());
         nextLayerId++;
@@ -44,14 +47,26 @@ public class OLMap extends Div {
     }
 
     public void removeMarker(OLMapMarker marker) {
-        if(!markers.contains(marker)) {
+        if(!markers.containsKey(marker.getId())) {
             return;
         }
 
         getElement().callJsFunction("removeMarker", marker.toJson());
         marker.setMap(null);
         marker.setId(-1);
-        markers.remove(marker);
+        markers.remove(marker.getId());
+    }
+
+    public boolean hasMarker(int id) {
+        return markers.containsKey(id);
+    }
+
+    public OLMapMarker getMarkerFromId(int id) {
+        return markers.get(id);
+    }
+
+    public List<OLMapMarker> getMarkers() {
+        return markers.values().stream().collect(Collectors.toList());
     }
 
     public void addRoute(OLMapRoute route) {
@@ -74,6 +89,22 @@ public class OLMap extends Div {
         routes.remove(route);
     }
 
+    public void startPositionSimulation(OLMapRoute route) {
+        getElement().callJsFunction("startPositionSimulation", route.toJson(), 100);
+    }
+
+    public void stopPositionSimulation() {
+        getElement().callJsFunction("stopPositionSimulation");
+    }
+
+    public void lockPosition() {
+        getElement().callJsFunction("lockPosition");
+    }
+
+    public void unlockPosition() {
+        getElement().callJsFunction("unlockPosition");
+    }
+
     public void removeAllRoutes() {
         routes.forEach(this::removeRoute);
     }
@@ -86,15 +117,51 @@ public class OLMap extends Div {
         getElement().callJsFunction("setCenter", center.getX(), center.getY());
     }
 
-    public List<OLMapMarker> getMarkers() {
-        return markers;
-    }
-
     private void initConnector() {
         runBeforeClientResponse(ui -> ui.getPage().executeJs("window.Vaadin.Flow.openLayersConnector.initLazy($0)", getElement()));
     }
 
     private void runBeforeClientResponse(SerializableConsumer<UI> command) {
         getElement().getNode().runWhenAttached(ui -> ui.beforeClientResponse(this, context -> command.accept(ui)));
+    }
+
+    @DomEvent("marker_visit")
+    public static class MarkerVisitedEvent extends ComponentEvent<OLMap> {
+        int markerId = -1;
+
+        public MarkerVisitedEvent(OLMap source,
+                                  boolean fromClient,
+                                  @EventData("event.detail.markerId") int markerId) {
+            super(source, fromClient);
+            this.markerId = markerId;
+        }
+
+        public int getMarkerId() {
+            return markerId;
+        }
+    }
+
+    @DomEvent("marker_leave")
+    public static class MarkerLeaveEvent extends ComponentEvent<OLMap> {
+        int markerId = -1;
+
+        public MarkerLeaveEvent(OLMap source,
+                                boolean fromClient,
+                                @EventData("event.detail.markerId") int markerId) {
+            super(source, fromClient);
+            this.markerId = markerId;
+        }
+
+        public int getMarkerId() {
+            return markerId;
+        }
+    }
+
+    public Registration addMarkerVisitedListener(ComponentEventListener<MarkerVisitedEvent> listener) {
+        return addListener(MarkerVisitedEvent.class, listener);
+    }
+
+    public Registration addMarkerLeaveListener(ComponentEventListener<MarkerLeaveEvent> listener) {
+        return addListener(MarkerLeaveEvent.class, listener);
     }
 }

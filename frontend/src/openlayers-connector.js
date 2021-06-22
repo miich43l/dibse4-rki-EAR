@@ -59,9 +59,44 @@ window.Vaadin.Flow.openLayersConnector = {
         );
 
         geolocation.on('change:position', function () {
-            var coordinates = geolocation.getPosition();
-            positionFeature.setGeometry(coordinates ? new Point(coordinates) : null);
+            c.updatePosition(geolocation.getPosition());
         });
+
+        c.updatePosition = function(coordinates) {
+            //console.log("update position: " + coordinates);
+            positionFeature.setGeometry(coordinates ? new Point(coordinates) : null);
+
+            if(c.positionLocked) {
+                c.$connector.map.getView().setCenter(coordinates);
+                c.$connector.map.getView().setZoom(15);
+            }
+
+            for(var poiId in c.$connector.mapPOIS) {
+                var poi = c.$connector.mapPOIS[poiId];
+                var diffX = poi[0] - coordinates[0];
+                var diffY = poi[1] - coordinates[1];
+                var distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
+
+                if(distance < 50) {
+                    if(c.$connector.currentPOIID == -1) {
+                        c.$connector.currentPOIID = poiId;
+                        console.log("visit POI: " + poiId);
+                        var visitEvent = new CustomEvent("marker_visit", { detail: { markerId: poiId }});
+                        c.dispatchEvent(visitEvent);
+
+                        break;
+                    }
+                } else {
+                    if(c.$connector.currentPOIID == poiId) {
+                        console.log("leave POI: " + poiId);
+                        var leaveEvent = new CustomEvent("marker_leave", { detail: { markerId: poiId }});
+                        c.dispatchEvent(leaveEvent);
+
+                        c.$connector.currentPOIID = -1;
+                    }
+                }
+            }
+        }
 
         var locationLayer = new VectorLayer({
             source: new VectorSource({
@@ -82,7 +117,9 @@ window.Vaadin.Flow.openLayersConnector = {
             view: mapView
         });
 
-        c.$connector.mapLayers = {}
+        c.$connector.mapLayers = {};
+        c.$connector.mapPOIS = {};
+        c.$connector.currentPOIID = -1;
 
         c.addMarker = function(json) {
             json = JSON.parse(json);
@@ -111,6 +148,7 @@ window.Vaadin.Flow.openLayersConnector = {
 
             c.$connector.map.addLayer(newLayer);
             c.$connector.mapLayers[id] = newLayer;
+            c.$connector.mapPOIS[id] = fromLonLat([lon, lat]);
         }
 
         c.removeMarker = function(json) {
@@ -170,6 +208,42 @@ window.Vaadin.Flow.openLayersConnector = {
             c.$connector.map.getView().setCenter(fromLonLat([lon, lat]));
         }
 
+        c.startPositionSimulation = function(json, interval) {
+            json = JSON.parse(json);
+            var id = json.id;
+            var points = [];
+            for(var idx in json.points) {
+                var point = json.points[idx]
+                points.push([point.y, point.x])
+            }
+
+            c.positionSimulationPoints = points;
+            c.positionSimulationTimer = setInterval(c.handlePositionSimulation, interval);
+        }
+
+        c.stopPositionSimulation = function() {
+            clearInterval(c.positionSimulationTimer);
+        }
+
+        c.handlePositionSimulation = function() {
+            if(c.positionSimulationPoints.length == 0) {
+                c.stopPositionSimulation();
+                return;
+            }
+
+            var coordinates = c.positionSimulationPoints.pop(0);
+            c.updatePosition(fromLonLat([coordinates[0], coordinates[1]]));
+        }
+
+        c.lockPosition = function() {
+            c.positionLocked = true;
+        }
+
+        c.unlockPosition = function() {
+            c.positionLocked = false;
+        }
+
+        c.positionLocked = false;
         window.map = c.$connector.map;
         window.mapContainer = c;
     }

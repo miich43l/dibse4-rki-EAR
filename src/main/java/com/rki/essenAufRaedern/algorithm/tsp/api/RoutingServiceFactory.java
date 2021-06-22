@@ -13,7 +13,7 @@ public class RoutingServiceFactory {
     }
 
     public IRoutingService createGraphHopperRoutingService() {
-        String strApiKey = "e84f7985-a334-44e0-834a-7b085b38935d";
+        String strApiKey = "f60a64e4-618f-4ac2-8de4-500ab1ce5bea";
         return new RoutingServiceGraphHopper(strApiKey);
     }
 }

@@ -7,7 +7,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -16,11 +16,11 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 
 public class OrderDeliveryWidget extends VerticalLayout {
-    private Label personNameLabel = new Label("Name");
-    private Label addressLabel = new Label("Address");
+    private final H5 personNameLabel = new H5("Name");
+    private final H6 addressLabel = new H6("Address");
 
-    private Binder<Order> orderBinder = new Binder<>(Order.class);
-    private Binder<Person> personBinder = new Binder<>(Person.class);
+    private final Binder<Order> orderBinder = new Binder<>(Order.class);
+    private final Binder<Person> personBinder = new Binder<>(Person.class);
 
     public OrderDeliveryWidget(Order order) {
         orderBinder.setBean(order);
@@ -40,12 +40,9 @@ public class OrderDeliveryWidget extends VerticalLayout {
         VerticalLayout layoutLeft = new VerticalLayout();
         layoutLeft.setWidthFull();
 
-        Icon icon = VaadinIcon.USER.create();
-        icon.setColor("red");
         Person person = personBinder.getBean();
 
         personNameLabel.setText(person.getFirstName() + " " + person.getLastName());
-        personNameLabel.setClassName("font-size-l");
 
         if(personBinder.getBean().getAddress() != null) {
             Address address = personBinder.getBean().getAddress();
@@ -54,16 +51,9 @@ public class OrderDeliveryWidget extends VerticalLayout {
             addressLabel.setText("-");
         }
 
-        HorizontalLayout nameLayout = new HorizontalLayout(icon, personNameLabel);
-        nameLayout.setPadding(false);
-        VerticalLayout addressLayout = new VerticalLayout(addressLabel);
-        addressLayout.setMargin(false);
-        addressLayout.setPadding(false);
-        addressLayout.setWidthFull();
-
         layoutLeft.setDefaultHorizontalComponentAlignment(Alignment.START);
         layoutLeft.setPadding(false);
-        layoutLeft.add(nameLayout, addressLayout);
+        layoutLeft.add(personNameLabel, addressLabel);
         mainLayout.add(layoutLeft);
 
         Button infoButton = new Button("");
