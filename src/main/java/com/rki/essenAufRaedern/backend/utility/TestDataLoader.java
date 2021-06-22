@@ -51,6 +51,21 @@ public class TestDataLoader {
         kitchen.setStatus(Status.Active);
         kitchenRepository.save(kitchen);
 
+        Person driverPerson = new Person();
+        driverPerson.setStatus(Status.Active);
+        driverPerson.setFirstName("Max");
+        driverPerson.setLastName("Vollgas");
+        driverPerson.setBirthdate(new Date());
+        driverPerson.setPhoneNumber("+43 664 12345678");
+        driverPerson.setPersonType(PersonType.Driver);
+        personRepository.save(driverPerson);
+
+        Employee driver = new Employee();
+        driver.setStatus(Status.Active);
+        driver.setKitchen(kitchen);
+        driver.setPerson(driverPerson);
+        employeeRepository.save(driver);
+
         System.out.println("Kitchen address: " + kitchen.getAddress());
         System.out.println("Kitchen address: " + kitchenRepository.findAll().get(0).getAddress());
 

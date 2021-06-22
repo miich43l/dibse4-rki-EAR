@@ -48,10 +48,14 @@ public class AdditionalInformationComponent extends VerticalLayout {
         infoGrid.getColumnByKey("actions").setVisible(visible);
     }
 
+    public void setTypeColumnVisible(boolean visible){
+        infoGrid.getColumnByKey("type").setVisible(visible);
+    }
+
     private Component createInfoComponent() {
         VerticalLayout mainLayout = new VerticalLayout();
 
-        infoGrid.addColumn(new ComponentRenderer<>(info -> new Text(info.getInformationType().toString()))).setHeader("Type");
+        infoGrid.addColumn(new ComponentRenderer<>(info -> new Text(info.getInformationType().toString()))).setHeader("Type").setKey("type");
         infoGrid.addColumn(AdditionalInformation::getValue).setHeader("Information");
         infoGrid.addColumn(new ComponentRenderer<>(info -> {
             Icon icon = VaadinIcon.TRASH.create();
