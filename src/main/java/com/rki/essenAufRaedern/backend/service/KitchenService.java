@@ -54,13 +54,13 @@ public class KitchenService {
         if (kitchen.isEmpty()) {
             LOGGER.log(Level.SEVERE,
                     "Kitchen is null");
-            return null;
+            return new ArrayList<>();
         }
         List<Employee> employees = employeeRepository.findByKitchenId(kitchen.get().getId());
         if (!employees.isEmpty()) {
             LOGGER.log(Level.SEVERE,
                     "no Employees for Kitchen with id = " + kitchen.get().getId());
-            return null;
+            return new ArrayList<>();
         }
         List<Person> driverList = new ArrayList<>();
         for (Employee e : employees) {
