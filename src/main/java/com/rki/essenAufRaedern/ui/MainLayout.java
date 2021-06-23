@@ -4,6 +4,7 @@ import com.rki.essenAufRaedern.ui.views.TestRepo;
 import com.rki.essenAufRaedern.ui.views.customer.CustomerView;
 import com.rki.essenAufRaedern.ui.views.dashboard.DashboardView;
 import com.rki.essenAufRaedern.ui.views.delivery.DeliveryView;
+import com.rki.essenAufRaedern.ui.views.kitchen.KitchenView;
 import com.rki.essenAufRaedern.ui.views.list.ListView;
 import com.rki.essenAufRaedern.ui.views.olmap.geocoding.GeocodingView;
 import com.rki.essenAufRaedern.ui.views.olmap.tsp.TravelingSalesmanView;
@@ -58,10 +59,10 @@ public class MainLayout extends AppLayout {
         addToDrawer(new VerticalLayout(
                 listLink,
                 new RouterLink("Kunden", CustomerView.class),
-                new RouterLink("Dashboard", DashboardView.class),
+                new RouterLink("Küche", KitchenView.class),
+                new RouterLink("Fahrer", DeliveryView.class),
                 new RouterLink("Geocoding", GeocodingView.class),
                 new RouterLink("Traveling salesman", TravelingSalesmanView.class),
-                new RouterLink("Delivery", DeliveryView.class),
                 new RouterLink("TestRepo", TestRepo.class)
 
         ));
