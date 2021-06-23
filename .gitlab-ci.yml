@@ -1,14 +1,24 @@
 image: miich43l/vaddinn123:latest
+
 variables:
   MAVEN_CLI_OPTIONS: "--batch-mode"
 
 stages:
   - build
+  - test
 
-build:
+build-job:
   stage: build
   script:
+    - echo "Usinging Maven with CLI Options to build Artifact"
     - mvn $MAVEN_CLI_OPTIONS clean package -Pproduction -e
   artifacts:
     paths:
       - target/*.jar
+
+test-job:
+  stage: test
+  script:
+    - echo "If the files are built successfully, test some files with one command:"
+    - echo "Running Unit Tests"
+    - mvn test
