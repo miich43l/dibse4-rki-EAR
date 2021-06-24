@@ -13,19 +13,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Tag("openlayers")
 @NpmPackage(value = "ol", version = "6.1.1")
 @CssImport("ol/ol.css")
-//@JavaScript("https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/build/ol.js")
-//@StyleSheet("https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/css/ol.css")
 @JsModule("./src/openlayers-connector.js")
 public class OLMap extends Div {
 
-    int nextLayerId = 0;
-    Map<Integer, OLMapMarker> markers = new HashMap<>();
-    List<OLMapRoute> routes = new ArrayList<>();
+    private int nextLayerId = 0;
+    private boolean positionSimulationActive = false;
+    private OLMapRoute simulationRoute;
+    private Map<Integer, OLMapMarker> markers = new HashMap<>();
+    private List<OLMapRoute> routes = new ArrayList<>();
 
     public OLMap() {
         initConnector();
@@ -66,7 +65,7 @@ public class OLMap extends Div {
     }
 
     public List<OLMapMarker> getMarkers() {
-        return markers.values().stream().collect(Collectors.toList());
+        return new ArrayList<>(markers.values());
     }
 
     public void addRoute(OLMapRoute route) {
@@ -89,12 +88,35 @@ public class OLMap extends Div {
         routes.remove(route);
     }
 
-    public void startPositionSimulation(OLMapRoute route) {
-        getElement().callJsFunction("startPositionSimulation", route.toJson(), 100);
+    public void setPositionSimulationRoute(OLMapRoute simulationRoute) {
+        this.simulationRoute = simulationRoute;
+        getElement().callJsFunction("setPositionSimulationRoute", simulationRoute.toJson());
+    }
+
+    public void startPositionSimulation() {
+        if(simulationRoute == null) {
+            throw new IllegalArgumentException("No simulation route defined!");
+        }
+
+        getElement().callJsFunction("startPositionSimulation", 100);
+        positionSimulationActive = true;
     }
 
     public void stopPositionSimulation() {
         getElement().callJsFunction("stopPositionSimulation");
+        positionSimulationActive = false;
+    }
+
+    public void resetPositionSimulation() {
+        if(simulationRoute == null) {
+            throw new IllegalArgumentException("No simulation route defined!");
+        }
+
+        setPositionSimulationRoute(simulationRoute);
+    }
+
+    public boolean isPositionSimulationActive() {
+        return positionSimulationActive;
     }
 
     public void lockPosition() {

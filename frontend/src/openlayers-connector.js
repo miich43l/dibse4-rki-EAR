@@ -208,7 +208,7 @@ window.Vaadin.Flow.openLayersConnector = {
             c.$connector.map.getView().setCenter(fromLonLat([lon, lat]));
         }
 
-        c.startPositionSimulation = function(json, interval) {
+        c.setPositionSimulationRoute = function(json) {
             json = JSON.parse(json);
             var id = json.id;
             var points = [];
@@ -218,6 +218,9 @@ window.Vaadin.Flow.openLayersConnector = {
             }
 
             c.positionSimulationPoints = points;
+        }
+
+        c.startPositionSimulation = function(interval) {
             c.positionSimulationTimer = setInterval(c.handlePositionSimulation, interval);
         }
 
