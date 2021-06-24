@@ -192,7 +192,7 @@ public class TestDataLoader {
             addressStrings.add("Österreich;6067;Absam;Schulstraße;4;1");
             addressStrings.add("Österreich;6167;Neustift im Stubaital;Fichtenweg;6;1");
 */
-            addressStrings.add("Austria;6450;Sölden;Uferweg;1;2a");
+            addressStrings.add("Austria;6450;Sölden;Uferweg;1;2a");         // Route 1
             addressStrings.add("Austria;6450;Zwieselstein;Roanweg;14;1");
             addressStrings.add("Austria;6450;Sölden;Alpenweg;4;1");
             addressStrings.add("Austria;6450;Sölden;Hainbachweg;19;1");
