@@ -81,7 +81,7 @@ public class TestDataLoader {
 
         List<Address> addresses = createAddressData();
         int orderCtn = 0;
-        int maxOrders = 3;
+        int maxOrders = 9;
 
         // Create persons:
         {

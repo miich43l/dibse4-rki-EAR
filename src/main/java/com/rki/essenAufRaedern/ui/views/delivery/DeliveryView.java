@@ -11,10 +11,11 @@ import com.rki.essenAufRaedern.backend.service.KitchenService;
 import com.rki.essenAufRaedern.backend.service.OrderService;
 import com.rki.essenAufRaedern.backend.service.PersonService;
 import com.rki.essenAufRaedern.backend.utility.InformationType;
-import com.rki.essenAufRaedern.backend.utility.Status;
 import com.rki.essenAufRaedern.ui.MainLayout;
+import com.rki.essenAufRaedern.ui.components.olmap.OLMapRoute;
 import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationComponent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -25,15 +26,13 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMap;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMapMarker;
-import com.rki.essenAufRaedern.ui.components.olmap.OLMapRoute;
 import com.rki.essenAufRaedern.ui.components.orders.OrderDeliveriesWidget;
 import org.springframework.context.annotation.Scope;
 
+import java.awt.*;
 import java.awt.geom.Point2D;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -43,24 +42,33 @@ import java.util.stream.Collectors;
 @Route(value = "delivery", layout = MainLayout.class)
 public class DeliveryView extends VerticalLayout {
 
-    private OrderDeliveriesWidget deliveriesWidget = new OrderDeliveriesWidget();
-    private OLMap mapComponent = new OLMap();
+    private final OrderDeliveriesWidget deliveriesWidget = new OrderDeliveriesWidget();
+    private final Text routeInfo = new Text("Route info");
+    private final OLMap mapComponent = new OLMap();
 
     private PersonService personService;
-    private OrderService orderService;
-    private KitchenService kitchenService;
+    private final OrderService orderService;
+    private final KitchenService kitchenService;
     private AddressService addressService;
 
     private Kitchen kitchen;
+    private Point2D kitchenCoordinates;
     private List<Order> orders = new ArrayList<>();
-    private Map<Long, OLMapMarker> mapMarkers = new HashMap<>();
-    private Map<Integer, Order> mapMarkerToOrder = new HashMap<>();
-    private OLMapMarker kitchenMarker;
+    private TspPath tspRoute;
+    private final Map<Long, OLMapMarker> mapMarkers = new HashMap<>();
+    private final Map<Integer, Order> mapMarkerToOrder = new HashMap<>();
+    private final Map<Long, Point2D> mapOrderToCoordinate = new HashMap<>();
+    private final Button posSimulationStartButton = new Button("Start");
+    private final Button posSimulationPauseButton = new Button("Pause");
+    private final Button getPosSimulationResetButton = new Button("Reset");
 
-    public DeliveryView(KitchenService kitchenService, AddressService addressService, OrderService orderService) {
+    private final TSP tsp = new TSP();
+
+    public DeliveryView(KitchenService kitchenService, AddressService addressService, OrderService orderService, PersonService personService) {
         this.kitchenService = kitchenService;
         this.addressService = addressService;
         this.orderService = orderService;
+        this.personService = personService;
 
         addClassName("delivery-view");
         setSizeFull();
@@ -90,13 +98,6 @@ public class DeliveryView extends VerticalLayout {
             Calendar c2 = Calendar.getInstance();
             c2.setTime(order.getDt());
 
-            /*
-            System.out.println(c1.get(Calendar.YEAR) + " / " + c2.get(Calendar.YEAR));
-            System.out.println(c1.get(Calendar.MONTH) + " / " + c2.get(Calendar.MONTH));
-            System.out.println(c1.get(Calendar.DAY_OF_MONTH) + " / " + c2.get(Calendar.DAY_OF_MONTH));
-            System.out.println("active: " + order.getStatus());
-            */
-
             return (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
                         && c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
                         && c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH))
@@ -104,7 +105,37 @@ public class DeliveryView extends VerticalLayout {
                         && order.getNotDeliverable() == null);
         };
 
+        IRoutingService routingService = RoutingServiceFactory.get().createGraphHopperRoutingService();
         orders = kitchen.getOrders().stream().filter(orderPredicate).collect(Collectors.toList());
+        List<Point2D> pointsToVisit = new ArrayList<>();
+
+        kitchenCoordinates = routingService.requestCoordinateFromAddress(kitchen.getAddress().toString());
+        pointsToVisit.add(kitchenCoordinates);
+
+        for(Order order : orders) {
+            Point2D coordinate = routingService.requestCoordinateFromAddress(order.getPerson().getAddress().toString());
+            mapOrderToCoordinate.put(order.getId(), coordinate);
+            pointsToVisit.add(coordinate);
+        }
+
+        System.out.println("Points to visit: " + pointsToVisit);
+        List<Point2D> pointsToVisitMinDistance = calculateTSP(pointsToVisit);
+        assert(pointsToVisitMinDistance != null);
+        System.out.println("Points to visit sorted: " + pointsToVisitMinDistance);
+
+        tspRoute = tsp.calculatePathFromCoordinateList(pointsToVisitMinDistance);
+        orders.sort(Comparator.comparingInt(item -> pointsToVisitMinDistance.indexOf(mapOrderToCoordinate.get(item.getId()))));
+        Collections.reverse(orders);
+    }
+
+    private List<Point2D> calculateTSP(List<Point2D> pointsToVisit) {
+        try {
+            TspPathSequence tspSequence = tsp.calculateShortestPathSequence(pointsToVisit, 0);
+
+            return tspSequence.getPath().stream().map(pointsToVisit::get).collect(Collectors.toList());
+        } catch (Exception exception) {
+            return null;
+        }
     }
 
     private Component createMainLayout() {
@@ -138,17 +169,9 @@ public class DeliveryView extends VerticalLayout {
             Notification.show("Leave: " + order.getPerson().getFullName());
         });
 
-
-        List<Point2D> pointsToVisit = new ArrayList<>();
-
-        IRoutingService routingService = RoutingServiceFactory.get().createGraphHopperRoutingService();
-
-        Point2D kitchenCoordinates = routingService.requestCoordinateFromAddress(kitchen.getAddress().toString());
-        kitchenMarker = new OLMapMarker(kitchen.getName(), kitchenCoordinates, "house.png");
+        OLMapMarker kitchenMarker = new OLMapMarker(kitchen.getName(), kitchenCoordinates, "house.png");
         mapComponent.addMarker(kitchenMarker);
         resetMapCenterAndZoom();
-
-        pointsToVisit.add(kitchenCoordinates);
 
         // No orders => return;
         if(orders.isEmpty()) {
@@ -156,31 +179,23 @@ public class DeliveryView extends VerticalLayout {
         }
 
         for(Order order : orders) {
-            Person person = order.getPerson();
-            Address address = person.getAddress();
-            String addressString = address.toString();
-            Point2D coordinates = routingService.requestCoordinateFromAddress(addressString);
+            Point2D coordinates = mapOrderToCoordinate.get(order.getId());
             OLMapMarker marker = createMapMarkerForOrder(order, coordinates);
 
             mapComponent.addMarker(marker);
             mapMarkers.put(order.getId(), marker);
             mapMarkerToOrder.put(marker.getId(), order);
             System.out.println("Marker: " + marker.getId() + " -> " + order.getPerson().getFullName());
-            pointsToVisit.add(coordinates);
         }
 
-        try {
-            TSP tsp = new TSP();
-            TspPathSequence tspSequence = tsp.calculateShortestPathSequence(pointsToVisit, 0);
-            List<Point2D> tspSequenceCoordinates = tspSequence.getPath().stream().map(pointsToVisit::get).collect(Collectors.toList());
-            TspPath tspRoute = tsp.calculatePathFromCoordinateList(tspSequenceCoordinates);
-            OLMapRoute route = new OLMapRoute(tspRoute.getPoints());
+        OLMapRoute route = new OLMapRoute(tspRoute.getPoints());
 
-            mapComponent.addRoute(route);
-            mapComponent.startPositionSimulation(route);
-        } catch (Exception exception) {
-            Notification.show("Failed to calculate TSP!");
-        }
+        List<String> markerTitlesSorted = orders.stream().map(order -> order.getPerson().getFullName()).collect(Collectors.toList());
+        String strPath = String.join(" --> ", markerTitlesSorted);
+
+        routeInfo.setText(strPath);
+        mapComponent.addRoute(route);
+        mapComponent.setPositionSimulationRoute(route);
 
         return mapComponent;
     }
@@ -207,24 +222,59 @@ public class DeliveryView extends VerticalLayout {
     }
 
     private Component createDeliveryListComponent() {
-        deliveriesWidget.setOrders(orders);
-        deliveriesWidget.setWidthFull();
-        deliveriesWidget.setMaxWidth(400, Unit.PIXELS);
-        deliveriesWidget.setPadding(false);
+        VerticalLayout layout = new VerticalLayout();
+        layout.setWidthFull();
+        layout.setMaxWidth(400, Unit.PIXELS);
+        layout.setPadding(false);
+        layout.setMargin(false);
 
-        return deliveriesWidget;
+        deliveriesWidget.setOrders(orders);
+        deliveriesWidget.setPadding(false);
+        deliveriesWidget.setHeightFull();
+
+        // Simulation button:
+        HorizontalLayout simulationButtonsLayout = new HorizontalLayout();
+        simulationButtonsLayout.setPadding(true);
+        simulationButtonsLayout.setMargin(false);
+        simulationButtonsLayout.setWidthFull();
+        simulationButtonsLayout.setAlignItems(Alignment.END);
+        simulationButtonsLayout.setPadding(false);
+
+        posSimulationPauseButton.setEnabled(false);
+        simulationButtonsLayout.add(posSimulationStartButton, posSimulationPauseButton, getPosSimulationResetButton);
+
+        layout.add(deliveriesWidget, routeInfo, simulationButtonsLayout);
+        return layout;
     }
 
     private void addEventListener() {
+
+        // Events of the deliveries component:
         deliveriesWidget.addListener(OrderDeliveriesWidget.DeliveredEvent.class, event -> this.onDeliveredPressed(event.getOrder()));
         deliveriesWidget.addListener(OrderDeliveriesWidget.NotDeliveredEvent.class, event -> this.onNotDeliveredPressed(event.getOrder()));
         deliveriesWidget.addListener(OrderDeliveriesWidget.CallContactPersonEvent.class, event -> this.onCallContactPersonPressed(event.getOrder()));
         deliveriesWidget.addListener(OrderDeliveriesWidget.DidSelectEvent.class, event -> this.onDidSelectDelivery(event.getOrder()));
         deliveriesWidget.addListener(OrderDeliveriesWidget.InfoButtonPressedEvent.class, event -> this.onAdditionalInfoButtonPressed(event.getOrder()));
+
+        // Event for the simulation control:
+        posSimulationStartButton.addClickListener(e -> {
+            mapComponent.startPositionSimulation();
+            posSimulationStartButton.setEnabled(false);
+            posSimulationPauseButton.setEnabled(true);
+        });
+
+        posSimulationPauseButton.addClickListener(e -> {
+            mapComponent.stopPositionSimulation();
+            posSimulationStartButton.setEnabled(true);
+            posSimulationPauseButton.setEnabled(false);
+        });
+
+        getPosSimulationResetButton.addClickListener(e -> {
+            mapComponent.resetPositionSimulation();
+        });
     }
 
     private void updateUI() {
-        loadData();
         deliveriesWidget.setOrders(orders);
     }
 
@@ -259,6 +309,7 @@ public class DeliveryView extends VerticalLayout {
 
         updateMapMarker(order);
 
+        orders.remove(order);
         updateUI();
 
         Notification.show("Menü zugestellt.", 2000, Notification.Position.BOTTOM_START);
@@ -269,6 +320,7 @@ public class DeliveryView extends VerticalLayout {
 
         updateMapMarker(order);
 
+        orders.remove(order);
         updateUI();
 
         Notification.show("Menü NICHT zugestellt.", 2000, Notification.Position.BOTTOM_START);
