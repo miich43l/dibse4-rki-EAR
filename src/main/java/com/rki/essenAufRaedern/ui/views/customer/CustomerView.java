@@ -7,8 +7,8 @@ import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.service.AdditionalInformationService;
 import com.rki.essenAufRaedern.backend.service.AddressService;
 
-        import com.rki.essenAufRaedern.backend.service.PersonService;
-        import com.rki.essenAufRaedern.backend.utility.PersonType;
+import com.rki.essenAufRaedern.backend.service.PersonService;
+import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import com.rki.essenAufRaedern.ui.MainLayout;
 import com.rki.essenAufRaedern.ui.components.address.AddressEditorComponent;
