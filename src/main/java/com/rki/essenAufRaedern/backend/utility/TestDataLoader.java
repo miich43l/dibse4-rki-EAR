@@ -76,8 +76,8 @@ public class TestDataLoader {
         driver.setPerson(driverPerson);
         employeeRepository.save(driver);
 
-        System.out.println("Kitchen address: " + kitchen.getAddress());
-        System.out.println("Kitchen address: " + kitchenRepository.findAll().get(0).getAddress());
+        List<Employee> employees = employeeRepository.findAll();
+        System.out.println("Employees: " + employees.get(0).getKitchen());
 
         List<Address> addresses = createAddressData();
         int orderCtn = 0;
@@ -152,12 +152,22 @@ public class TestDataLoader {
 
                         // do not always create an order...
                         if(orderCtn < maxOrders) {
-                            Order order = new Order();
-                            order.setKitchen(kitchen);
-                            order.setPerson(person);
-                            order.setDt(new Date()); // today
-                            order.setStatus(Status.Active);
-                            orderRepository.save(order);
+                            for(int n = 0; n < 7; n++) {
+                                if(n > 0 && !new Random().nextBoolean()) {
+                                    continue;
+                                }
+
+                                Calendar cal = Calendar.getInstance();
+                                cal.setTime(new Date());
+                                cal.add(Calendar.DAY_OF_YEAR, n);
+
+                                Order order = new Order();
+                                order.setKitchen(kitchen);
+                                order.setPerson(person);
+                                order.setDt(cal.getTime());
+                                order.setStatus(Status.Active);
+                                orderRepository.save(order);
+                            }
 
                             orderCtn++;
                         }
@@ -278,6 +288,8 @@ public class TestDataLoader {
             info.setPerson(person);
 
             additionalInformationRepository.save(info);
+
+            System.out.println("Created additional information: " + info.getValue() + " for: " + person.getFullName());
         }
     }
 }

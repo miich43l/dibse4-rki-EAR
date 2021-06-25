@@ -157,7 +157,15 @@ window.Vaadin.Flow.openLayersConnector = {
 
             if(id in c.$connector.mapLayers) {
                 c.$connector.map.removeLayer(c.$connector.mapLayers[id]);
-                delete c.$connector.mapLayers[id]
+                delete c.$connector.mapLayers[id];
+            }
+
+            if(id in c.$connector.mapPOIS) {
+                delete c.$connector.mapPOIS[id];
+
+                if(id == c.$connector.currentPOIID) {
+                    c.$connector.currentPOIID = -1;
+                }
             }
         }
 

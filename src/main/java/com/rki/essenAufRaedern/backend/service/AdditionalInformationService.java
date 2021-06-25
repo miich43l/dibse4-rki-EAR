@@ -2,11 +2,13 @@ package com.rki.essenAufRaedern.backend.service;
 
 import com.rki.essenAufRaedern.backend.entity.AdditionalInformation;
 import com.rki.essenAufRaedern.backend.repository.AdditionalInformationRepository;
+import com.rki.essenAufRaedern.backend.utility.InformationType;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 /**
@@ -41,5 +43,13 @@ public class AdditionalInformationService {
             return;
         }
         additionalInformationRepository.save(additionalInformation);
+    }
+
+    public List<AdditionalInformation> findForPerson(Long personId) {
+        return findAll().stream().filter(item -> item.getPerson().getId() == personId).collect(Collectors.toList());
+    }
+
+    public List<AdditionalInformation> findForPersonAndType(Long personId, InformationType type) {
+        return findForPerson(personId).stream().filter(item -> item.getInformationType() == type).collect(Collectors.toList());
     }
 }
