@@ -9,7 +9,7 @@ import com.rki.essenAufRaedern.backend.service.AddressService;
 
 import com.rki.essenAufRaedern.backend.service.OrderInformationService;
 import com.rki.essenAufRaedern.backend.service.PersonService;
-        import com.rki.essenAufRaedern.backend.utility.PersonType;
+import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import com.rki.essenAufRaedern.ui.MainLayout;
 import com.rki.essenAufRaedern.ui.components.address.AddressEditorComponent;
@@ -193,12 +193,12 @@ public class CustomerView extends VerticalLayout{
             addAdditionalInformationForm = new AdditionalInformationForm();
             addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
             Button addInfoButton = new Button("Information hinzufügen", click -> {
-               if (!addAdditionalInformationForm.isValid()){
-                   return;
-               }
-               person.addAdditionalInformation(addAdditionalInformationForm.getAdditionalInformation());
-               additionalInformationService.save(addAdditionalInformationForm.getAdditionalInformation());
-               additionalInformationForm.setPerson(person);
+                if (!addAdditionalInformationForm.isValid()){
+                    return;
+                }
+                person.addAdditionalInformation(addAdditionalInformationForm.getAdditionalInformation());
+                additionalInformationService.save(addAdditionalInformationForm.getAdditionalInformation());
+                additionalInformationForm.setPerson(person);
             });
             addLayout.add(addAdditionalInformationForm, addInfoButton);
             tabLayout.add(addLayout);
