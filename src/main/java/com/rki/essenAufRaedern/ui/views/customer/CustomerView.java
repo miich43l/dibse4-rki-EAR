@@ -14,8 +14,8 @@ import com.rki.essenAufRaedern.ui.MainLayout;
 import com.rki.essenAufRaedern.ui.components.address.AddressEditorComponent;
 import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationComponent;
 import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationForm;
+import com.rki.essenAufRaedern.ui.components.person.DeliveryDaysComponent;
 import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -45,6 +45,7 @@ public class CustomerView extends VerticalLayout{
     AddressEditorComponent addressForm;
     AdditionalInformationComponent additionalInformationForm;
     AdditionalInformationForm addAdditionalInformationForm;
+    DeliveryDaysComponent deliveryDaysComponent;
     Grid<Person> grid = new Grid<>(Person.class);
     TextField filterText = new TextField();
     Dialog editDialog;
@@ -205,6 +206,22 @@ public class CustomerView extends VerticalLayout{
                 additionalInformationForm.setPerson(person);
             });
             tabLayout.add(additionalInformationForm);
+            tabLayout.setVisible(false);
+
+            tabs.add(tab);
+            dialog.add(tabLayout);
+            tabViews.put(tab, tabLayout);
+        }
+
+        // Deliverydays:
+        {
+            Tab tab = new Tab();
+            tab.setLabel("Liefertage");
+
+            VerticalLayout tabLayout = new VerticalLayout();
+            deliveryDaysComponent = new DeliveryDaysComponent();
+            //deliveryDaysComponent.setAddress(person.getAddress());
+            tabLayout.add(deliveryDaysComponent);
             tabLayout.setVisible(false);
 
             tabs.add(tab);
