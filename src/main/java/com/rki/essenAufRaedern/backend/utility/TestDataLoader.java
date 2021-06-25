@@ -196,6 +196,7 @@ public class TestDataLoader {
         orderInformation.setSaturday(new Random().nextBoolean() ? Status.Active : Status.Inactive);
         orderInformation.setSunday(new Random().nextBoolean() ? Status.Active : Status.Inactive);
         orderInformationRepository.save(orderInformation);
+        person.addOrderInformation(orderInformation);
     }
 
     private void createOrdersForPerson(Kitchen kitchen, Person person, int nDayOffset) {

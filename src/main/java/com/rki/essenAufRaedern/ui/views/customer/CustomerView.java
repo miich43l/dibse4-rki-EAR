@@ -1,21 +1,14 @@
 package com.rki.essenAufRaedern.ui.views.customer;
 
 //import com.rki.essenAufRaedern.backend.entity.Person;
-import com.rki.essenAufRaedern.backend.entity.AdditionalInformation;
-import com.rki.essenAufRaedern.backend.entity.Address;
-import com.rki.essenAufRaedern.backend.entity.Person;
-import com.rki.essenAufRaedern.backend.service.AdditionalInformationService;
-import com.rki.essenAufRaedern.backend.service.AddressService;
+import com.rki.essenAufRaedern.backend.entity.*;
+import com.rki.essenAufRaedern.backend.service.*;
 
-import com.rki.essenAufRaedern.backend.service.OrderInformationService;
-import com.rki.essenAufRaedern.backend.service.PersonService;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import com.rki.essenAufRaedern.ui.MainLayout;
 import com.rki.essenAufRaedern.ui.components.address.AddressEditorComponent;
-import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationComponent;
-import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationForm;
-import com.rki.essenAufRaedern.ui.components.person.OrderInformationComponent;
+import com.rki.essenAufRaedern.ui.components.person.*;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -49,6 +42,8 @@ public class CustomerView extends VerticalLayout{
     AdditionalInformationComponent additionalInformationForm;
     AdditionalInformationForm addAdditionalInformationForm;
     OrderInformationComponent orderInformationForm;
+    ContactPersonComponent contactPersonComponent;
+    ContactPersonForm contactPersonForm;
     Grid<Person> grid = new Grid<>(Person.class);
     TextField filterText = new TextField();
     Dialog editDialog;
@@ -58,12 +53,14 @@ public class CustomerView extends VerticalLayout{
     AddressService addressService;
     AdditionalInformationService additionalInformationService;
     OrderInformationService orderInformationService;
+    ContactPersonService contactPersonService;
 
-    public CustomerView(PersonService personService, AddressService addressService, AdditionalInformationService additionalInformationService, OrderInformationService orderInformationService) {
+    public CustomerView(PersonService personService, AddressService addressService, AdditionalInformationService additionalInformationService, OrderInformationService orderInformationService, ContactPersonService contactPersonService) {
         this.personService = personService;
         this.addressService = addressService;
         this.additionalInformationService = additionalInformationService;
         this.orderInformationService = orderInformationService;
+        this.contactPersonService = contactPersonService;
         addClassName("customer-view");
         setSizeFull();
         configureGrid();
@@ -94,6 +91,7 @@ public class CustomerView extends VerticalLayout{
             addressForm.validateAndSave();
             addressService.save(addressForm.getAddress());
             personService.save(personForm.getPerson());
+            orderInformationService.save(orderInformationForm.getOrderInformation());
 
         } catch (ValidationException e) {
             e.printStackTrace();
@@ -124,7 +122,15 @@ public class CustomerView extends VerticalLayout{
         newPerson.setAddress(new Address());
         newPerson.setStatus(Status.Active);
         newPerson.setPersonType(PersonType.Client);
-
+        OrderInformation orderInformation = new OrderInformation();
+        orderInformation.setMonday(Status.Inactive);
+        orderInformation.setTuesday(Status.Inactive);
+        orderInformation.setWednesday(Status.Inactive);
+        orderInformation.setThursday(Status.Inactive);
+        orderInformation.setFriday(Status.Inactive);
+        orderInformation.setSaturday(Status.Inactive);
+        orderInformation.setSunday(Status.Inactive);
+        newPerson.addOrderInformation(orderInformation);
         editPerson(newPerson);
     }
 
@@ -227,7 +233,7 @@ public class CustomerView extends VerticalLayout{
 
             VerticalLayout tabLayout = new VerticalLayout();
             orderInformationForm = new OrderInformationComponent();
-            //orderInformationComponent.setAddress(person.getAddress());
+            orderInformationForm.setOrderInformation(person.getOrderInformation().iterator().next());
             tabLayout.add(orderInformationForm);
             tabLayout.setVisible(false);
 
@@ -236,6 +242,27 @@ public class CustomerView extends VerticalLayout{
             tabViews.put(tab, tabLayout);
         }
 
+        // ContactPerson:
+        /*{
+            Tab tab = new Tab();
+            tab.setLabel("Kontaktperson");
+
+            VerticalLayout tabLayout = new VerticalLayout();
+            HorizontalLayout addLayout = new HorizontalLayout();
+            addLayout.setDefaultVerticalComponentAlignment(Alignment.END);
+            contactPersonForm = new ContactPersonForm();
+            //addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
+            addLayout.add(ContactPersonForm);
+            tabLayout.add(addLayout);
+
+            tabLayout.add(ContactPersonForm);
+            tabLayout.setVisible(false);
+
+            tabs.add(tab);
+            dialog.add(tabLayout);
+            tabViews.put(tab, tabLayout);
+        }
+*/
         // Buttons:
         {
             HorizontalLayout layout = new HorizontalLayout();
