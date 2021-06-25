@@ -19,6 +19,7 @@ import com.rki.essenAufRaedern.ui.components.person.OrderInformationComponent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.cookieconsent.CookieConsent;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
@@ -32,6 +33,7 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.component.notification.Notification.Position;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -95,7 +97,7 @@ public class CustomerView extends VerticalLayout{
 
         } catch (ValidationException e) {
             e.printStackTrace();
-            Notification.show("Unable to save data...");
+            Notification.show("Achtung! Alle mit * gekennzeichneten Felder in allen Registern müssen befüllt werden.").setPosition(Position.MIDDLE);
             return;
         }
 
