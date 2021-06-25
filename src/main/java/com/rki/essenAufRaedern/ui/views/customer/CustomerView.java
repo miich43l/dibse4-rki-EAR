@@ -7,14 +7,15 @@ import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.service.AdditionalInformationService;
 import com.rki.essenAufRaedern.backend.service.AddressService;
 
-        import com.rki.essenAufRaedern.backend.service.PersonService;
+import com.rki.essenAufRaedern.backend.service.OrderInformationService;
+import com.rki.essenAufRaedern.backend.service.PersonService;
         import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import com.rki.essenAufRaedern.ui.MainLayout;
 import com.rki.essenAufRaedern.ui.components.address.AddressEditorComponent;
 import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationComponent;
 import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationForm;
-import com.rki.essenAufRaedern.ui.components.person.DeliveryDaysComponent;
+import com.rki.essenAufRaedern.ui.components.person.OrderInformationComponent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -45,7 +46,7 @@ public class CustomerView extends VerticalLayout{
     AddressEditorComponent addressForm;
     AdditionalInformationComponent additionalInformationForm;
     AdditionalInformationForm addAdditionalInformationForm;
-    DeliveryDaysComponent deliveryDaysComponent;
+    OrderInformationComponent orderInformationForm;
     Grid<Person> grid = new Grid<>(Person.class);
     TextField filterText = new TextField();
     Dialog editDialog;
@@ -54,11 +55,13 @@ public class CustomerView extends VerticalLayout{
     PersonService personService;
     AddressService addressService;
     AdditionalInformationService additionalInformationService;
+    OrderInformationService orderInformationService;
 
-    public CustomerView(PersonService personService, AddressService addressService, AdditionalInformationService additionalInformationService) {
+    public CustomerView(PersonService personService, AddressService addressService, AdditionalInformationService additionalInformationService, OrderInformationService orderInformationService) {
         this.personService = personService;
         this.addressService = addressService;
         this.additionalInformationService = additionalInformationService;
+        this.orderInformationService = orderInformationService;
         addClassName("customer-view");
         setSizeFull();
         configureGrid();
@@ -213,15 +216,15 @@ public class CustomerView extends VerticalLayout{
             tabViews.put(tab, tabLayout);
         }
 
-        // Deliverydays:
+        // OrderInformation - Deliverydays:
         {
             Tab tab = new Tab();
             tab.setLabel("Liefertage");
 
             VerticalLayout tabLayout = new VerticalLayout();
-            deliveryDaysComponent = new DeliveryDaysComponent();
-            //deliveryDaysComponent.setAddress(person.getAddress());
-            tabLayout.add(deliveryDaysComponent);
+            orderInformationForm = new OrderInformationComponent();
+            //orderInformationComponent.setAddress(person.getAddress());
+            tabLayout.add(orderInformationForm);
             tabLayout.setVisible(false);
 
             tabs.add(tab);
