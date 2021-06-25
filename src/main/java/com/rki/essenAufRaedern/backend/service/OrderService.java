@@ -5,10 +5,13 @@ import com.rki.essenAufRaedern.backend.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 /**
@@ -44,6 +47,26 @@ public class OrderService {
             return;
         }
         orderRepository.save(order);
+    }
+
+    public List<Order> getOrdersForKitchenAndDay(Long kitchenId, Date date) {
+        Predicate<Order> orderPredicate = order -> {
+            Calendar c1 = Calendar.getInstance();
+            c1.setTime(date);
+
+            Calendar c2 = Calendar.getInstance();
+            c2.setTime(order.getDt());
+
+            return (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
+                    && c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
+                    && c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH))
+                    && (order.getDelivered() == null
+                    && order.getNotDeliverable() == null)
+                    && order.getKitchen() != null
+                    && order.getKitchen().getId().equals(kitchenId);
+        };
+
+        return findAll().stream().filter(orderPredicate).collect(Collectors.toList());
     }
 
     public void markAsDelivered(Order order) {

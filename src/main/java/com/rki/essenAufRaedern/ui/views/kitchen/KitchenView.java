@@ -4,12 +4,13 @@ import com.rki.essenAufRaedern.backend.entity.AdditionalInformation;
 import com.rki.essenAufRaedern.backend.entity.Kitchen;
 import com.rki.essenAufRaedern.backend.entity.Order;
 import com.rki.essenAufRaedern.backend.entity.Person;
+import com.rki.essenAufRaedern.backend.service.AdditionalInformationService;
 import com.rki.essenAufRaedern.backend.service.KitchenService;
 import com.rki.essenAufRaedern.backend.service.OrderService;
 import com.rki.essenAufRaedern.backend.utility.InformationType;
 import com.rki.essenAufRaedern.ui.MainLayout;
 import com.rki.essenAufRaedern.ui.components.general.InfoWidgetComponent;
-import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationComponent;
+import com.rki.essenAufRaedern.util.Util;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
@@ -20,6 +21,8 @@ import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
@@ -28,6 +31,8 @@ import org.springframework.context.annotation.Scope;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,29 +43,29 @@ import java.util.stream.Collectors;
 @Route(value = "kitchen", layout = MainLayout.class)
 public class KitchenView extends VerticalLayout {
 
-    private KitchenService kitchenService;
-    private OrderService orderService;
+    private final KitchenService kitchenService;
+    private final OrderService orderService;
+    private final AdditionalInformationService additionalInformationService;
+    private final Kitchen kitchen;
 
-    private Kitchen kitchen;
-
+    private Date date = new Date();
     private Grid<Order> ordersGrid;
 
-    private InfoWidgetComponent numberOfOrdersInfoWidget;
-    private InfoWidgetComponent additionalInfosWidget;
-    private InfoWidgetComponent driverInfoWidget;
+    private final Label numberOfOrdersLabel = new Label("0");
+    private final Label numberOfOrdersDoneLabel = new Label("0");
+    private final Label driverLabel = new Label("");
 
-    private Label numberOfOrdersLabel = new Label("0");
-    private Label driverLabel = new Label("");
-    private Div additionalInfosListContainer = new Div();
-
-    public KitchenView(KitchenService kitchenService, OrderService orderService) {
+    public KitchenView(KitchenService kitchenService, OrderService orderService, AdditionalInformationService additionalInformationService) {
         this.kitchenService = kitchenService;
         this.orderService = orderService;
+        this.additionalInformationService = additionalInformationService;
+
+        setClassName("main-layout");
 
         // TODO: kitchen id!
         kitchen = kitchenService.findAll().get(0);
 
-        add(createInfoComponent(), createOrdersComponent());
+        add(createDaySelectionTab(), createInfoComponent(), createOrdersComponent());
 
         updateUI();
     }
@@ -75,48 +80,68 @@ public class KitchenView extends VerticalLayout {
             driverLabel.setText("Kein Fahrer");
         }
 
-        ordersGrid.setItems(kitchen.getOrders());
-        numberOfOrdersLabel.setText(String.valueOf(kitchen.getOrders().size()));
-        additionalInfosListContainer.removeAll();
+        List<Order> orders = orderService.getOrdersForKitchenAndDay(kitchen.getId(), date);
+        ordersGrid.setItems(orders);
+        //ordersGrid.getColumnByKey("status").setVisible(Util.DateUtil.isToday(date));
 
-        kitchen.getOrders().forEach(order -> {
-            order.getPerson().getAdditionalInformation(InformationType.Kitchen).forEach(additionalInformation -> {
-                Div content = new Div();
-                content.add(new Label(" - " + additionalInformation.getValue()));
-                content.setClassName("widget-content-small");
-                additionalInfosListContainer.add(content);
-            });
-        });
+        long numberOfCompletedOrders = orders.stream().filter(order -> order.getPrepared() != null).count();
+
+        numberOfOrdersLabel.setText("Gesamt: " + orders.size());
+        numberOfOrdersDoneLabel.setText("Fertig: " + numberOfCompletedOrders);
 
         sortOrdersGrid();
+    }
+
+    public Component createDaySelectionTab() {
+        Tabs dayTabs = new Tabs();
+        dayTabs.setWidthFull();
+        Date now = new Date();
+
+        for(int n = 0; n < 7; n++) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(now);
+            cal.add(Calendar.DAY_OF_YEAR, n);
+            int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+            String dayOfWeekName = Util.DateUtil.getDayOfWeekName(dayOfWeek);
+
+            Tab dayTab = new Tab();
+            dayTab.setLabel(dayOfWeekName);
+
+            dayTabs.add(dayTab);
+        }
+
+        dayTabs.addSelectedChangeListener(selectedChangeEvent -> {
+            date = Util.DateUtil.getDayFromNow(dayTabs.getSelectedIndex());
+            updateUI();
+        });
+
+        return dayTabs;
     }
 
     public Component createInfoComponent() {
         HorizontalLayout layout = new HorizontalLayout();
 
-        numberOfOrdersInfoWidget = new InfoWidgetComponent("Bestellungen", numberOfOrdersLabel);
-        additionalInfosWidget = new InfoWidgetComponent("Infos", additionalInfosListContainer);
-        driverInfoWidget = new InfoWidgetComponent("Fahrer", driverLabel);
+        Div ordersLayout = new Div();
+        ordersLayout.add(new Div(numberOfOrdersDoneLabel));
+        ordersLayout.add(new Div(numberOfOrdersLabel));
+        InfoWidgetComponent numberOfOrdersInfoWidget = new InfoWidgetComponent("Bestellungen", ordersLayout);
+        InfoWidgetComponent driverInfoWidget = new InfoWidgetComponent("Fahrer", driverLabel);
 
-        layout.add(numberOfOrdersInfoWidget, /*additionalInfosWidget,*/ driverInfoWidget);
+        layout.add(numberOfOrdersInfoWidget, driverInfoWidget);
         return layout;
     }
 
     public Component createOrdersComponent() {
-        VerticalLayout layout = new VerticalLayout();
-        layout.setSizeFull();
-        layout.setPadding(false);
-        layout.setClassName("content");
-
         ordersGrid = new Grid<>(Order.class);
+        ordersGrid.setHeightFull();
 
         ordersGrid.removeAllColumns();
         ordersGrid.addColumn(new ComponentRenderer<>(item -> new Div(new Div(new Text(item.getPerson().getFullName())), new Div(new Text(item.getPerson().getAddress().getCity()))))).setHeader("Person").setAutoWidth(true);
         ordersGrid.addColumn("dt").setHeader("Datum").setAutoWidth(true);
-        ordersGrid.addColumn(new ComponentRenderer<>(item -> {
+        ordersGrid.addColumn(new ComponentRenderer<>(order -> {
             Div div = new Div();
-            List<AdditionalInformation> infos = item.getPerson().getAdditionalInformation(InformationType.Kitchen);
-            List<String> infoStrings = infos.stream().map(info -> info.getValue()).collect(Collectors.toList());
+            List<AdditionalInformation> additionalInformations = additionalInformationService.findForPersonAndType(order.getPerson().getId(), InformationType.Kitchen);
+            List<String> infoStrings = additionalInformations.stream().map(AdditionalInformation::getValue).collect(Collectors.toList());
             String content = String.join(", ", infoStrings);
 
             div.add(new Text(content));
@@ -139,18 +164,14 @@ public class KitchenView extends VerticalLayout {
                 preparedButton.setEnabled(false);
                 stateLabel.setText(item.getPrepared());
 
+                updateUI();
                 sortOrdersGrid();
             });
 
             return cellLayout;
         })).setHeader("Status").setAutoWidth(true).setKey("status").setComparator(item -> item.getPrepared() == null).setSortable(false);
 
-        Div content = new Div(ordersGrid);
-        content.addClassName("content");
-        content.setSizeFull();
-
-        layout.add(content);
-        return layout;
+        return ordersGrid;
     }
 
     private void sortOrdersGrid() {

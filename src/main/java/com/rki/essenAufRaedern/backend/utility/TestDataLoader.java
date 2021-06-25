@@ -37,6 +37,9 @@ public class TestDataLoader {
     private OrderRepository orderRepository;
 
     @Autowired
+    private OrderInformationRepository orderInformationRepository;
+
+    @Autowired
     private ContactPersonRepository contactPersonRepository;
 
     @Autowired
@@ -76,8 +79,8 @@ public class TestDataLoader {
         driver.setPerson(driverPerson);
         employeeRepository.save(driver);
 
-        System.out.println("Kitchen address: " + kitchen.getAddress());
-        System.out.println("Kitchen address: " + kitchenRepository.findAll().get(0).getAddress());
+        List<Employee> employees = employeeRepository.findAll();
+        System.out.println("Employees: " + employees.get(0).getKitchen());
 
         List<Address> addresses = createAddressData();
         int orderCtn = 0;
@@ -152,19 +155,20 @@ public class TestDataLoader {
 
                         // do not always create an order...
                         if(orderCtn < maxOrders) {
-                            Order order = new Order();
-                            order.setKitchen(kitchen);
-                            order.setPerson(person);
-                            order.setDt(new Date()); // today
-                            order.setStatus(Status.Active);
-                            orderRepository.save(order);
+                            for(int nDayOffset = 0; nDayOffset < 7; nDayOffset++) {
+                                if(nDayOffset > 0 && !new Random().nextBoolean()) {
+                                    continue;
+                                }
+
+                                createOrdersForPerson(kitchen, person, nDayOffset);
+                            }
 
                             orderCtn++;
                         }
 
                         clients.add(person);
-
                         createRandomAdditionalInformationForPerson(person);
+                        createRandomOrderInformationForPerson(person);
                     }
                     case ContactPerson -> {
                         ContactPerson contactPerson = new ContactPerson();
@@ -179,6 +183,32 @@ public class TestDataLoader {
                 }
             }
         }
+    }
+
+    private void createRandomOrderInformationForPerson(Person person) {
+        OrderInformation orderInformation = new OrderInformation();
+        orderInformation.setPerson(person);
+        orderInformation.setMonday(new Random().nextBoolean() ? Status.Active : Status.Inactive);
+        orderInformation.setTuesday(new Random().nextBoolean() ? Status.Active : Status.Inactive);
+        orderInformation.setWednesday(new Random().nextBoolean() ? Status.Active : Status.Inactive);
+        orderInformation.setThursday(new Random().nextBoolean() ? Status.Active : Status.Inactive);
+        orderInformation.setFriday(new Random().nextBoolean() ? Status.Active : Status.Inactive);
+        orderInformation.setSaturday(new Random().nextBoolean() ? Status.Active : Status.Inactive);
+        orderInformation.setSunday(new Random().nextBoolean() ? Status.Active : Status.Inactive);
+        orderInformationRepository.save(orderInformation);
+    }
+
+    private void createOrdersForPerson(Kitchen kitchen, Person person, int nDayOffset) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.DAY_OF_YEAR, nDayOffset);
+
+        Order order = new Order();
+        order.setKitchen(kitchen);
+        order.setPerson(person);
+        order.setDt(cal.getTime());
+        order.setStatus(Status.Active);
+        orderRepository.save(order);
     }
 
     private List<Address> createAddressData() {
@@ -278,6 +308,8 @@ public class TestDataLoader {
             info.setPerson(person);
 
             additionalInformationRepository.save(info);
+
+            System.out.println("Created additional information: " + info.getValue() + " for: " + person.getFullName());
         }
     }
 }

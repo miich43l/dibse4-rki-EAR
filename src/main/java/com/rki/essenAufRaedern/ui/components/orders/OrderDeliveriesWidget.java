@@ -46,8 +46,12 @@ public class OrderDeliveriesWidget extends VerticalLayout {
 
     public void selectOrder(Order order) {
         int index = orders.indexOf(order);
-        ordersGrid.select(order);
         ordersGrid.scrollToIndex(index);
+        ordersGrid.select(order);
+    }
+
+    public void deselectOrder(Order order) {
+        ordersGrid.deselect(order);
     }
 
     private void onDidSelectOrderItem() {
