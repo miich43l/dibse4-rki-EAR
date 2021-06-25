@@ -1,10 +1,10 @@
 package com.rki.essenAufRaedern.backend.entity;
 
-import javax.annotation.PostConstruct;
+import com.rki.essenAufRaedern.backend.utility.Status;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 
 /**
@@ -22,8 +22,6 @@ public class Address{
     @NotEmpty
     private String city;
 
-    @NotNull
-    @NotEmpty
     private String floor;
 
     @Column(name = "house_number")
@@ -41,6 +39,9 @@ public class Address{
     @NotEmpty
     @Column(name = "zip_code")
     private String zipCode;
+
+    @NotNull
+    private Status status;
 
     public Address() {
     }
@@ -99,6 +100,14 @@ public class Address{
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     @Override

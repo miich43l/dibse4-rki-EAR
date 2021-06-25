@@ -11,8 +11,11 @@ import com.rki.essenAufRaedern.backend.service.KitchenService;
 import com.rki.essenAufRaedern.backend.service.OrderService;
 import com.rki.essenAufRaedern.backend.service.PersonService;
 import com.rki.essenAufRaedern.backend.utility.InformationType;
-import com.rki.essenAufRaedern.backend.utility.Status;
 import com.rki.essenAufRaedern.ui.MainLayout;
+import com.rki.essenAufRaedern.ui.components.olmap.OLMap;
+import com.rki.essenAufRaedern.ui.components.olmap.OLMapMarker;
+import com.rki.essenAufRaedern.ui.components.olmap.OLMapRoute;
+import com.rki.essenAufRaedern.ui.components.orders.OrderDeliveriesWidget;
 import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationComponent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Unit;
@@ -23,16 +26,9 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.rki.essenAufRaedern.ui.components.olmap.OLMap;
-import com.rki.essenAufRaedern.ui.components.olmap.OLMapMarker;
-import com.rki.essenAufRaedern.ui.components.olmap.OLMapRoute;
-import com.rki.essenAufRaedern.ui.components.orders.OrderDeliveriesWidget;
 import org.springframework.context.annotation.Scope;
 
 import java.awt.geom.Point2D;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -296,7 +292,7 @@ public class DeliveryView extends VerticalLayout {
     private void onAdditionalInfoButtonPressed(Order order) {
         Dialog dialog = new Dialog();
         AdditionalInformationComponent infoComponent = new AdditionalInformationComponent();
-        infoComponent.setFilterType(InformationType.Driver);
+        infoComponent.setFilterType(InformationType.DRIVER);
         infoComponent.setActionColumnVisible(false);
         infoComponent.setPerson(order.getPerson());
 

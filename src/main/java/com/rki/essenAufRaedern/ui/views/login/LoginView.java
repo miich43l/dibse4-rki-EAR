@@ -24,19 +24,20 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         login.setAction("login");
 
         add(
-            new H1("Österreichisches Rotes Kreuz"),
-            login
+                new H1("Österreichisches Rotes Kreuz"),
+                login
         );
     }
 
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        if(beforeEnterEvent.getLocation()
-        .getQueryParameters()
-        .getParameters()
-        .containsKey("error")) {
+        if (beforeEnterEvent.getLocation()
+                .getQueryParameters()
+                .getParameters()
+                .containsKey("error")) {
             login.setError(true);
         }
     }
 }
+

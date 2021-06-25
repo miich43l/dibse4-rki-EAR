@@ -2,6 +2,7 @@ package com.rki.essenAufRaedern.backend.service;
 
 import com.rki.essenAufRaedern.backend.entity.Employee;
 import com.rki.essenAufRaedern.backend.repository.EmployeeRepository;
+import com.rki.essenAufRaedern.backend.utility.Status;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,17 +35,23 @@ public class EmployeeService {
     }
 
     public void delete(Employee employee) {
-        employeeRepository.delete(employee);
-    }
-
-    public void save(Employee employee) {
-        if (employee == null) {
-            LOGGER.log(Level.SEVERE,
-                    "Employee is null");
-            return;
-        }
+        if (isNull(employee)) return;
+        employee.setStatus(Status.INACTIVE);
         employeeRepository.save(employee);
     }
 
+    public void save(Employee employee) {
+        if (isNull(employee)) return;
+        employeeRepository.save(employee);
+    }
+
+    private boolean isNull(Employee employee) {
+        if (employee == null) {
+            LOGGER.log(Level.SEVERE,
+                    "Employee is null");
+            return true;
+        }
+        return false;
+    }
 
 }

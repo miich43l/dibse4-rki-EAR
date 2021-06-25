@@ -46,31 +46,37 @@ public class PersonService {
     }
 
     public List<Person> getActiveClients() {
-        return personRepository.findByPersonTypeAndStatus(PersonType.Client, Status.Active);
+        return personRepository.findByPersonTypeAndStatus(PersonType.CLIENT, Status.ACTIVE);
     }
 
     public List<Person> getActiveClientsByName(String firstname, String lastname) {
         if (firstname == null && lastname == null){
             return  getActiveClients();
         }
-        return personRepository.findDistinctByPersonTypeAndStatusAndFirstNameAndLastName(PersonType.Client, Status.Active, firstname, lastname);
+        return personRepository.findDistinctByPersonTypeAndStatusAndFirstNameAndLastName(PersonType.CLIENT, Status.ACTIVE, firstname, lastname);
     }
 
     public void delete(Person person) {
-        if(person == null) {
-            return;
+        if (isNull(person)) return;
+        person.setStatus(Status.INACTIVE);
+        if (null != person.getAddress()) {
+            person.getAddress().setStatus(Status.INACTIVE);
+            addressRepository.save(person.getAddress());
         }
-
-        person.setStatus(Status.Inactive);
         personRepository.save(person);
     }
 
     public void save(Person person) {
+        if (isNull(person)) return;
+        personRepository.save(person);
+    }
+
+    private boolean isNull(Person person) {
         if (person == null) {
             LOGGER.log(Level.SEVERE,
                     "Person is null");
-            return;
+            return true;
         }
-        personRepository.save(person);
+        return false;
     }
 }

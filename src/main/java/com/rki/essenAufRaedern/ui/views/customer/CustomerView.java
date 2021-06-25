@@ -1,21 +1,20 @@
 package com.rki.essenAufRaedern.ui.views.customer;
 
 //import com.rki.essenAufRaedern.backend.entity.Person;
+
 import com.rki.essenAufRaedern.backend.entity.AdditionalInformation;
 import com.rki.essenAufRaedern.backend.entity.Address;
 import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.service.AdditionalInformationService;
 import com.rki.essenAufRaedern.backend.service.AddressService;
-
-        import com.rki.essenAufRaedern.backend.service.PersonService;
-        import com.rki.essenAufRaedern.backend.utility.PersonType;
+import com.rki.essenAufRaedern.backend.service.PersonService;
+import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import com.rki.essenAufRaedern.ui.MainLayout;
 import com.rki.essenAufRaedern.ui.components.address.AddressEditorComponent;
 import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationComponent;
 import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationForm;
 import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -116,8 +115,8 @@ public class CustomerView extends VerticalLayout{
 
         Person newPerson = new Person();
         newPerson.setAddress(new Address());
-        newPerson.setStatus(Status.Active);
-        newPerson.setPersonType(PersonType.Client);
+        newPerson.setStatus(Status.ACTIVE);
+        newPerson.setPersonType(PersonType.CLIENT);
 
         editPerson(newPerson);
     }

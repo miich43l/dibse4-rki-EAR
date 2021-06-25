@@ -1,11 +1,9 @@
 package com.rki.essenAufRaedern.ui;
 
-import com.rki.essenAufRaedern.ui.views.TestRepo;
 import com.rki.essenAufRaedern.ui.views.customer.CustomerView;
-import com.rki.essenAufRaedern.ui.views.dashboard.DashboardView;
 import com.rki.essenAufRaedern.ui.views.delivery.DeliveryView;
 import com.rki.essenAufRaedern.ui.views.kitchen.KitchenView;
-import com.rki.essenAufRaedern.ui.views.list.ListView;
+import com.rki.essenAufRaedern.ui.views.login.WelcomeView;
 import com.rki.essenAufRaedern.ui.views.olmap.geocoding.GeocodingView;
 import com.rki.essenAufRaedern.ui.views.olmap.tsp.TravelingSalesmanView;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -16,18 +14,17 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
 
 @PWA(
-    name = "Österreichisches Rotes Kreuz",
-    shortName = "CRM",
-    offlineResources = {
-        "./styles/offline.css",
-        "./images/offline.png"
-    },
-    enableInstallPrompt = false
+        name = "Österreichisches Rotes Kreuz",
+        shortName = "CRM",
+        offlineResources = {
+                "./styles/offline.css",
+                "./images/offline.png"
+        },
+        enableInstallPrompt = false
 )
 @CssImport("./styles/shared-styles.css")
 public class MainLayout extends AppLayout {
@@ -35,6 +32,10 @@ public class MainLayout extends AppLayout {
     public MainLayout() {
         createHeader();
         createDrawer();
+        /*AuthService authService = new AuthService();
+        authService.createRoutes(this);
+         */
+
     }
 
     private void createHeader() {
@@ -53,20 +54,15 @@ public class MainLayout extends AppLayout {
     }
 
     private void createDrawer() {
-        RouterLink listLink = new RouterLink("List", ListView.class);
-        listLink.setHighlightCondition(HighlightConditions.sameLocation());
-
         addToDrawer(new VerticalLayout(
-                listLink,
+                new RouterLink("home", WelcomeView.class),
                 new RouterLink("Kunden", CustomerView.class),
                 new RouterLink("Küche", KitchenView.class),
                 new RouterLink("Fahrer", DeliveryView.class),
                 new RouterLink("Geocoding", GeocodingView.class),
-                new RouterLink("Traveling salesman", TravelingSalesmanView.class),
-                new RouterLink("TestRepo", TestRepo.class)
+                new RouterLink("Traveling salesman", TravelingSalesmanView.class)
 
         ));
     }
-
 
 }

@@ -9,14 +9,13 @@ import com.rki.essenAufRaedern.backend.service.OrderService;
 import com.rki.essenAufRaedern.backend.utility.InformationType;
 import com.rki.essenAufRaedern.ui.MainLayout;
 import com.rki.essenAufRaedern.ui.components.general.InfoWidgetComponent;
-import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationComponent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridSortOrder;
-import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -25,7 +24,6 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.context.annotation.Scope;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +78,7 @@ public class KitchenView extends VerticalLayout {
         additionalInfosListContainer.removeAll();
 
         kitchen.getOrders().forEach(order -> {
-            order.getPerson().getAdditionalInformation(InformationType.Kitchen).forEach(additionalInformation -> {
+            order.getPerson().getAdditionalInformation(InformationType.KITCHEN).forEach(additionalInformation -> {
                 Div content = new Div();
                 content.add(new Label(" - " + additionalInformation.getValue()));
                 content.setClassName("widget-content-small");
@@ -115,7 +113,7 @@ public class KitchenView extends VerticalLayout {
         ordersGrid.addColumn("dt").setHeader("Datum").setAutoWidth(true);
         ordersGrid.addColumn(new ComponentRenderer<>(item -> {
             Div div = new Div();
-            List<AdditionalInformation> infos = item.getPerson().getAdditionalInformation(InformationType.Kitchen);
+            List<AdditionalInformation> infos = item.getPerson().getAdditionalInformation(InformationType.KITCHEN);
             List<String> infoStrings = infos.stream().map(info -> info.getValue()).collect(Collectors.toList());
             String content = String.join(", ", infoStrings);
 

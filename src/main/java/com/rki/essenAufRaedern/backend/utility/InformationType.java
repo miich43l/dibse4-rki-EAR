@@ -1,16 +1,16 @@
 package com.rki.essenAufRaedern.backend.utility;
 
 public enum InformationType {
-    Kitchen, Driver, Administration;
+    KITCHEN, DRIVER, ADMINISTRATION;
 
     public static InformationType fromString(String val) {
         switch (val) {
             case "Kitchen":
-                return Kitchen;
+                return KITCHEN;
             case "Driver":
-                return Driver;
+                return DRIVER;
             case "Administration":
-                return Administration;
+                return ADMINISTRATION;
         }
         throw new IllegalArgumentException("Invalid enum type!");
     }
@@ -18,9 +18,9 @@ public enum InformationType {
     @Override
     public String toString() {
         return switch (this) {
-            case Kitchen -> "Kitchen";
-            case Driver -> "Driver";
-            case Administration -> "Administration";
+            case KITCHEN -> "Kitchen";
+            case DRIVER -> "Driver";
+            case ADMINISTRATION -> "Administration";
         };
     }
 }

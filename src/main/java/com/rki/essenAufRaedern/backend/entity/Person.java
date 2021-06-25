@@ -7,7 +7,6 @@ import com.rki.essenAufRaedern.backend.utility.Status;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -39,9 +38,14 @@ public class Person{
     @Column(name = "last_name")
     private String lastName = "";
 
-    //Todo add @NotNull and @NotEmpty
+    @NotNull
+    @NotEmpty
     @Column(name = "phone_number")
     private String phoneNumber;
+
+    @NotNull
+    private PersonType personType;
+
     @NotNull
     private Status status;
 
@@ -50,9 +54,6 @@ public class Person{
 
     @OneToMany(mappedBy = "contactPersonFrom")
     private List<ContactPerson> contactPersonFrom = new ArrayList<>();
-
-    @OneToMany(mappedBy = "person")
-    private List<ContactPerson> Person = new ArrayList<>();
 
     @OneToMany(mappedBy = "person")
     private List<Employee> employees = new ArrayList<>();
@@ -66,9 +67,6 @@ public class Person{
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
     private Address address;
-
-    @NotNull
-    private PersonType personType;
 
     @OneToMany(mappedBy = "person")
     private List<User> users = new ArrayList<>();
@@ -170,14 +168,6 @@ public class Person{
         return contactPersonFrom;
     }
 
-    public List<ContactPerson> getPerson() {
-        return this.Person;
-    }
-
-    public void setPerson(List<ContactPerson> Person) {
-        this.Person = Person;
-    }
-
     public List<Employee> getEmployees() {
         return this.employees;
     }
@@ -276,19 +266,6 @@ public class Person{
         this.phoneNumber = phoneNumber;
     }
 
-    public User addUser(User user) {
-        getUsers().add(user);
-        user.setPerson(this);
-
-        return user;
-    }
-
-    public User removeUser(User user) {
-        getUsers().remove(user);
-        user.setPerson(null);
-
-        return user;
-    }
 
     @Override
     public String toString() {
