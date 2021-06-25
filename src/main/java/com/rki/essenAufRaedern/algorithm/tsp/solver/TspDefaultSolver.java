@@ -34,7 +34,7 @@ public class TspDefaultSolver implements ITspSolver {
         if (nDepth == m_nLocations && m_arrGraph[nCurrentPosIdx][0] > 0) {
             double dNewCost = dCurrentCost + m_arrGraph[nCurrentPosIdx][0];
 
-            System.out.println("End reached. Path: " + lstVisits + " Cost: " + dNewCost + " Best: " + dBestCost);
+            //System.out.println("End reached. Path: " + lstVisits + " Cost: " + dNewCost + " Best: " + dBestCost);
 
             if(dNewCost < dBestCost)
             {

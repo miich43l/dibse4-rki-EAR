@@ -8,6 +8,16 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
+/**
+ * @author thomaswiedmann and andreasoberhofer
+ * The utility class loads a set of testdata into the h2 database:
+ *  - 1 kitchen with kitchenAddress,
+ *  - 1 driver with person and employee data
+ *  - some addresses in the Ötztal local communities
+ *  - some clients with random birthdate (btw 35 and 45 years ago) and a random adress
+ *  - somecontactpersons (ContactPersonType.FamilyMember) with random birthdate and adress
+ *  - every client gets one random contactperson and one order for today
+ */
 @Component
 public class TestDataLoader {
 
@@ -71,7 +81,7 @@ public class TestDataLoader {
 
         List<Address> addresses = createAddressData();
         int orderCtn = 0;
-        int maxOrders = 3;
+        int maxOrders = 9;
 
         // Create persons:
         {
