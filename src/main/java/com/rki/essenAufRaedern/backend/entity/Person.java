@@ -8,10 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -57,8 +54,8 @@ public class Person{
     @OneToMany(mappedBy = "person")
     private List<Employee> employees = new ArrayList<>();
 
-    @OneToMany(mappedBy = "person")
-    private List<OrderInformation> orderInformation = new ArrayList<>();
+    @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
+    private Set<OrderInformation> orderInformation = new HashSet<>();
 
     @OneToMany(mappedBy = "person")
     private List<Order> orders = new ArrayList<>();
@@ -200,11 +197,11 @@ public class Person{
         return employee;
     }
 
-    public List<OrderInformation> getOrderInformation() {
+    public Set<OrderInformation> getOrderInformation() {
         return this.orderInformation;
     }
 
-    public void setOrderInformation(List<OrderInformation> orderInformation) {
+    public void setOrderInformation(Set<OrderInformation> orderInformation) {
         this.orderInformation = orderInformation;
     }
 
