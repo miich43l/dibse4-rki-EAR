@@ -131,6 +131,8 @@ public class CustomerView extends VerticalLayout{
         grid.setSizeFull();
         grid.setColumns("firstName", "lastName", "address");
         grid.getColumnByKey("firstName").setHeader("Vorname");
+        grid.getColumnByKey("lastName").setHeader("Nachname");
+        grid.getColumnByKey("address").setHeader("Adresse");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(evt -> editPerson(evt.getValue()));
     }
