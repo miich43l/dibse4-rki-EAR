@@ -29,28 +29,33 @@ public class ContactPersonForm extends FormLayout {
     public ContactPersonForm() {
         personBinder.bindInstanceFields(this);
         contactPersonBinder.bindInstanceFields(this);
+        contactPersonType.setItems(ContactPersonType.values());
 
-        add(
-                firstName,
-                lastName,
-                phoneNumber,
-                contactPersonType
-        );
+        add(firstName,
+            lastName,
+            phoneNumber,
+            contactPersonType);
+    }
+
+    public boolean isValid() {
+        return personBinder.isValid() && contactPersonBinder.isValid();
     }
 
     public void setContactPerson(ContactPerson contactPerson) {
-        this.person = contactPerson.getPerson();
+        this.person = contactPerson.getContactPersonFrom();
         this.contactPerson = contactPerson;
         personBinder.readBean(person);
         contactPersonBinder.readBean(contactPerson);
     }
 
     public ContactPerson getContactPerson() {
-        return contactPerson;
-    }
+        try {
+            contactPersonBinder.writeBean(contactPerson);
+            personBinder.writeBean(person);
+        } catch (ValidationException e) {
+            e.printStackTrace();
+        }
 
-    public void validateAndSave() throws ValidationException {
-        personBinder.writeBean(person);
-        contactPersonBinder.writeBean(contactPerson);
+        return contactPerson;
     }
 }

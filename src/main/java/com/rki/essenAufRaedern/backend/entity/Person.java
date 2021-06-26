@@ -45,11 +45,11 @@ public class Person{
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
     private List<AdditionalInformation> additionalInformation = new ArrayList<>();
 
-    @OneToMany(mappedBy = "contactPersonFrom")
-    private List<ContactPerson> contactPersonFrom = new ArrayList<>();
+    @OneToMany(mappedBy = "contactPersonFrom", fetch = FetchType.EAGER)
+    private Set<ContactPerson> contactPersonFrom = new HashSet<>();
 
-    @OneToMany(mappedBy = "person")
-    private List<ContactPerson> Person = new ArrayList<>();
+    @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
+    private Set<ContactPerson> contactPersons = new HashSet<>();
 
     @OneToMany(mappedBy = "person")
     private List<Employee> employees = new ArrayList<>();
@@ -145,16 +145,16 @@ public class Person{
         return additionalInformation;
     }
 
-    public List<ContactPerson> getContactPersonFrom() {
+    public Set<ContactPerson> getContactPersonFrom() {
         return this.contactPersonFrom;
     }
 
-    public void setContactPersonFrom(List<ContactPerson> contactPersonFrom) {
+    public void setContactPersonFrom(Set<ContactPerson> contactPersonFrom) {
         this.contactPersonFrom = contactPersonFrom;
     }
 
     public ContactPerson addContactPersonFrom(ContactPerson contactPersonFrom) {
-        getContactPersonFrom().add(contactPersonFrom);
+        this.contactPersonFrom.add(contactPersonFrom);
         contactPersonFrom.setContactPersonFrom(this);
 
         return contactPersonFrom;
@@ -167,12 +167,20 @@ public class Person{
         return contactPersonFrom;
     }
 
-    public List<ContactPerson> getPerson() {
-        return this.Person;
+    public Set<ContactPerson> getContactPersons() {
+        return this.contactPersons;
     }
 
-    public void setPerson(List<ContactPerson> Person) {
-        this.Person = Person;
+    public void setContactPerson(Set<ContactPerson> Person) {
+        this.contactPersons = Person;
+    }
+
+    public void addContactPerson(ContactPerson contactPerson) {
+        this.contactPersons.add(contactPerson);
+    }
+
+    public void removeContactPerson(ContactPerson contactPerson) {
+        this.contactPersons.remove(contactPerson);
     }
 
     public List<Employee> getEmployees() {

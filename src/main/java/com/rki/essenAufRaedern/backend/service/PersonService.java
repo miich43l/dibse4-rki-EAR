@@ -1,5 +1,6 @@
 package com.rki.essenAufRaedern.backend.service;
 
+import com.rki.essenAufRaedern.backend.entity.Address;
 import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.repository.AddressRepository;
 import com.rki.essenAufRaedern.backend.repository.PersonRepository;
@@ -72,5 +73,13 @@ public class PersonService {
             return;
         }
         personRepository.save(person);
+    }
+
+    public Person createNewPerson(PersonType personType) {
+        Person newPerson = new Person();
+        newPerson.setStatus(Status.Active);
+        newPerson.setPersonType(personType);
+
+        return newPerson;
     }
 }

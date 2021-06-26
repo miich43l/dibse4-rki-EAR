@@ -4,6 +4,7 @@ package com.rki.essenAufRaedern.ui.views.customer;
 import com.rki.essenAufRaedern.backend.entity.*;
 import com.rki.essenAufRaedern.backend.service.*;
 
+import com.rki.essenAufRaedern.backend.utility.ContactPersonType;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import com.rki.essenAufRaedern.ui.MainLayout;
@@ -12,7 +13,6 @@ import com.rki.essenAufRaedern.ui.components.person.*;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.cookieconsent.CookieConsent;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
@@ -85,12 +85,12 @@ public class CustomerView extends VerticalLayout{
         closeEditor();
     }
 
-    private void validateAndSave() {
+    private void validateAndSave(Person person) {
         try {
             personForm.validateAndSave();
             addressForm.validateAndSave();
-            addressService.save(addressForm.getAddress());
-            personService.save(personForm.getPerson());
+            addressService.save(person.getAddress());
+            personService.save(person);
             orderInformationService.save(orderInformationForm.getOrderInformation());
 
         } catch (ValidationException e) {
@@ -207,6 +207,7 @@ public class CustomerView extends VerticalLayout{
                 person.addAdditionalInformation(addAdditionalInformationForm.getAdditionalInformation());
                 additionalInformationService.save(addAdditionalInformationForm.getAdditionalInformation());
                 additionalInformationForm.setPerson(person);
+                addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
             });
             addLayout.add(addAdditionalInformationForm, addInfoButton);
             tabLayout.add(addLayout);
@@ -243,7 +244,7 @@ public class CustomerView extends VerticalLayout{
         }
 
         // ContactPerson:
-        /*{
+        {
             Tab tab = new Tab();
             tab.setLabel("Kontaktperson");
 
@@ -251,18 +252,57 @@ public class CustomerView extends VerticalLayout{
             HorizontalLayout addLayout = new HorizontalLayout();
             addLayout.setDefaultVerticalComponentAlignment(Alignment.END);
             contactPersonForm = new ContactPersonForm();
-            //addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
-            addLayout.add(ContactPersonForm);
+            contactPersonForm.setContactPerson(contactPersonService.createNewContactPerson());
+            addLayout.add(contactPersonForm);
             tabLayout.add(addLayout);
 
-            tabLayout.add(ContactPersonForm);
+            Button addContactPersonButton = new Button("Hinzufügen", e -> {
+                if(!contactPersonForm.isValid()) {
+                    Notification.show("Kontaktperson ungültig.");
+                    return;
+                }
+
+                ContactPerson newContactPerson = contactPersonForm.getContactPerson();
+                newContactPerson.setPerson(person);
+                person.addContactPerson(newContactPerson);
+                personService.save(newContactPerson.getContactPersonFrom());
+                contactPersonService.save(newContactPerson);
+
+                System.out.println("Contact persons: " + person.getContactPersons());
+
+                contactPersonComponent.setPerson(person);
+
+                contactPersonForm.setContactPerson(contactPersonService.createNewContactPerson());
+            });
+
+            tabLayout.add(addContactPersonButton);
+
+            contactPersonComponent = new ContactPersonComponent();
+            contactPersonComponent.setPerson(person);
+            contactPersonComponent.addListener(ContactPersonComponent.DeleteButtonPressedEvent.class, e -> {
+                ContactPerson contactPerson = e.getContactPerson();
+                personService.delete(contactPerson.getPerson());
+
+                System.out.println("BEFORE Contact persons: " + person.getContactPersons() + " - " + person.getContactPersonFrom());
+
+                contactPerson.setPerson(null);
+                person.removeContactPerson(contactPerson);
+
+                System.out.println("AFTER Contact persons: " + person.getContactPersons() + " - " + person.getContactPersonFrom());
+
+                contactPersonService.delete(contactPerson);
+                contactPersonComponent.setPerson(person);
+                personService.save(person);
+            });
+
+            tabLayout.add(contactPersonComponent);
             tabLayout.setVisible(false);
 
             tabs.add(tab);
             dialog.add(tabLayout);
             tabViews.put(tab, tabLayout);
         }
-*/
+
         // Buttons:
         {
             HorizontalLayout layout = new HorizontalLayout();
@@ -280,7 +320,7 @@ public class CustomerView extends VerticalLayout{
             save.addClickShortcut(Key.ENTER);
             close.addClickShortcut(Key.ESCAPE);
 
-            save.addClickListener(click -> validateAndSave());
+            save.addClickListener(click -> validateAndSave(person));
             delete.addClickListener(click -> deletePerson());
             close.addClickListener(click -> {
                 closeEditor();
