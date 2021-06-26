@@ -171,6 +171,10 @@ public class Person{
         return this.contactPersons;
     }
 
+    public boolean hasContactPersons() {
+        return !this.contactPersons.isEmpty();
+    }
+
     public void setContactPerson(Set<ContactPerson> Person) {
         this.contactPersons = Person;
     }

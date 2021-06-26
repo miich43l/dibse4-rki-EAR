@@ -277,7 +277,7 @@ public class CustomerView extends VerticalLayout{
 
             tabLayout.add(addContactPersonButton);
 
-            contactPersonComponent = new ContactPersonComponent();
+            contactPersonComponent = new ContactPersonComponent(new ContactPersonComponent.Config().allowDelete(true).allowCall(false));
             contactPersonComponent.setPerson(person);
             contactPersonComponent.addListener(ContactPersonComponent.DeleteButtonPressedEvent.class, e -> {
                 ContactPerson contactPerson = e.getContactPerson();
