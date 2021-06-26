@@ -186,13 +186,25 @@ public class TestDataLoader {
                         createRandomAdditionalInformationForPerson(person);
                         createRandomOrderInformationForPerson(person);
                     }
-                    case CONTACT_PERSON -> {
+                    case ContactPerson -> {
+                        Person client = clients.get(new Random().nextInt(clients.size()));
+
                         ContactPerson contactPerson = new ContactPerson();
-                        contactPerson.setContactPersonType(ContactPersonType.FAMILY_MEMBER);
-                        contactPerson.setPerson(person);
-                        contactPerson.setContactPersonFrom(clients.get(new Random().nextInt(clients.size())));
+                        contactPerson.setContactPersonType(ContactPersonType.FamilyMember);
+                        contactPerson.setPerson(client);
+
+                        client.addContactPerson(contactPerson);
+                        person.addContactPersonFrom(contactPerson);
+
+                        personRepository.save(client);
                         personRepository.save(person);
                         contactPersonRepository.save(contactPerson);
+
+                        Person client_ = personRepository.findById(client.getId()).get();
+                        Person person_ = personRepository.findById(person.getId()).get();
+
+                        System.out.println("Person " + person_.getFullName() + " is contact person from: " + person_.getContactPersonFrom().iterator().next().getPerson().getFullName());
+                        System.out.println("Contact person from: " + client_.getFullName() + " is: " + client_.getContactPersons().iterator().next().getContactPersonFrom().getFullName());
                     }
                     case LOCAL_COMMUNITY -> {
                     }
