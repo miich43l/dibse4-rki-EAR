@@ -1,10 +1,11 @@
 package com.rki.essenAufRaedern.ui.views.customer;
 
 //import com.rki.essenAufRaedern.backend.entity.Person;
-import com.rki.essenAufRaedern.backend.entity.*;
-import com.rki.essenAufRaedern.backend.service.*;
 
-import com.rki.essenAufRaedern.backend.utility.ContactPersonType;
+import com.rki.essenAufRaedern.backend.entity.AdditionalInformation;
+import com.rki.essenAufRaedern.backend.entity.Address;
+import com.rki.essenAufRaedern.backend.entity.Person;
+import com.rki.essenAufRaedern.backend.service.*;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import com.rki.essenAufRaedern.ui.MainLayout;
@@ -27,14 +28,14 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.notification.Notification.Position;
+import org.springframework.security.access.annotation.Secured;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @PageTitle("Kunden")
 @Route(value = "kunden", layout = MainLayout.class)
-//@CssImport("./styles/shared-styles.css")
-
+@Secured({"ADMINISTRATION", "LOCAL_COMMUNITY", "DEVELOPER"})
 public class CustomerView extends VerticalLayout{
 
     CustomerForm personForm;
@@ -120,17 +121,9 @@ public class CustomerView extends VerticalLayout{
 
         Person newPerson = new Person();
         newPerson.setAddress(new Address());
-        newPerson.setStatus(Status.Active);
-        newPerson.setPersonType(PersonType.Client);
-        OrderInformation orderInformation = new OrderInformation();
-        orderInformation.setMonday(Status.Inactive);
-        orderInformation.setTuesday(Status.Inactive);
-        orderInformation.setWednesday(Status.Inactive);
-        orderInformation.setThursday(Status.Inactive);
-        orderInformation.setFriday(Status.Inactive);
-        orderInformation.setSaturday(Status.Inactive);
-        orderInformation.setSunday(Status.Inactive);
-        newPerson.addOrderInformation(orderInformation);
+        newPerson.setStatus(Status.ACTIVE);
+        newPerson.setPersonType(PersonType.CLIENT);
+
         editPerson(newPerson);
     }
 

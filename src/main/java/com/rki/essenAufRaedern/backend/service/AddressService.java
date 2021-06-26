@@ -1,7 +1,6 @@
 package com.rki.essenAufRaedern.backend.service;
 
 import com.rki.essenAufRaedern.backend.entity.Address;
-import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.repository.AddressRepository;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import org.springframework.stereotype.Service;
@@ -26,20 +25,22 @@ public class AddressService {
     }
 
     public void save(Address address) {
-        if (address == null) {
-            LOGGER.log(Level.SEVERE,
-                    "Address is null");
-            return;
-        }
+        if (isNull(address)) return;
         addressRepository.save(address);
     }
 
     public void delete(Address address) {
-        if(address == null) {
-            return;
-        }
+        if (isNull(address)) return;
+        address.setStatus(Status.INACTIVE);
+    }
 
-        addressRepository.delete(address);
+    private boolean isNull(Address address) {
+        if (address == null) {
+            LOGGER.log(Level.SEVERE,
+                    "Address is null");
+            return true;
+        }
+        return false;
     }
 
     public List<Address> findAll() {

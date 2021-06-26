@@ -1,39 +1,40 @@
 package com.rki.essenAufRaedern.ui;
 
-import com.rki.essenAufRaedern.ui.views.TestRepo;
+import com.rki.essenAufRaedern.backend.service.UserService;
+import com.rki.essenAufRaedern.security.SecurityUtils;
 import com.rki.essenAufRaedern.ui.views.customer.CustomerView;
-import com.rki.essenAufRaedern.ui.views.dashboard.DashboardView;
 import com.rki.essenAufRaedern.ui.views.delivery.DeliveryView;
 import com.rki.essenAufRaedern.ui.views.kitchen.KitchenView;
-import com.rki.essenAufRaedern.ui.views.list.ListView;
-import com.rki.essenAufRaedern.ui.views.olmap.geocoding.GeocodingView;
-import com.rki.essenAufRaedern.ui.views.olmap.tsp.TravelingSalesmanView;
+import com.rki.essenAufRaedern.ui.views.login.WelcomeView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.HighlightConditions;
+import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.router.RouteConfiguration;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.PWA;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@PWA(
-    name = "Österreichisches Rotes Kreuz",
-    shortName = "CRM",
-    offlineResources = {
-        "./styles/offline.css",
-        "./images/offline.png"
-    },
-    enableInstallPrompt = false
-)
+
 @CssImport("./styles/shared-styles.css")
 public class MainLayout extends AppLayout {
 
-    public MainLayout() {
+    private final ConfirmDialog confirmDialog = new ConfirmDialog();
+
+    @Autowired
+    private UserService userService;
+
+    public MainLayout(UserService userService) {
+        this.userService = userService;
         createHeader();
+        confirmDialog.setCancelable(true);
+        confirmDialog.setConfirmButtonTheme("raised tertiary error");
+        confirmDialog.setCancelButtonTheme("raised tertiary");
         createDrawer();
     }
 
@@ -52,21 +53,28 @@ public class MainLayout extends AppLayout {
         addToNavbar(header);
     }
 
-    private void createDrawer() {
-        RouterLink listLink = new RouterLink("List", ListView.class);
-        listLink.setHighlightCondition(HighlightConditions.sameLocation());
-
-        addToDrawer(new VerticalLayout(
-                listLink,
-                new RouterLink("Kunden", CustomerView.class),
-                new RouterLink("Küche", KitchenView.class),
-                new RouterLink("Fahrer", DeliveryView.class),
-                new RouterLink("Geocoding", GeocodingView.class),
-                new RouterLink("Traveling salesman", TravelingSalesmanView.class),
-                new RouterLink("TestRepo", TestRepo.class)
-
-        ));
+    @Override
+    protected void afterNavigation() {
+        super.afterNavigation();
+        confirmDialog.setOpened(false);
+        if (!RouteConfiguration.forSessionScope().isRouteRegistered(this.getContent().getClass())){
+            //toDo add error page
+        }
     }
 
+    private void createDrawer() {
+        String role = userService.getUserByUsernameIgnoreCase(SecurityUtils.getUsername()).getRole();
+        addToDrawer(new VerticalLayout(new RouterLink("home", WelcomeView.class)));
 
+        if (SecurityUtils.isAccessGranted(KitchenView.class, role)) {
+            addToDrawer(new VerticalLayout(new RouterLink("Küche", KitchenView.class)));
+        }
+        if (SecurityUtils.isAccessGranted(DeliveryView.class, role)) {
+            addToDrawer(new VerticalLayout(new RouterLink("Fahrer", DeliveryView.class)));
+        }
+        if (SecurityUtils.isAccessGranted(CustomerView.class, role)) {
+            addToDrawer(new VerticalLayout(new RouterLink("Kunden", CustomerView.class)));
+        }
+
+    }
 }

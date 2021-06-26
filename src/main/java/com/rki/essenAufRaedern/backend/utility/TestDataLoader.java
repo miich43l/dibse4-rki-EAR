@@ -2,6 +2,7 @@ package com.rki.essenAufRaedern.backend.utility;
 
 import com.rki.essenAufRaedern.backend.entity.*;
 import com.rki.essenAufRaedern.backend.repository.*;
+import com.rki.essenAufRaedern.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,6 +46,9 @@ public class TestDataLoader {
     @Autowired
     private AdditionalInformationRepository additionalInformationRepository;
 
+    @Autowired
+    private UserService userService;
+
     @PostConstruct
     public void loadData() {
         System.out.println("Create test data...");
@@ -56,25 +60,26 @@ public class TestDataLoader {
         kitchenAddress.setZipCode("6433");
         kitchenAddress.setFloor("1");
         kitchenAddress.setCountry("Österreich");
+        kitchenAddress.setStatus(Status.ACTIVE);
         addressRepository.save(kitchenAddress);
 
         Kitchen kitchen = new Kitchen();
         kitchen.setName("Kitchen Altersheim Ötz");
         kitchen.setAddress(kitchenAddress);
-        kitchen.setStatus(Status.Active);
+        kitchen.setStatus(Status.ACTIVE);
         kitchenRepository.save(kitchen);
 
         Person driverPerson = new Person();
-        driverPerson.setStatus(Status.Active);
+        driverPerson.setStatus(Status.ACTIVE);
         driverPerson.setFirstName("Max");
         driverPerson.setLastName("Vollgas");
         driverPerson.setBirthdate(new Date());
         driverPerson.setPhoneNumber("+43 664 12345678");
-        driverPerson.setPersonType(PersonType.Driver);
+        driverPerson.setPersonType(PersonType.DRIVER);
         personRepository.save(driverPerson);
 
         Employee driver = new Employee();
-        driver.setStatus(Status.Active);
+        driver.setStatus(Status.ACTIVE);
         driver.setKitchen(kitchen);
         driver.setPerson(driverPerson);
         employeeRepository.save(driver);
@@ -86,31 +91,39 @@ public class TestDataLoader {
         int orderCtn = 0;
         int maxOrders = 9;
 
+        //Add users
+        userService.addUser("test", "Administration", "+123", "test@rki.com", PersonType.ADMINISTRATION, "admin", "changeMe");
+        userService.addUser("test", "kitchen", "+123", "test@rki.com", PersonType.KITCHEN, "kitchen", "changeMe");
+        userService.addUser("test", "driver", "+123", "test@rki.com", PersonType.DRIVER, "driver", "changeMe");
+        userService.addUser("test", "client", "+123", "test@rki.com", PersonType.CLIENT, "client", "changeMe");
+        userService.addUser("test", "contactPerson", "+123", "test@rki.com", PersonType.CONTACT_PERSON, "contactPerson", "changeMe");
+        userService.addUser("test", "localCommunity", "+123", "test@rki.com", PersonType.LOCAL_COMMUNITY, "localCommunity", "changeMe");
+        userService.addUser("test", "developer", "+123", "test@rki.com", PersonType.DEVELOPER, "developer", "changeMe");
+
+
         // Create persons:
         {
-            // PersonType: Administration, Kitchen, Driver, Client, ContactPerson, LocalCommunity
-
             List<String> personStrings = new ArrayList<>();
-            personStrings.add("Arian;Schneider;Client");
-            personStrings.add("Armin;Schuster;Client");
-            personStrings.add("Arthur;Schwarz;Client");
-            personStrings.add("ASMIN;Stadler;Client");
-            personStrings.add("Aurelia;Steiner;Client");
-            personStrings.add("AYLIN;Strasser;Client");
-            personStrings.add("AZRA;Wagner;Client");
-            personStrings.add("BASTIAN;Wallner;Client");
-            personStrings.add("Ben;Weber;Client");
-            personStrings.add("Benedikt;Weiss;Client");
-            personStrings.add("Benjamin;Wieser;Client");
-            personStrings.add("BERAT;Wimmer;Client");
-            personStrings.add("Sebastian;Vettel;Driver");
-            personStrings.add("Maria;Mustermann;ContactPerson");
-            personStrings.add("Christina;Binder;ContactPerson");
-            personStrings.add("CHRISTOF;Brunner;ContactPerson");
-            personStrings.add("Christoph;Ebner;ContactPerson");
-            personStrings.add("CLARA;Eder;ContactPerson");
-            personStrings.add("CLAUDIA;Egger;ContactPerson");
-            personStrings.add("Clemens;Fischer;ContactPerson");
+            personStrings.add("Arian;Schneider;Client;+123");
+            personStrings.add("Armin;Schuster;Client;+123");
+            personStrings.add("Arthur;Schwarz;Client;+123");
+            personStrings.add("ASMIN;Stadler;Client;+123");
+            personStrings.add("Aurelia;Steiner;Client;+123");
+            personStrings.add("AYLIN;Strasser;Client;+123");
+            personStrings.add("AZRA;Wagner;Client;+123");
+            personStrings.add("BASTIAN;Wallner;Client;+123");
+            personStrings.add("Ben;Weber;Client;+123");
+            personStrings.add("Benedikt;Weiss;Client;+123");
+            personStrings.add("Benjamin;Wieser;Client;+123");
+            personStrings.add("BERAT;Wimmer;Client;+123");
+            personStrings.add("Sebastian;Vettel;Driver;+123");
+            personStrings.add("Maria;Mustermann;ContactPerson;+123");
+            personStrings.add("Christina;Binder;ContactPerson;+123");
+            personStrings.add("CHRISTOF;Brunner;ContactPerson;+123");
+            personStrings.add("Christoph;Ebner;ContactPerson;+123");
+            personStrings.add("CLARA;Eder;ContactPerson;+123");
+            personStrings.add("CLAUDIA;Egger;ContactPerson;+123");
+            personStrings.add("Clemens;Fischer;ContactPerson;+123");
 
 
             List<Person> clients = new ArrayList<>();
@@ -120,6 +133,8 @@ public class TestDataLoader {
                 String firstName = elements[0];
                 String lastName = elements[1];
                 String typeString = elements[2];
+                String phoneNumber = elements[3];
+
                 PersonType type = PersonType.fromString(typeString);
 
                 Calendar c = Calendar.getInstance();
@@ -131,26 +146,27 @@ public class TestDataLoader {
                 person.setLastName(lastName);
                 person.setBirthdate(c.getTime());
                 person.setAddress(addresses.get(nP));
-                person.setStatus(Status.Active);
+                person.setPhoneNumber(phoneNumber);
+                person.setStatus(Status.ACTIVE);
                 person.setPersonType(type);
 
                 // Create an order if type == Client:
                 switch (type) {
-                    case Administration -> {
+                    case ADMINISTRATION -> {
                     }
-                    case Kitchen -> {
+                    case KITCHEN -> {
                     }
-                    case Driver -> {
+                    case DRIVER -> {
                         personRepository.save(person);
 
                         Employee employee = new Employee();
                         employee.setPerson(person);
                         employee.setKitchen(kitchen);
-                        employee.setStatus(Status.Active);
+                        employee.setStatus(Status.ACTIVE);
 
                         employeeRepository.save(employee);
                     }
-                    case Client -> {
+                    case CLIENT -> {
                         personRepository.save(person);
 
                         // do not always create an order...
@@ -190,7 +206,7 @@ public class TestDataLoader {
                         System.out.println("Person " + person_.getFullName() + " is contact person from: " + person_.getContactPersonFrom().iterator().next().getPerson().getFullName());
                         System.out.println("Contact person from: " + client_.getFullName() + " is: " + client_.getContactPersons().iterator().next().getContactPersonFrom().getFullName());
                     }
-                    case LocalCommunity -> {
+                    case LOCAL_COMMUNITY -> {
                     }
                 }
             }
@@ -200,13 +216,16 @@ public class TestDataLoader {
     private void createRandomOrderInformationForPerson(Person person) {
         OrderInformation orderInformation = new OrderInformation();
         orderInformation.setPerson(person);
-        orderInformation.setMonday(new Random().nextBoolean() ? Status.Active : Status.Inactive);
-        orderInformation.setTuesday(new Random().nextBoolean() ? Status.Active : Status.Inactive);
-        orderInformation.setWednesday(new Random().nextBoolean() ? Status.Active : Status.Inactive);
-        orderInformation.setThursday(new Random().nextBoolean() ? Status.Active : Status.Inactive);
-        orderInformation.setFriday(new Random().nextBoolean() ? Status.Active : Status.Inactive);
-        orderInformation.setSaturday(new Random().nextBoolean() ? Status.Active : Status.Inactive);
-        orderInformation.setSunday(new Random().nextBoolean() ? Status.Active : Status.Inactive);
+        orderInformation.setMonday(new Random().nextBoolean() ? Status.ACTIVE : Status.INACTIVE);
+        orderInformation.setTuesday(new Random().nextBoolean() ? Status.ACTIVE : Status.INACTIVE);
+        orderInformation.setWednesday(new Random().nextBoolean() ? Status.ACTIVE : Status.INACTIVE);
+        orderInformation.setThursday(new Random().nextBoolean() ? Status.ACTIVE : Status.INACTIVE);
+        orderInformation.setFriday(new Random().nextBoolean() ? Status.ACTIVE : Status.INACTIVE);
+        orderInformation.setSaturday(new Random().nextBoolean() ? Status.ACTIVE : Status.INACTIVE);
+        orderInformation.setSunday(new Random().nextBoolean() ? Status.ACTIVE : Status.INACTIVE);
+        Calendar cal = Calendar.getInstance();
+        orderInformation.setDt_form(cal.getTime());
+        orderInformation.setStatus(Status.ACTIVE);
         orderInformationRepository.save(orderInformation);
         person.addOrderInformation(orderInformation);
     }
@@ -220,7 +239,7 @@ public class TestDataLoader {
         order.setKitchen(kitchen);
         order.setPerson(person);
         order.setDt(cal.getTime());
-        order.setStatus(Status.Active);
+        order.setStatus(Status.ACTIVE);
         orderRepository.save(order);
     }
 
@@ -280,6 +299,8 @@ public class TestDataLoader {
                 address.setHouseNumber(elements[4]);
                 address.setFloor(elements[5]);
                 address.setCountry(elements[0]);
+                address.setStatus(Status.ACTIVE);
+
 
                 addresses.add(address);
             });
@@ -318,6 +339,7 @@ public class TestDataLoader {
             AdditionalInformation info = new AdditionalInformation();
             info.setValue(elements[0]);
             info.setInformationType(InformationType.fromString(elements[1]));
+            info.setStatus(Status.ACTIVE);
             info.setPerson(person);
 
             additionalInformationRepository.save(info);

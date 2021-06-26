@@ -28,6 +28,7 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.access.annotation.Secured;
 
 
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ import java.util.stream.Collectors;
 @PageTitle("Küche")
 @CssImport("./styles/kitchen-view.css")
 @Route(value = "kitchen", layout = MainLayout.class)
+@Secured({"ADMINISTRATION", "KITCHEN", "DEVELOPER"})
 public class KitchenView extends VerticalLayout {
 
     private final KitchenService kitchenService;
@@ -140,7 +142,7 @@ public class KitchenView extends VerticalLayout {
         ordersGrid.addColumn("dt").setHeader("Datum").setAutoWidth(true);
         ordersGrid.addColumn(new ComponentRenderer<>(order -> {
             Div div = new Div();
-            List<AdditionalInformation> additionalInformations = additionalInformationService.findForPersonAndType(order.getPerson().getId(), InformationType.Kitchen);
+            List<AdditionalInformation> additionalInformations = additionalInformationService.findForPersonAndType(order.getPerson().getId(), InformationType.KITCHEN);
             List<String> infoStrings = additionalInformations.stream().map(AdditionalInformation::getValue).collect(Collectors.toList());
             String content = String.join(", ", infoStrings);
 

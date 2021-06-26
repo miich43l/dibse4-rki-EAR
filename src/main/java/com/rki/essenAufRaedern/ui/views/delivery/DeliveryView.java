@@ -10,7 +10,10 @@ import com.rki.essenAufRaedern.backend.service.KitchenService;
 import com.rki.essenAufRaedern.backend.service.OrderService;
 import com.rki.essenAufRaedern.backend.utility.InformationType;
 import com.rki.essenAufRaedern.ui.MainLayout;
+import com.rki.essenAufRaedern.ui.components.olmap.OLMap;
+import com.rki.essenAufRaedern.ui.components.olmap.OLMapMarker;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMapRoute;
+import com.rki.essenAufRaedern.ui.components.orders.OrderDeliveriesWidget;
 import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationComponent;
 import com.rki.essenAufRaedern.ui.components.person.ContactPersonComponent;
 import com.vaadin.flow.component.Component;
@@ -23,6 +26,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.access.annotation.Secured;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMap;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMapMarker;
 import com.rki.essenAufRaedern.ui.components.orders.OrderDeliveriesWidget;
@@ -36,6 +41,7 @@ import java.util.stream.Collectors;
 @PageTitle("Fahrer")
 @CssImport("./styles/delivery-view.css")
 @Route(value = "delivery", layout = MainLayout.class)
+@Secured({"DRIVER", "DEVELOPER"})
 public class DeliveryView extends VerticalLayout {
 
     // Components:
@@ -375,7 +381,7 @@ public class DeliveryView extends VerticalLayout {
     private void showAdditionalInformationDialogForOrder(Order order) {
         Dialog dialog = new Dialog();
         AdditionalInformationComponent infoComponent = new AdditionalInformationComponent();
-        infoComponent.setFilterType(InformationType.Driver);
+        infoComponent.setFilterType(InformationType.DRIVER);
         infoComponent.setActionColumnVisible(false);
         infoComponent.setPerson(order.getPerson());
         dialog.setWidth(50, Unit.PERCENTAGE);

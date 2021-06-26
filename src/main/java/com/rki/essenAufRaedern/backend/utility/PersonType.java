@@ -1,22 +1,22 @@
 package com.rki.essenAufRaedern.backend.utility;
 
 public enum PersonType {
-    Administration, Kitchen, Driver, Client, ContactPerson, LocalCommunity;
+    ADMINISTRATION, KITCHEN, DRIVER, CLIENT, CONTACT_PERSON, LOCAL_COMMUNITY, DEVELOPER;
 
     public static PersonType fromString(String val) {
         switch (val) {
             case "Administrator":
-                return Administration;
+                return ADMINISTRATION;
             case "Kitchen":
-                return Kitchen;
+                return KITCHEN;
             case "Driver":
-                return Driver;
+                return DRIVER;
             case "Client":
-                return Client;
+                return CLIENT;
             case "ContactPerson":
-                return ContactPerson;
+                return CONTACT_PERSON;
             case "LocalCommunity":
-                return LocalCommunity;
+                return LOCAL_COMMUNITY;
         }
 
         throw new IllegalArgumentException("Invalid enum type!");

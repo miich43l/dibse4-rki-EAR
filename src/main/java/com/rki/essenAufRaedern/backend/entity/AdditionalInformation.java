@@ -1,11 +1,11 @@
 package com.rki.essenAufRaedern.backend.entity;
 
 import com.rki.essenAufRaedern.backend.utility.InformationType;
+import com.rki.essenAufRaedern.backend.utility.Status;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 
 /**
@@ -27,6 +27,9 @@ public class AdditionalInformation {
     @NotNull
     @Column(name = "information_type")
     private InformationType informationType;
+
+    @NotNull
+    private Status status;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
@@ -68,4 +71,11 @@ public class AdditionalInformation {
         this.person = person;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 }

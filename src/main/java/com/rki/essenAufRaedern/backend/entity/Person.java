@@ -36,7 +36,8 @@ public class Person{
     @Column(name = "last_name")
     private String lastName = "";
 
-    //Todo add @NotNull and @NotEmpty
+    @NotNull
+    @NotEmpty
     @Column(name = "phone_number")
     private String phoneNumber;
     @NotNull
@@ -48,8 +49,8 @@ public class Person{
     @OneToMany(mappedBy = "contactPersonFrom", fetch = FetchType.EAGER)
     private Set<ContactPerson> contactPersonFrom = new HashSet<>();
 
-    @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
-    private Set<ContactPerson> contactPersons = new HashSet<>();
+    @OneToMany(mappedBy = "person")
+    private List<ContactPerson> contactPersons = new ArrayList<>();
 
     @OneToMany(mappedBy = "person")
     private List<Employee> employees = new ArrayList<>();
@@ -120,8 +121,8 @@ public class Person{
     public List<AdditionalInformation> getAdditionalInformation(InformationType ... type) {
         if(type.length > 0) {
             return additionalInformation.stream()
-                                        .filter(item -> Arrays.stream(type).anyMatch(item_ -> item.getInformationType() == item_))
-                                        .collect(Collectors.toList());
+                    .filter(item -> Arrays.stream(type).anyMatch(item_ -> item.getInformationType() == item_))
+                    .collect(Collectors.toList());
         }
 
         return this.additionalInformation;

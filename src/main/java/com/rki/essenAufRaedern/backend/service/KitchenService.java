@@ -2,13 +2,17 @@ package com.rki.essenAufRaedern.backend.service;
 
 import com.rki.essenAufRaedern.backend.entity.Employee;
 import com.rki.essenAufRaedern.backend.entity.Kitchen;
+import com.rki.essenAufRaedern.backend.entity.Order;
 import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.repository.*;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -64,26 +68,35 @@ public class KitchenService {
         }
         List<Person> driverList = new ArrayList<>();
         for (Employee e : employees) {
-            Optional<Person> driver = personRepository.findByIdAndPersonTypeAndStatus(e.getId(), PersonType.Driver, Status.Active);
+            Optional<Person> driver = personRepository.findByIdAndPersonTypeAndStatus(e.getId(), PersonType.DRIVER, Status.ACTIVE);
             if (!driver.isEmpty()) {
                 driverList.add(driver.get());
             }
         }
-
         return driverList;
     }
 
+    public List<Order> getActiveOrdersByDateAndKitchenId(Date date, Long kitchenId) {
+        return orderRepository.findByDtAndKitchenIdAndStatus(date, kitchenId, Status.ACTIVE);
+    }
+
     public void delete(Kitchen kitchen) {
-        kitchen.setStatus(Status.Inactive);
+        if (isNull(kitchen)) return;
+        kitchen.setStatus(Status.INACTIVE);
         kitchenRepository.save(kitchen);
     }
 
     public void save(Kitchen kitchen) {
+        if (isNull(kitchen)) return;
+        kitchenRepository.save(kitchen);
+    }
+
+    private boolean isNull(Kitchen kitchen) {
         if (kitchen == null) {
             LOGGER.log(Level.SEVERE,
                     "Kitchen is null");
-            return;
+            return true;
         }
-        kitchenRepository.save(kitchen);
+        return false;
     }
 }

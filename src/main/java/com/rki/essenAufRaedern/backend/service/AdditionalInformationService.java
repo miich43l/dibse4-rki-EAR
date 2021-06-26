@@ -3,6 +3,7 @@ package com.rki.essenAufRaedern.backend.service;
 import com.rki.essenAufRaedern.backend.entity.AdditionalInformation;
 import com.rki.essenAufRaedern.backend.repository.AdditionalInformationRepository;
 import com.rki.essenAufRaedern.backend.utility.InformationType;
+import com.rki.essenAufRaedern.backend.utility.Status;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,16 +34,23 @@ public class AdditionalInformationService {
     }
 
     public void delete(AdditionalInformation additionalInformation) {
-        additionalInformationRepository.delete(additionalInformation);
+        if (isNull(additionalInformation)) return;
+        additionalInformation.setStatus(Status.INACTIVE);
+        additionalInformationRepository.save(additionalInformation);
     }
 
     public void save(AdditionalInformation additionalInformation) {
+        if (isNull(additionalInformation)) return;
+        additionalInformationRepository.save(additionalInformation);
+    }
+
+    private boolean isNull(AdditionalInformation additionalInformation) {
         if (additionalInformation == null) {
             LOGGER.log(Level.SEVERE,
                     "Additional information is null");
-            return;
+            return true;
         }
-        additionalInformationRepository.save(additionalInformation);
+        return false;
     }
 
     public List<AdditionalInformation> findForPerson(Long personId) {
