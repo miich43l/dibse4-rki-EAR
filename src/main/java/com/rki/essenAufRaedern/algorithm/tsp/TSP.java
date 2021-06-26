@@ -12,19 +12,26 @@ import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author Thomas Widmann
+ * Encapsulates the traveling salesman algorithm.
+ * It uses the IRoutingService to resolve the adjacency matrix and the ITSPSolver to calculate the shortest route.
+ */
 public class TSP {
-    public TSP() {
-        this.routingService = RoutingServiceFactory.get().createGraphHopperRoutingService();
-        this.solverService = TspSolverFactory.get().createDefaultSolver();
+    private final IRoutingService routingService;
+    private final ITspSolver solverService;
+
+    public TSP(IRoutingService routingService, ITspSolver solverService) {
+        this.routingService = routingService;
+        this.solverService = solverService;
     }
 
     public TspPathSequence calculateShortestPathSequence(List<Point2D> pointsToVisit, int startingIndex) {
         AdjacencyMatrix matrix = routingService.requestAdjacencyMatrix(pointsToVisit);
         System.out.println("Matrix: ");
         System.out.println(matrix);
-        this.shortestPath = solverService.solve(matrix, startingIndex);
 
-        return this.shortestPath;
+        return solverService.solve(matrix, startingIndex);
     }
 
     public TspPath calculateShortestPath(List<Point2D> pointsToVisit, int startingIndex) {
@@ -37,8 +44,4 @@ public class TSP {
     public TspPath calculatePathFromCoordinateList(List<Point2D> coordinates) {
         return routingService.requestPathBetweenPoints(coordinates);
     }
-
-    private IRoutingService routingService;
-    private ITspSolver solverService;
-    private TspPathSequence shortestPath;
 }

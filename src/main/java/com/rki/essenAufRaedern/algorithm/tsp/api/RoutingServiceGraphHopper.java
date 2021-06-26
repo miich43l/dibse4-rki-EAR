@@ -19,6 +19,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * @author Thomas Widmann
+ * Routing service implementation for Graphhopper.
+ */
 public class RoutingServiceGraphHopper implements IRoutingService {
 
     public RoutingServiceGraphHopper(String strApiKey) {

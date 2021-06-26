@@ -1,5 +1,9 @@
 package com.rki.essenAufRaedern.algorithm.tsp.api;
 
+/**
+ * @author Thomas Widmann
+ * Factory to create a new routing service instance.
+ */
 public class RoutingServiceFactory {
 
     private static final RoutingServiceFactory oInstance = new RoutingServiceFactory();

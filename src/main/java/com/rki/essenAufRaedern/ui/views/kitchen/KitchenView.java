@@ -36,6 +36,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author Thomas Widmann
+ * View for the kitchen.
+ * It shows the orders for a given date
+ * and some general informations like the driver.
+ */
+
 @org.springframework.stereotype.Component
 @Scope("prototype")
 @PageTitle("Küche")

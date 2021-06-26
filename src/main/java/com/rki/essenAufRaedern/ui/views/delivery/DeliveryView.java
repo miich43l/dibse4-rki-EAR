@@ -3,6 +3,7 @@ package com.rki.essenAufRaedern.ui.views.delivery;
 import com.rki.essenAufRaedern.algorithm.tsp.TSP;
 import com.rki.essenAufRaedern.algorithm.tsp.api.IRoutingService;
 import com.rki.essenAufRaedern.algorithm.tsp.api.RoutingServiceFactory;
+import com.rki.essenAufRaedern.algorithm.tsp.solver.TspSolverFactory;
 import com.rki.essenAufRaedern.algorithm.tsp.util.TspPath;
 import com.rki.essenAufRaedern.algorithm.tsp.util.TspPathSequence;
 import com.rki.essenAufRaedern.backend.entity.*;
@@ -25,7 +26,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMap;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMapMarker;
-import com.rki.essenAufRaedern.ui.components.orders.OrderDeliveriesWidget;
+import com.rki.essenAufRaedern.ui.components.orders.OrderDeliveriesList;
 
 import java.awt.geom.Point2D;
 import java.util.*;
@@ -33,13 +34,20 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * @author Thomas Widmann
+ * View for the driver.
+ * It shows the orders that must be delivered.
+ * A map of the addresses and the sequence (TSP).
+ */
+
 @PageTitle("Fahrer")
 @CssImport("./styles/delivery-view.css")
 @Route(value = "delivery", layout = MainLayout.class)
 public class DeliveryView extends VerticalLayout {
 
     // Components:
-    private final OrderDeliveriesWidget deliveriesList = new OrderDeliveriesWidget();
+    private final OrderDeliveriesList deliveriesList = new OrderDeliveriesList();
     private final OLMap mapComponent = new OLMap();
     private final Button posSimulationStartButton = new Button("Start");
     private final Button posSimulationPauseButton = new Button("Pause");
@@ -58,7 +66,7 @@ public class DeliveryView extends VerticalLayout {
     private final Map<Long, Point2D> mapOrderToCoordinate = new HashMap<>();
 
     private final IRoutingService routingService;
-    private final TSP tsp = new TSP();
+    private final TSP tsp;
     private final TspPath tspRoute;
 
     public DeliveryView(KitchenService kitchenService, OrderService orderService) {
@@ -70,6 +78,7 @@ public class DeliveryView extends VerticalLayout {
         setPadding(false);
 
         routingService = RoutingServiceFactory.get().createGraphHopperRoutingService();
+        tsp = new TSP(routingService, TspSolverFactory.get().createDefaultSolver());
 
         loadDataFromDatabase();
         resolveAddresses();
@@ -241,11 +250,11 @@ public class DeliveryView extends VerticalLayout {
 
     private void addEventListener() {
         // Events of the deliveries component:
-        deliveriesList.addListener(OrderDeliveriesWidget.DeliveredEvent.class, event -> this.onDeliveredPressed(event.getOrder()));
-        deliveriesList.addListener(OrderDeliveriesWidget.NotDeliveredEvent.class, event -> this.onNotDeliveredPressed(event.getOrder()));
-        deliveriesList.addListener(OrderDeliveriesWidget.CallContactPersonEvent.class, event -> this.onCallContactPersonPressed(event.getOrder()));
-        deliveriesList.addListener(OrderDeliveriesWidget.DidSelectEvent.class, event -> this.onDidSelectDelivery(event.getOrder()));
-        deliveriesList.addListener(OrderDeliveriesWidget.InfoButtonPressedEvent.class, event -> this.onAdditionalInfoButtonPressed(event.getOrder()));
+        deliveriesList.addListener(OrderDeliveriesList.DeliveredEvent.class, event -> this.onDeliveredPressed(event.getOrder()));
+        deliveriesList.addListener(OrderDeliveriesList.NotDeliveredEvent.class, event -> this.onNotDeliveredPressed(event.getOrder()));
+        deliveriesList.addListener(OrderDeliveriesList.CallContactPersonEvent.class, event -> this.onCallContactPersonPressed(event.getOrder()));
+        deliveriesList.addListener(OrderDeliveriesList.DidSelectEvent.class, event -> this.onDidSelectDelivery(event.getOrder()));
+        deliveriesList.addListener(OrderDeliveriesList.InfoButtonPressedEvent.class, event -> this.onAdditionalInfoButtonPressed(event.getOrder()));
 
         // Events for position tracking:
         mapComponent.addMarkerVisitedListener(this::onVisitedPersonsAddress);

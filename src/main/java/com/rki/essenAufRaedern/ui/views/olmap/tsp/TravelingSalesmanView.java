@@ -1,5 +1,6 @@
 package com.rki.essenAufRaedern.ui.views.olmap.tsp;
 
+import com.rki.essenAufRaedern.algorithm.tsp.solver.TspSolverFactory;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
@@ -85,7 +86,8 @@ public class TravelingSalesmanView extends VerticalLayout {
         markersLayout.add(tspResultLabel);
 
         performTspButton.addClickListener(event -> {
-            TSP oTSP = new TSP();
+            TSP oTSP = new TSP(RoutingServiceFactory.get().createGraphHopperRoutingService(),
+                               TspSolverFactory.get().createDefaultSolver());
             List<Point2D> pointsToVisit = map.getMarkers().stream().map(OLMapMarker::getCoordinates).collect(Collectors.toList());
             TspPathSequence tspSequence = oTSP.calculateShortestPathSequence(pointsToVisit, 0);
             List<Point2D> tspSequenceCoordinates = tspSequence.getPath().stream().map(pointsToVisit::get).collect(Collectors.toList());

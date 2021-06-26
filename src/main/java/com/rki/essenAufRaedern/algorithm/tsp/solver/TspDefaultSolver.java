@@ -6,6 +6,10 @@ import com.rki.essenAufRaedern.algorithm.tsp.util.TspPathSequence;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Thomas Widmann
+ * Default traveling salesman algorithm implementation.
+ */
 public class TspDefaultSolver implements ITspSolver {
 
     public TspDefaultSolver() {
