@@ -46,6 +46,9 @@ public class User implements UserDetails {
     private Status status;
 
     @NotNull
+    private String role;
+
+    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id")
     private Person person;
@@ -133,6 +136,7 @@ public class User implements UserDetails {
 
     public void setPerson(Person person) {
         this.person = person;
+        setRole();
     }
 
     public String getEmail() {
@@ -146,5 +150,33 @@ public class User implements UserDetails {
     public boolean isActive() {
         if (getStatus().equals(Status.ACTIVE)) return true;
         return false;
+    }
+
+    public void setRole() {
+        this.role =  getRole();
+    }
+
+    public static String[] getAllRoles() {
+        return new String[]{"ADMINISTRATION", "KITCHEN", "DRIVER", "CLIENT", "CONTACT_PERSON", "LOCAL_COMMUNITY", "DEVELOPER"};
+    }
+
+    public String getRole() {
+        PersonType personType = getPersonType();
+        if (personType.equals(PersonType.ADMINISTRATION)) {
+            return "ADMINISTRATION";
+        } else if (personType.equals(PersonType.KITCHEN)) {
+            return "KITCHEN";
+        } else if (personType.equals(PersonType.DRIVER)) {
+            return "DRIVER";
+        } else if (personType.equals(PersonType.CLIENT)) {
+            return "CLIENT";
+        } else if (personType.equals(PersonType.CONTACT_PERSON)) {
+            return "CONTACT_PERSON";
+        } else if (personType.equals(PersonType.LOCAL_COMMUNITY)) {
+            return "LOCAL_COMMUNITY";
+        } else if (personType.equals(PersonType.DEVELOPER)) {
+            return "DEVELOPER";
+        }
+        return null;
     }
 }

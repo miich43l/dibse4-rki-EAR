@@ -9,6 +9,16 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
+/**
+ * @author thomaswiedmann and andreasoberhofer
+ * The utility class loads a set of testdata into the h2 database:
+ *  - 1 kitchen with kitchenAddress,
+ *  - 1 driver with person and employee data
+ *  - some addresses in the Ötztal local communities
+ *  - some clients with random birthdate (btw 35 and 45 years ago) and a random adress
+ *  - somecontactpersons (ContactPersonType.FamilyMember) with random birthdate and adress
+ *  - every client gets one random contactperson and one order for today
+ */
 @Component
 public class TestDataLoader {
 
@@ -26,6 +36,9 @@ public class TestDataLoader {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private OrderInformationRepository orderInformationRepository;
 
     @Autowired
     private ContactPersonRepository contactPersonRepository;
@@ -71,27 +84,25 @@ public class TestDataLoader {
         driver.setPerson(driverPerson);
         employeeRepository.save(driver);
 
-        System.out.println("Kitchen address: " + kitchen.getAddress());
-        System.out.println("Kitchen address: " + kitchenRepository.findAll().get(0).getAddress());
+        List<Employee> employees = employeeRepository.findAll();
+        System.out.println("Employees: " + employees.get(0).getKitchen());
 
         List<Address> addresses = createAddressData();
         int orderCtn = 0;
-        int maxOrders = 3;
+        int maxOrders = 9;
 
         //Add users
         userService.addUser("test", "Administration", "+123", "test@rki.com", PersonType.ADMINISTRATION, "admin", "changeMe");
         userService.addUser("test", "kitchen", "+123", "test@rki.com", PersonType.KITCHEN, "kitchen", "changeMe");
-        userService.addUser("test", "driver", "+123", "test@rki.com", PersonType.ADMINISTRATION, "driver", "changeMe");
-        userService.addUser("test", "client", "+123", "test@rki.com", PersonType.ADMINISTRATION, "client", "changeMe");
-        userService.addUser("test", "contactPerson", "+123", "test@rki.com", PersonType.ADMINISTRATION, "contactPerson", "changeMe");
-        userService.addUser("test", "localCommunity", "+123", "test@rki.com", PersonType.ADMINISTRATION, "localCommunity", "changeMe");
-        userService.addUser("test", "developer", "+123", "test@rki.com", PersonType.ADMINISTRATION, "dev", "changeMe");
+        userService.addUser("test", "driver", "+123", "test@rki.com", PersonType.DRIVER, "driver", "changeMe");
+        userService.addUser("test", "client", "+123", "test@rki.com", PersonType.CLIENT, "client", "changeMe");
+        userService.addUser("test", "contactPerson", "+123", "test@rki.com", PersonType.CONTACT_PERSON, "contactPerson", "changeMe");
+        userService.addUser("test", "localCommunity", "+123", "test@rki.com", PersonType.LOCAL_COMMUNITY, "localCommunity", "changeMe");
+        userService.addUser("test", "developer", "+123", "test@rki.com", PersonType.DEVELOPER, "developer", "changeMe");
 
 
         // Create persons:
         {
-            // PersonType: Administration, Kitchen, Driver, Client, ContactPerson, LocalCommunity
-
             List<String> personStrings = new ArrayList<>();
             personStrings.add("Arian;Schneider;Client;+123");
             personStrings.add("Armin;Schuster;Client;+123");
@@ -159,20 +170,21 @@ public class TestDataLoader {
                         personRepository.save(person);
 
                         // do not always create an order...
-                        if (orderCtn < maxOrders) {
-                            Order order = new Order();
-                            order.setKitchen(kitchen);
-                            order.setPerson(person);
-                            order.setDt(new Date()); // today
-                            order.setStatus(Status.ACTIVE);
-                            orderRepository.save(order);
+                        if(orderCtn < maxOrders) {
+                            for(int nDayOffset = 0; nDayOffset < 7; nDayOffset++) {
+                                if(nDayOffset > 0 && !new Random().nextBoolean()) {
+                                    continue;
+                                }
+
+                                createOrdersForPerson(kitchen, person, nDayOffset);
+                            }
 
                             orderCtn++;
                         }
 
                         clients.add(person);
-
                         createRandomAdditionalInformationForPerson(person);
+                        createRandomOrderInformationForPerson(person);
                     }
                     case CONTACT_PERSON -> {
                         ContactPerson contactPerson = new ContactPerson();
@@ -187,6 +199,36 @@ public class TestDataLoader {
                 }
             }
         }
+    }
+
+    private void createRandomOrderInformationForPerson(Person person) {
+        OrderInformation orderInformation = new OrderInformation();
+        orderInformation.setPerson(person);
+        orderInformation.setMonday(new Random().nextBoolean() ? Status.ACTIVE : Status.INACTIVE);
+        orderInformation.setTuesday(new Random().nextBoolean() ? Status.ACTIVE : Status.INACTIVE);
+        orderInformation.setWednesday(new Random().nextBoolean() ? Status.ACTIVE : Status.INACTIVE);
+        orderInformation.setThursday(new Random().nextBoolean() ? Status.ACTIVE : Status.INACTIVE);
+        orderInformation.setFriday(new Random().nextBoolean() ? Status.ACTIVE : Status.INACTIVE);
+        orderInformation.setSaturday(new Random().nextBoolean() ? Status.ACTIVE : Status.INACTIVE);
+        orderInformation.setSunday(new Random().nextBoolean() ? Status.ACTIVE : Status.INACTIVE);
+        Calendar cal = Calendar.getInstance();
+        orderInformation.setDt_form(cal.getTime());
+        orderInformation.setStatus(Status.ACTIVE);
+        orderInformationRepository.save(orderInformation);
+        person.addOrderInformation(orderInformation);
+    }
+
+    private void createOrdersForPerson(Kitchen kitchen, Person person, int nDayOffset) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.DAY_OF_YEAR, nDayOffset);
+
+        Order order = new Order();
+        order.setKitchen(kitchen);
+        order.setPerson(person);
+        order.setDt(cal.getTime());
+        order.setStatus(Status.ACTIVE);
+        orderRepository.save(order);
     }
 
     private List<Address> createAddressData() {
@@ -289,6 +331,8 @@ public class TestDataLoader {
             info.setPerson(person);
 
             additionalInformationRepository.save(info);
+
+            System.out.println("Created additional information: " + info.getValue() + " for: " + person.getFullName());
         }
     }
 }

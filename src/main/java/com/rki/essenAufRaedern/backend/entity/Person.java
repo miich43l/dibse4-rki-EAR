@@ -7,10 +7,8 @@ import com.rki.essenAufRaedern.backend.utility.Status;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.io.Serializable;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -42,10 +40,6 @@ public class Person{
     @NotEmpty
     @Column(name = "phone_number")
     private String phoneNumber;
-
-    @NotNull
-    private PersonType personType;
-
     @NotNull
     private Status status;
 
@@ -56,10 +50,13 @@ public class Person{
     private List<ContactPerson> contactPersonFrom = new ArrayList<>();
 
     @OneToMany(mappedBy = "person")
-    private List<Employee> employees = new ArrayList<>();
+    private List<ContactPerson> contactPersons = new ArrayList<>();
 
     @OneToMany(mappedBy = "person")
-    private List<OrderInformation> orderInformation = new ArrayList<>();
+    private List<Employee> employees = new ArrayList<>();
+
+    @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
+    private Set<OrderInformation> orderInformation = new HashSet<>();
 
     @OneToMany(mappedBy = "person")
     private List<Order> orders = new ArrayList<>();
@@ -67,6 +64,9 @@ public class Person{
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
     private Address address;
+
+    @NotNull
+    private PersonType personType;
 
     @OneToMany(mappedBy = "person")
     private List<User> users = new ArrayList<>();
@@ -121,8 +121,8 @@ public class Person{
     public List<AdditionalInformation> getAdditionalInformation(InformationType ... type) {
         if(type.length > 0) {
             return additionalInformation.stream()
-                                        .filter(item -> Arrays.stream(type).anyMatch(item_ -> item.getInformationType() == item_))
-                                        .collect(Collectors.toList());
+                    .filter(item -> Arrays.stream(type).anyMatch(item_ -> item.getInformationType() == item_))
+                    .collect(Collectors.toList());
         }
 
         return this.additionalInformation;
@@ -168,6 +168,14 @@ public class Person{
         return contactPersonFrom;
     }
 
+    public List<ContactPerson> getContactPersons() {
+        return this.contactPersons;
+    }
+
+    public void setContactPersons(List<ContactPerson> contactPersons) {
+        this.contactPersons = contactPersons;
+    }
+
     public List<Employee> getEmployees() {
         return this.employees;
     }
@@ -190,11 +198,11 @@ public class Person{
         return employee;
     }
 
-    public List<OrderInformation> getOrderInformation() {
+    public Set<OrderInformation> getOrderInformation() {
         return this.orderInformation;
     }
 
-    public void setOrderInformation(List<OrderInformation> orderInformation) {
+    public void setOrderInformation(Set<OrderInformation> orderInformation) {
         this.orderInformation = orderInformation;
     }
 
@@ -266,6 +274,19 @@ public class Person{
         this.phoneNumber = phoneNumber;
     }
 
+    public User addUser(User user) {
+        getUsers().add(user);
+        user.setPerson(this);
+
+        return user;
+    }
+
+    public User removeUser(User user) {
+        getUsers().remove(user);
+        user.setPerson(null);
+
+        return user;
+    }
 
     @Override
     public String toString() {

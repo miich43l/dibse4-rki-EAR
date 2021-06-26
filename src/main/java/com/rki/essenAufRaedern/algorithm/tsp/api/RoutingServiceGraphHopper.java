@@ -26,8 +26,12 @@ public class RoutingServiceGraphHopper implements IRoutingService {
     }
 
     @Override
-    public AdjacencyMatrix requestAdjacencyMatrix(List<Point2D> lstPoints) {
-        String strURI = createAdjacencyMatrixURI(lstPoints);
+    public AdjacencyMatrix requestAdjacencyMatrix(List<Point2D> coordinates) {
+        if(coordinates.size() < 2) {
+            throw new IllegalArgumentException("Too less points! 2 Points are minimum.");
+        }
+
+        String strURI = createAdjacencyMatrixURI(coordinates);
         String strApiResult = performApiRequestSync(strURI);
 
         return createAdjacencyMatrixFromJson(strApiResult);
@@ -35,6 +39,10 @@ public class RoutingServiceGraphHopper implements IRoutingService {
 
     @Override
     public TspPath requestPathBetweenPoints(List<Point2D> coordinates) {
+        if(coordinates.size() < 2) {
+            throw new IllegalArgumentException("Too less points! 2 Points are minimum.");
+        }
+
         String strURI = createRouteURI(coordinates);
         String strApiResult = performApiRequestSync(strURI);
 

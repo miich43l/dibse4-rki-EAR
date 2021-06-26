@@ -5,7 +5,6 @@ import com.rki.essenAufRaedern.backend.entity.Company;
 import com.rki.essenAufRaedern.backend.entity.Contact;
 import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.utility.InformationType;
-import com.rki.essenAufRaedern.ui.views.list.ContactForm;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;

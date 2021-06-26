@@ -1,12 +1,22 @@
 package com.rki.essenAufRaedern.security;
 
+import com.rki.essenAufRaedern.backend.service.UserService;
 import com.vaadin.flow.server.HandlerHelper.RequestType;
 import com.vaadin.flow.shared.ApplicationConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -15,8 +25,10 @@ import java.util.stream.Stream;
  */
 public final class SecurityUtils {
 
-    private SecurityUtils() {
-        // Util methods only
+    private static UserService userService;
+
+    private SecurityUtils(UserService userService) {
+        this.userService = userService;
     }
 
     /**
@@ -38,9 +50,29 @@ public final class SecurityUtils {
      * {@link AnonymousAuthenticationToken} we have to ignore those tokens
      * explicitly.
      */
-    static boolean isUserLoggedIn() {
+    public static boolean isUserLoggedIn() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null && !(authentication instanceof AnonymousAuthenticationToken)
                 && authentication.isAuthenticated();
+    }
+
+    public static boolean isAccessGranted(Class<?> securedClass, String role) {
+        Secured secured = AnnotationUtils.findAnnotation(securedClass, Secured.class);
+        if (secured == null) {
+            return true;
+        }
+        List<String> allowedRoles = Arrays.asList(secured.value());
+        return allowedRoles.stream().anyMatch(aRole -> aRole.equals(role));
+    }
+
+    public static String getUsername() {
+        return String.valueOf(getPrincipal().getUsername());
+    }
+    public static boolean hasRole(String role) {
+        return getPrincipal().getAuthorities().contains(new SimpleGrantedAuthority(role));
+    }
+
+    public static UserDetails getPrincipal() {
+        return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

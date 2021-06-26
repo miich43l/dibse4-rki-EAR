@@ -157,7 +157,15 @@ window.Vaadin.Flow.openLayersConnector = {
 
             if(id in c.$connector.mapLayers) {
                 c.$connector.map.removeLayer(c.$connector.mapLayers[id]);
-                delete c.$connector.mapLayers[id]
+                delete c.$connector.mapLayers[id];
+            }
+
+            if(id in c.$connector.mapPOIS) {
+                delete c.$connector.mapPOIS[id];
+
+                if(id == c.$connector.currentPOIID) {
+                    c.$connector.currentPOIID = -1;
+                }
             }
         }
 
@@ -208,7 +216,7 @@ window.Vaadin.Flow.openLayersConnector = {
             c.$connector.map.getView().setCenter(fromLonLat([lon, lat]));
         }
 
-        c.startPositionSimulation = function(json, interval) {
+        c.setPositionSimulationRoute = function(json) {
             json = JSON.parse(json);
             var id = json.id;
             var points = [];
@@ -218,6 +226,9 @@ window.Vaadin.Flow.openLayersConnector = {
             }
 
             c.positionSimulationPoints = points;
+        }
+
+        c.startPositionSimulation = function(interval) {
             c.positionSimulationTimer = setInterval(c.handlePositionSimulation, interval);
         }
 

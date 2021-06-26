@@ -78,4 +78,9 @@ public class UserService {
         return userRepository.getByUsername(username
         );
     }
+
+    public User getUserByUsernameIgnoreCase(String username) {
+        return userRepository.findByUsernameIgnoreCase(username
+        );
+    }
 }
