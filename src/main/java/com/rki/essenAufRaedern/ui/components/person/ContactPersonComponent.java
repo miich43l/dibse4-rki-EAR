@@ -1,16 +1,12 @@
 package com.rki.essenAufRaedern.ui.components.person;
 
-import com.rki.essenAufRaedern.backend.entity.AdditionalInformation;
 import com.rki.essenAufRaedern.backend.entity.ContactPerson;
 import com.rki.essenAufRaedern.backend.entity.Person;
-import com.rki.essenAufRaedern.backend.utility.ContactPersonType;
-import com.rki.essenAufRaedern.backend.utility.InformationType;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -29,7 +25,7 @@ public class ContactPersonComponent extends VerticalLayout {
 
     public void setPerson(Person person) {
         this.person = person;
-        this.contactPersonGrid.setItems(person.getContactPersonFrom());
+        this.contactPersonGrid.setItems(person.getContactPersons());
     }
 
 
@@ -37,7 +33,7 @@ public class ContactPersonComponent extends VerticalLayout {
         VerticalLayout mainLayout = new VerticalLayout();
 
         contactPersonGrid.addColumn(new ComponentRenderer<>(info -> new Text(info.getContactPersonType().toString()))).setHeader("Type").setKey("type");
-        contactPersonGrid.addColumn(item -> item.getPerson().getFullName()).setHeader("Name");
+        contactPersonGrid.addColumn(item -> item.getContactPersonFrom().getFullName()).setHeader("Name");
         contactPersonGrid.addColumn(new ComponentRenderer<>(info -> {
             Icon icon = VaadinIcon.TRASH.create();
             icon.setColor("red");

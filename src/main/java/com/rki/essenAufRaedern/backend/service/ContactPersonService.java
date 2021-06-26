@@ -1,8 +1,15 @@
 package com.rki.essenAufRaedern.backend.service;
 
 import com.rki.essenAufRaedern.backend.entity.ContactPerson;
+import com.rki.essenAufRaedern.backend.entity.Person;
+import com.rki.essenAufRaedern.backend.repository.ContactPersonRepository;
+import com.rki.essenAufRaedern.backend.repository.PersonRepository;
+import com.rki.essenAufRaedern.backend.utility.ContactPersonType;
+import com.rki.essenAufRaedern.backend.utility.PersonType;
+import com.rki.essenAufRaedern.backend.utility.Status;
 import org.springframework.stereotype.Service;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -14,5 +21,38 @@ import java.util.logging.Logger;
 @Service
 public class ContactPersonService {
     private static final Logger LOGGER = Logger.getLogger(ContactPersonService.class.getName());
-    private ContactPerson contactPerson;
+
+    private final ContactPersonRepository contactPersonRepository;
+    private final PersonService personService;
+
+    public ContactPersonService(ContactPersonRepository contactPersonRepository, PersonService personService) {
+        this.contactPersonRepository = contactPersonRepository;
+        this.personService = personService;
+    }
+
+    public void save(ContactPerson contactPerson) {
+        if (contactPerson == null) {
+            LOGGER.log(Level.SEVERE,
+                    "ContactPerson is null");
+            return;
+        }
+
+        contactPersonRepository.save(contactPerson);
+    }
+
+    public void delete(ContactPerson contactPerson) {
+        if(contactPerson == null) {
+            return;
+        }
+
+        contactPersonRepository.delete(contactPerson);
+    }
+
+    public ContactPerson createNewContactPerson() {
+        ContactPerson contactPerson = new ContactPerson();
+        Person person = personService.createNewPerson(PersonType.ContactPerson);
+        person.addContactPersonFrom(contactPerson);
+
+        return contactPerson;
+    }
 }

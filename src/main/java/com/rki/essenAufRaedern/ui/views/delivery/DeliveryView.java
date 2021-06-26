@@ -340,14 +340,14 @@ public class DeliveryView extends VerticalLayout {
     }
 
     private void onCallContactPersonPressed(Order order) {
-        List<ContactPerson> contactPersons = order.getPerson().getContactPersonFrom();
+        Set<ContactPerson> contactPersons = order.getPerson().getContactPersonFrom();
 
         if(contactPersons.isEmpty()) {
             Notification.show("Keine Kontaktperson vorhanden!", 2000, Notification.Position.MIDDLE);
             return;
         }
 
-        ContactPerson firstContactPerson_ = contactPersons.get(0);
+        ContactPerson firstContactPerson_ = contactPersons.iterator().next();
         Person firstContactPerson = firstContactPerson_.getPerson();
 
         if(firstContactPerson == null) {
