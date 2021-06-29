@@ -87,6 +87,8 @@ public class CustomerView extends VerticalLayout{
             addressForm.validateAndSave();
             addressService.save(person.getAddress());
             personService.save(person);
+            personService.saveAllUnsavedAdditionalInformation(person);
+            personService.saveAllUnsavedContactPersons(person);
             orderInformationService.save(orderInformationForm.getOrderInformation());
 
         } catch (ValidationException e) {
@@ -189,8 +191,9 @@ public class CustomerView extends VerticalLayout{
                 if (!addAdditionalInformationForm.isValid()){
                     return;
                 }
+                System.out.println("Event received ID: " + addAdditionalInformationForm.getAdditionalInformation().getId());
+
                 person.addAdditionalInformation(addAdditionalInformationForm.getAdditionalInformation());
-                additionalInformationService.save(addAdditionalInformationForm.getAdditionalInformation());
                 additionalInformationForm.setPerson(person);
                 addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
             });
@@ -200,8 +203,13 @@ public class CustomerView extends VerticalLayout{
             additionalInformationForm.setPerson(person);
             additionalInformationForm.setWidthFull();
             additionalInformationForm.addListener(AdditionalInformationComponent.DeleteButtonPressedEvent.class,event ->{
-                System.out.println("Event received");
-                additionalInformationService.delete(event.getAdditionalInformation());
+                System.out.println("Event received ID: " + event.getAdditionalInformation().getId());
+                if(event.getAdditionalInformation().getId() == null) {
+                    person.removeAdditionalInformation(event.getAdditionalInformation());
+                } else {
+                    additionalInformationService.delete(event.getAdditionalInformation());
+                }
+
                 additionalInformationForm.setPerson(person);
             });
             tabLayout.add(additionalInformationForm);
@@ -250,13 +258,8 @@ public class CustomerView extends VerticalLayout{
                 ContactPerson newContactPerson = contactPersonForm.getContactPerson();
                 newContactPerson.setPerson(person);
                 person.addContactPerson(newContactPerson);
-                personService.save(newContactPerson.getContactPersonFrom());
-                contactPersonService.save(newContactPerson);
-
-                System.out.println("Contact persons: " + person.getContactPersons());
 
                 contactPersonComponent.setPerson(person);
-
                 contactPersonForm.setContactPerson(contactPersonService.createNewContactPerson());
             });
 

@@ -64,7 +64,7 @@ public class TestDataLoader {
         addressRepository.save(kitchenAddress);
 
         Kitchen kitchen = new Kitchen();
-        kitchen.setName("Kitchen Altersheim Ötz");
+        kitchen.setName("Altersheim Ötz");
         kitchen.setAddress(kitchenAddress);
         kitchen.setStatus(Status.ACTIVE);
         kitchenRepository.save(kitchen);
@@ -97,7 +97,7 @@ public class TestDataLoader {
         //Add users
         userService.addUser("test", "Administration", "+123", "test@rki.com", PersonType.ADMINISTRATION, "admin", "changeMe");
         userService.addUser("test", "kitchen", "+123", "test@rki.com", PersonType.KITCHEN, "kitchen", "changeMe");
-        userService.addUser("test", "client", "+123", "test@rki.com", PersonType.CLIENT, "client", "changeMe");
+        userService.addUser("Max", "Muster", "+123", "test@rki.com", PersonType.CLIENT, "client", "changeMe");
         userService.addUser("test", "contactPerson", "+123", "test@rki.com", PersonType.CONTACT_PERSON, "contactPerson", "changeMe");
         userService.addUser("test", "localCommunity", "+123", "test@rki.com", PersonType.LOCAL_COMMUNITY, "localCommunity", "changeMe");
         userService.addUser("test", "developer", "+123", "test@rki.com", PersonType.DEVELOPER, "developer", "changeMe");
@@ -154,9 +154,7 @@ public class TestDataLoader {
 
                 // Create an order if type == Client:
                 switch (type) {
-                    case ADMINISTRATION -> {
-                    }
-                    case KITCHEN -> {
+                    case ADMINISTRATION, KITCHEN, LOCAL_COMMUNITY, DEVELOPER -> {
                     }
                     case DRIVER -> {
                         personRepository.save(person);
@@ -202,17 +200,26 @@ public class TestDataLoader {
                         personRepository.save(person);
                         contactPersonRepository.save(contactPerson);
 
-                        Person client_ = personRepository.findById(client.getId()).get();
-                        Person person_ = personRepository.findById(person.getId()).get();
-
-                        System.out.println("Person " + person_.getFullName() + " is contact person from: " + person_.getContactPersonFrom().iterator().next().getPerson().getFullName());
-                        System.out.println("Contact person from: " + client_.getFullName() + " is: " + client_.getContactPersons().iterator().next().getContactPersonFrom().getFullName());
-                    }
-                    case LOCAL_COMMUNITY -> {
+                        System.out.println("Contact person from: " + client.getFullName() + " is: " + client.getContactPersons().iterator().next().getContactPersonFrom().getFullName());
                     }
                 }
             }
         }
+
+        System.out.println("Additional informations: ");
+        additionalInformationRepository.findAll().forEach(item -> {
+            System.out.println("    => " + item.getInformationType() + " -- " + item.getValue() + " ID: " + item.getId());
+        });
+
+
+        System.out.println("Persons: ");
+        personRepository.findAll().forEach(item -> {
+            System.out.println("    => " + item.getFullName() + " ID: " + item.getId());
+            item.getAllAdditionalInformation().forEach(info -> {
+                System.out.println("        => " + info.getInformationType() + " -- " + info.getValue() + " ID: " + info.getId());
+            });
+        });
+
     }
 
     private void createRandomOrderInformationForPerson(Person person) {
@@ -256,6 +263,18 @@ public class TestDataLoader {
             addressStrings.add("Österreich;6067;Absam;Schulstraße;4;1");
             addressStrings.add("Österreich;6167;Neustift im Stubaital;Fichtenweg;6;1");
 */
+            addressStrings.add("Austria;6432;Sautens;Wiedumgasse;3;0");
+            addressStrings.add("Austria;6432;Sautens;Dorfstrasse;49;0");
+            addressStrings.add("Austria;6432;Sautens;Silbergasse;6b;0");
+            addressStrings.add("Austria;6432;Sautens;Lafeld;9;0");
+            addressStrings.add("Austria;6432;Sautens;Kirchweg;19;0");
+            addressStrings.add("Austria;6432;Sautens;Pirchhof;68;0");
+            addressStrings.add("Austria;6430;Ötztal Bahnhof;Ambergstrasse;20;0");
+            addressStrings.add("Austria;6430;Ötztal Bahnhof;Waldstrasse;12;0");
+            addressStrings.add("Austria;6430;Ötztal Bahnhof;Sandbichlweg;17;0");
+            addressStrings.add("Austria;6430;Ötztal Bahnhof;Bahnrain;16a;0");
+            addressStrings.add("Austria;6430;Ötztal Bahnhof;Birkenstrasse;9;0");
+
             addressStrings.add("Austria;6450;Sölden;Uferweg;1;2a");         // Route 1
             addressStrings.add("Austria;6450;Zwieselstein;Roanweg;14;1");
             addressStrings.add("Austria;6450;Sölden;Alpenweg;4;1");
@@ -342,7 +361,7 @@ public class TestDataLoader {
             info.setValue(elements[0]);
             info.setInformationType(InformationType.fromString(elements[1]));
             info.setStatus(Status.ACTIVE);
-            info.setPerson(person);
+            person.addAdditionalInformation(info);
 
             additionalInformationRepository.save(info);
 

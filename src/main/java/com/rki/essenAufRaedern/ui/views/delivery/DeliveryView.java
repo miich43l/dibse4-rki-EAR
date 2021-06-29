@@ -395,6 +395,7 @@ public class DeliveryView extends VerticalLayout {
         contactPersonDialog.add(contactPersonList);
         Button closeButton = new Button("Schließen");
         closeButton.addClickListener(e -> contactPersonDialog.close());
+        contactPersonDialog.add(new HorizontalLayout(closeButton));
         contactPersonDialog.open();
     }
 
