@@ -8,6 +8,7 @@ import com.rki.essenAufRaedern.algorithm.tsp.util.TspPathSequence;
 import com.rki.essenAufRaedern.backend.entity.*;
 import com.rki.essenAufRaedern.backend.service.KitchenService;
 import com.rki.essenAufRaedern.backend.service.OrderService;
+import com.rki.essenAufRaedern.backend.service.UserService;
 import com.rki.essenAufRaedern.backend.utility.InformationType;
 import com.rki.essenAufRaedern.ui.MainLayout;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMap;
@@ -26,11 +27,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.springframework.context.annotation.Scope;
 import org.springframework.security.access.annotation.Secured;
-import com.rki.essenAufRaedern.ui.components.olmap.OLMap;
-import com.rki.essenAufRaedern.ui.components.olmap.OLMapMarker;
-import com.rki.essenAufRaedern.ui.components.orders.OrderDeliveriesWidget;
 
 import java.awt.geom.Point2D;
 import java.util.*;
@@ -54,6 +51,7 @@ public class DeliveryView extends VerticalLayout {
     // Services:
     private final OrderService orderService;
     private final KitchenService kitchenService;
+    private final UserService userService;
 
     // Variables:
     private Kitchen kitchen;
@@ -67,9 +65,10 @@ public class DeliveryView extends VerticalLayout {
     private final TSP tsp = new TSP();
     private final TspPath tspRoute;
 
-    public DeliveryView(KitchenService kitchenService, OrderService orderService) {
+    public DeliveryView(KitchenService kitchenService, OrderService orderService, UserService userService) {
         this.kitchenService = kitchenService;
         this.orderService = orderService;
+        this.userService = userService;
 
         addClassName("main-layout");
         setWidthFull();
@@ -89,8 +88,11 @@ public class DeliveryView extends VerticalLayout {
     }
 
     private void loadDataFromDatabase() {
-        List<Kitchen> kitchens = kitchenService.findAll();
-        this.kitchen = kitchens.get(0);
+        kitchen = getKitchenFromCurrentUser();
+
+        if(kitchen == null) {
+            return;
+        }
 
         Date date_ = new Date();
 
@@ -110,6 +112,17 @@ public class DeliveryView extends VerticalLayout {
         };
 
         orders = kitchen.getOrders().stream().filter(orderPredicate).collect(Collectors.toList());
+    }
+
+    private Kitchen getKitchenFromCurrentUser() {
+        User currentUser = userService.getCurrentUser();
+        Person currentPerson = currentUser.getPerson();
+        Employee currentEmployee = currentPerson.getEmployee();
+        if(currentEmployee == null) {
+            return null;
+        }
+
+        return currentEmployee.getKitchen();
     }
 
     private void sortOrdersByPointsToVisit(List<Point2D> pointsToVisitMinDistance) {
@@ -140,6 +153,10 @@ public class DeliveryView extends VerticalLayout {
     }
 
     private void resolveAddresses() {
+        if(kitchen == null) {
+            return;
+        }
+
         kitchenCoordinates = routingService.requestCoordinateFromAddress(kitchen.getAddress().toString());
         for(Order order : orders) {
             Point2D coordinate = routingService.requestCoordinateFromAddress(order.getPerson().getAddress().toString());
@@ -197,8 +214,11 @@ public class DeliveryView extends VerticalLayout {
         mapComponent.setHeight(100, Unit.PERCENTAGE);
         mapComponent.setWidthFull();
 
-        OLMapMarker kitchenMarker = new OLMapMarker(kitchen.getName(), kitchenCoordinates, "house.png");
-        mapComponent.addMarker(kitchenMarker);
+        if(kitchen != null) {
+            OLMapMarker kitchenMarker = new OLMapMarker(kitchen.getName(), kitchenCoordinates, "house.png");
+            mapComponent.addMarker(kitchenMarker);
+        }
+
         resetMapCenterAndZoom();
 
         // No orders => return;

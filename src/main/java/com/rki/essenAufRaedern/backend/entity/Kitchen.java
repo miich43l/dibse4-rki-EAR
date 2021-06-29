@@ -7,7 +7,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -33,7 +35,7 @@ public class Kitchen {
     private Address address;
 
     @OneToMany(mappedBy = "kitchen", fetch = FetchType.EAGER)
-    private List<Order> orders = new ArrayList<>();
+    private Set<Order> orders = new HashSet<>();
 
     public Kitchen() {
     }
@@ -70,11 +72,11 @@ public class Kitchen {
         this.address = address;
     }
 
-    public List<Order> getOrders() {
+    public Set<Order> getOrders() {
         return this.orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setOrders(Set<Order> orders) {
         this.orders = orders;
     }
 

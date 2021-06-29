@@ -37,6 +37,7 @@ public class AdditionalInformation {
     private Person person;
 
     public AdditionalInformation() {
+        this.status = Status.ACTIVE;
     }
 
     public Long getId() {
