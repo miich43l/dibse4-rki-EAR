@@ -83,7 +83,7 @@ public class PersonService {
 
     public Person createNewPerson(PersonType personType) {
         Person newPerson = new Person();
-        newPerson.setStatus(Status.Active);
+        newPerson.setStatus(Status.ACTIVE);
         newPerson.setPersonType(personType);
 
         return newPerson;

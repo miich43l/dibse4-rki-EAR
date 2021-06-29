@@ -1,7 +1,7 @@
 package com.rki.essenAufRaedern.backend.utility;
 
 public enum PersonType {
-    ADMINISTRATION, KITCHEN, DRIVER, CLIENT, CONTACT_PERSON, LOCAL_COMMUNITY, DEVELOPER;
+    ADMINISTRATION, KITCHEN, DRIVER, CLIENT, CONTACT_PERSON, LOCAL_COMMUNITY, DEVELOPER, ContactPersonType;
 
     public static PersonType fromString(String val) {
         switch (val) {

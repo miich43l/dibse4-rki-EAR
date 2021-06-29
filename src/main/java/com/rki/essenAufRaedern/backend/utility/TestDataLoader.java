@@ -186,11 +186,11 @@ public class TestDataLoader {
                         createRandomAdditionalInformationForPerson(person);
                         createRandomOrderInformationForPerson(person);
                     }
-                    case ContactPerson -> {
+                    case ContactPersonType -> {
                         Person client = clients.get(new Random().nextInt(clients.size()));
 
                         ContactPerson contactPerson = new ContactPerson();
-                        contactPerson.setContactPersonType(ContactPersonType.FamilyMember);
+                        contactPerson.setContactPersonType(ContactPersonType.FAMILY_MEMBER);
                         contactPerson.setPerson(client);
 
                         client.addContactPerson(contactPerson);
