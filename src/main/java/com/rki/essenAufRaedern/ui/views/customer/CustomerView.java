@@ -1,9 +1,7 @@
 package com.rki.essenAufRaedern.ui.views.customer;
-
-//import com.rki.essenAufRaedern.backend.entity.Person;
-
 import com.rki.essenAufRaedern.backend.entity.AdditionalInformation;
 import com.rki.essenAufRaedern.backend.entity.Address;
+import com.rki.essenAufRaedern.backend.entity.ContactPerson;
 import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.service.*;
 import com.rki.essenAufRaedern.backend.utility.PersonType;

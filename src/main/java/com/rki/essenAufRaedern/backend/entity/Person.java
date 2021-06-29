@@ -7,7 +7,6 @@ import com.rki.essenAufRaedern.backend.utility.Status;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -168,7 +167,7 @@ public class Person{
         return contactPersonFrom;
     }
 
-    public Set<ContactPerson> getContactPersons() {
+    public List<ContactPerson> getContactPersons() {
         return this.contactPersons;
     }
 
@@ -176,7 +175,7 @@ public class Person{
         return !this.contactPersons.isEmpty();
     }
 
-    public void setContactPerson(Set<ContactPerson> Person) {
+    public void setContactPerson(List<ContactPerson> Person) {
         this.contactPersons = Person;
     }
 

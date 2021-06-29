@@ -50,7 +50,7 @@ public class ContactPersonService {
 
     public ContactPerson createNewContactPerson() {
         ContactPerson contactPerson = new ContactPerson();
-        Person person = personService.createNewPerson(PersonType.ContactPerson);
+        Person person = personService.createNewPerson(PersonType.CONTACT_PERSON);
         person.addContactPersonFrom(contactPerson);
 
         return contactPerson;
