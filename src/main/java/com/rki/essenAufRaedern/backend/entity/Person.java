@@ -48,17 +48,17 @@ public class Person{
     @OneToMany(mappedBy = "contactPersonFrom", fetch = FetchType.EAGER)
     private Set<ContactPerson> contactPersonFrom = new HashSet<>();
 
-    @OneToMany(mappedBy = "person")
-    private List<ContactPerson> contactPersons = new ArrayList<>();
+    @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
+    private Set<ContactPerson> contactPersons = new HashSet<>();
 
-    @OneToMany(mappedBy = "person")
-    private List<Employee> employees = new ArrayList<>();
+    @OneToOne(mappedBy = "person")
+    private Employee employee;
 
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
     private Set<OrderInformation> orderInformation = new HashSet<>();
 
     @OneToMany(mappedBy = "person")
-    private List<Order> orders = new ArrayList<>();
+    private Set<Order> orders = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
@@ -121,10 +121,11 @@ public class Person{
         if(type.length > 0) {
             return additionalInformation.stream()
                     .filter(item -> Arrays.stream(type).anyMatch(item_ -> item.getInformationType() == item_))
+                    .filter(item -> item.getStatus() == Status.ACTIVE)
                     .collect(Collectors.toList());
         }
 
-        return this.additionalInformation;
+        return this.additionalInformation.stream().filter(item -> item.getStatus() == Status.ACTIVE).collect(Collectors.toList());
     }
 
     public void setAdditionalInformation(List<AdditionalInformation> additionalInformation) {
@@ -132,7 +133,7 @@ public class Person{
     }
 
     public AdditionalInformation addAdditionalInformation(AdditionalInformation additionalInformation) {
-        getAdditionalInformation().add(additionalInformation);
+        this.additionalInformation.add(additionalInformation);
         additionalInformation.setPerson(this);
 
         return additionalInformation;
@@ -167,7 +168,7 @@ public class Person{
         return contactPersonFrom;
     }
 
-    public List<ContactPerson> getContactPersons() {
+    public Set<ContactPerson> getContactPersons() {
         return this.contactPersons;
     }
 
@@ -175,7 +176,7 @@ public class Person{
         return !this.contactPersons.isEmpty();
     }
 
-    public void setContactPerson(List<ContactPerson> Person) {
+    public void setContactPerson(Set<ContactPerson> Person) {
         this.contactPersons = Person;
     }
 
@@ -187,26 +188,12 @@ public class Person{
         this.contactPersons.remove(contactPerson);
     }
 
-    public List<Employee> getEmployees() {
-        return this.employees;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
-
-    public Employee addEmployee(Employee employee) {
-        getEmployees().add(employee);
-        employee.setPerson(this);
-
+    public Employee getEmployee() {
         return employee;
     }
 
-    public Employee removeEmployee(Employee employee) {
-        getEmployees().remove(employee);
-        employee.setPerson(null);
-
-        return employee;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
     public Set<OrderInformation> getOrderInformation() {
@@ -231,11 +218,11 @@ public class Person{
         return orderInformation;
     }
 
-    public List<Order> getOrders() {
+    public Set<Order> getOrders() {
         return this.orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setOrders(Set<Order> orders) {
         this.orders = orders;
     }
 

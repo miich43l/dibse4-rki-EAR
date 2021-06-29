@@ -1,8 +1,5 @@
 package com.rki.essenAufRaedern.ui.views.customer;
-import com.rki.essenAufRaedern.backend.entity.AdditionalInformation;
-import com.rki.essenAufRaedern.backend.entity.Address;
-import com.rki.essenAufRaedern.backend.entity.ContactPerson;
-import com.rki.essenAufRaedern.backend.entity.Person;
+import com.rki.essenAufRaedern.backend.entity.*;
 import com.rki.essenAufRaedern.backend.service.*;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
@@ -117,10 +114,7 @@ public class CustomerView extends VerticalLayout{
     private void addPerson() {
         grid.asSingleSelect().clear();
 
-        Person newPerson = new Person();
-        newPerson.setAddress(new Address());
-        newPerson.setStatus(Status.ACTIVE);
-        newPerson.setPersonType(PersonType.CLIENT);
+        Person newPerson = personService.createNewPerson(PersonType.CLIENT);
 
         editPerson(newPerson);
     }

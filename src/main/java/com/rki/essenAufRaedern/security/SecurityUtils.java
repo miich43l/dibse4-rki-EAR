@@ -73,6 +73,11 @@ public final class SecurityUtils {
     }
 
     public static UserDetails getPrincipal() {
-        return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null) {
+            return null;
+        }
+
+        return (UserDetails) authentication.getPrincipal();
     }
 }

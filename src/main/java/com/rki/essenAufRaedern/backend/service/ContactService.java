@@ -55,6 +55,7 @@ public class ContactService {
         contactRepository.save(contact);
     }
 
+    /*
     @PostConstruct
     public void populateTestData() {
         if (companyRepository.count() == 0) {
@@ -88,4 +89,5 @@ public class ContactService {
                             }).collect(Collectors.toList()));
         }
     }
+    */
 }

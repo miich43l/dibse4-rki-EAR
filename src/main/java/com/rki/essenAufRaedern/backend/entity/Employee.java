@@ -26,8 +26,7 @@ public class Employee {
     private Kitchen kitchen;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "person_id")
+    @OneToOne(fetch = FetchType.EAGER)
     private Person person;
 
     public Employee() {
@@ -63,6 +62,7 @@ public class Employee {
 
     public void setPerson(Person person) {
         this.person = person;
+        person.setEmployee(this);
     }
 
 }

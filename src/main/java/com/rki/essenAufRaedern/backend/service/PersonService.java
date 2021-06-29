@@ -1,6 +1,7 @@
 package com.rki.essenAufRaedern.backend.service;
 
 import com.rki.essenAufRaedern.backend.entity.Address;
+import com.rki.essenAufRaedern.backend.entity.OrderInformation;
 import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.repository.AddressRepository;
 import com.rki.essenAufRaedern.backend.repository.PersonRepository;
@@ -8,6 +9,7 @@ import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -85,6 +87,25 @@ public class PersonService {
         Person newPerson = new Person();
         newPerson.setStatus(Status.ACTIVE);
         newPerson.setPersonType(personType);
+
+        if(personType == PersonType.CLIENT) {
+            Address address = new Address();
+            address.setStatus(Status.ACTIVE);
+            newPerson.setAddress(address);
+
+            OrderInformation orderInformation = new OrderInformation();
+            orderInformation.setStatus(Status.ACTIVE);
+            orderInformation.setMonday(Status.INACTIVE);
+            orderInformation.setTuesday(Status.INACTIVE);
+            orderInformation.setWednesday(Status.INACTIVE);
+            orderInformation.setThursday(Status.INACTIVE);
+            orderInformation.setFriday(Status.INACTIVE);
+            orderInformation.setSaturday(Status.INACTIVE);
+            orderInformation.setSunday(Status.INACTIVE);
+            orderInformation.setDt_form(new Date());
+
+            newPerson.addOrderInformation(orderInformation);
+        }
 
         return newPerson;
     }

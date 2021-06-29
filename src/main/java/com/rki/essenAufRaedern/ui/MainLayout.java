@@ -63,6 +63,10 @@ public class MainLayout extends AppLayout {
     }
 
     private void createDrawer() {
+        if(SecurityUtils.getPrincipal() == null) {
+            return;
+        }
+
         String role = userService.getUserByUsernameIgnoreCase(SecurityUtils.getUsername()).getRole();
         addToDrawer(new VerticalLayout(new RouterLink("home", WelcomeView.class)));
 

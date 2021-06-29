@@ -84,6 +84,9 @@ public class TestDataLoader {
         driver.setPerson(driverPerson);
         employeeRepository.save(driver);
 
+        // driver username = "Max_Vollgas"
+        userService.addUserForPerson(driverPerson);
+
         List<Employee> employees = employeeRepository.findAll();
         System.out.println("Employees: " + employees.get(0).getKitchen());
 
@@ -94,7 +97,6 @@ public class TestDataLoader {
         //Add users
         userService.addUser("test", "Administration", "+123", "test@rki.com", PersonType.ADMINISTRATION, "admin", "changeMe");
         userService.addUser("test", "kitchen", "+123", "test@rki.com", PersonType.KITCHEN, "kitchen", "changeMe");
-        userService.addUser("test", "driver", "+123", "test@rki.com", PersonType.DRIVER, "driver", "changeMe");
         userService.addUser("test", "client", "+123", "test@rki.com", PersonType.CLIENT, "client", "changeMe");
         userService.addUser("test", "contactPerson", "+123", "test@rki.com", PersonType.CONTACT_PERSON, "contactPerson", "changeMe");
         userService.addUser("test", "localCommunity", "+123", "test@rki.com", PersonType.LOCAL_COMMUNITY, "localCommunity", "changeMe");
@@ -186,7 +188,7 @@ public class TestDataLoader {
                         createRandomAdditionalInformationForPerson(person);
                         createRandomOrderInformationForPerson(person);
                     }
-                    case ContactPersonType -> {
+                    case CONTACT_PERSON -> {
                         Person client = clients.get(new Random().nextInt(clients.size()));
 
                         ContactPerson contactPerson = new ContactPerson();
