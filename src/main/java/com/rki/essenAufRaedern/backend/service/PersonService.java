@@ -3,7 +3,9 @@ package com.rki.essenAufRaedern.backend.service;
 import com.rki.essenAufRaedern.backend.entity.Address;
 import com.rki.essenAufRaedern.backend.entity.OrderInformation;
 import com.rki.essenAufRaedern.backend.entity.Person;
+import com.rki.essenAufRaedern.backend.repository.AdditionalInformationRepository;
 import com.rki.essenAufRaedern.backend.repository.AddressRepository;
+import com.rki.essenAufRaedern.backend.repository.ContactPersonRepository;
 import com.rki.essenAufRaedern.backend.repository.PersonRepository;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
@@ -25,11 +27,15 @@ public class PersonService {
     private static final Logger LOGGER = Logger.getLogger(PersonService.class.getName());
 
     private final PersonRepository personRepository;
+    private final ContactPersonRepository contactPersonRepository;
     private final AddressRepository addressRepository;
+    private final AdditionalInformationRepository additionalInformationRepository;
 
-    public PersonService(PersonRepository personRepository, AddressRepository addressRepository) {
+    public PersonService(PersonRepository personRepository, ContactPersonRepository contactPersonRepository, AddressRepository addressRepository, AdditionalInformationRepository additionalInformationRepository) {
         this.personRepository = personRepository;
+        this.contactPersonRepository = contactPersonRepository;
         this.addressRepository = addressRepository;
+        this.additionalInformationRepository = additionalInformationRepository;
     }
 
     public List<Person> findAll() {
@@ -57,6 +63,27 @@ public class PersonService {
             return  getActiveClients();
         }
         return personRepository.findDistinctByPersonTypeAndStatusAndFirstNameAndLastName(PersonType.CLIENT, Status.ACTIVE, firstname, lastname);
+    }
+
+    public void saveAllUnsavedAdditionalInformation(Person person) {
+        person.getAdditionalInformation().forEach(item -> {
+            if(item.getId() == null) {
+                additionalInformationRepository.save(item);
+            }
+        });
+    }
+
+    public void saveAllUnsavedContactPersons(Person person) {
+        person.getContactPersons().forEach(item -> {
+            if(item.getId() == null) {
+                if(item.getContactPersonFrom().getId() == null) {
+                    System.out.println("saveAllUnsavedContactPersons: save person: " + item.getContactPersonFrom());
+                    personRepository.save(item.getContactPersonFrom());
+                }
+
+                contactPersonRepository.save(item);
+            }
+        });
     }
 
     public void delete(Person person) {

@@ -43,7 +43,7 @@ public class Person{
     private Status status;
 
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
-    private List<AdditionalInformation> additionalInformation = new ArrayList<>();
+    private Set<AdditionalInformation> additionalInformation = new HashSet<>();
 
     @OneToMany(mappedBy = "contactPersonFrom", fetch = FetchType.EAGER)
     private Set<ContactPerson> contactPersonFrom = new HashSet<>();
@@ -117,18 +117,21 @@ public class Person{
         this.status = status;
     }
 
+    public Set<AdditionalInformation> getAllAdditionalInformation() {
+        return this.additionalInformation;
+    }
+
     public List<AdditionalInformation> getAdditionalInformation(InformationType ... type) {
         if(type.length > 0) {
             return additionalInformation.stream()
-                    .filter(item -> Arrays.stream(type).anyMatch(item_ -> item.getInformationType() == item_))
-                    .filter(item -> item.getStatus() == Status.ACTIVE)
+                    .filter(item -> Arrays.stream(type).anyMatch(item_ -> item.getInformationType() == item_) && item.getStatus() == Status.ACTIVE)
                     .collect(Collectors.toList());
         }
 
         return this.additionalInformation.stream().filter(item -> item.getStatus() == Status.ACTIVE).collect(Collectors.toList());
     }
 
-    public void setAdditionalInformation(List<AdditionalInformation> additionalInformation) {
+    public void setAdditionalInformation(Set<AdditionalInformation> additionalInformation) {
         this.additionalInformation = additionalInformation;
     }
 
@@ -140,7 +143,7 @@ public class Person{
     }
 
     public AdditionalInformation removeAdditionalInformation(AdditionalInformation additionalInformation) {
-        getAdditionalInformation().remove(additionalInformation);
+        this.additionalInformation.remove(additionalInformation);
         additionalInformation.setPerson(null);
 
         return additionalInformation;
