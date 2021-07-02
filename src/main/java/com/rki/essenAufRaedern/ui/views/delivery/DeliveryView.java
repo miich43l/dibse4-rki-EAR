@@ -15,7 +15,6 @@ import com.rki.essenAufRaedern.ui.MainLayout;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMap;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMapMarker;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMapRoute;
-import com.rki.essenAufRaedern.ui.components.orders.OrderDeliveriesWidget;
 import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationComponent;
 import com.rki.essenAufRaedern.ui.components.person.ContactPersonComponent;
 import com.vaadin.flow.component.Component;
@@ -28,8 +27,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.rki.essenAufRaedern.ui.components.olmap.OLMap;
-import com.rki.essenAufRaedern.ui.components.olmap.OLMapMarker;
 import com.rki.essenAufRaedern.ui.components.orders.OrderDeliveriesList;
 import org.springframework.security.access.annotation.Secured;
 
