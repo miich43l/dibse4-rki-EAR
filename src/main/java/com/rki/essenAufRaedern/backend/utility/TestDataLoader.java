@@ -261,16 +261,17 @@ public class TestDataLoader {
         userService.save(user);
     }
 
-    private void createOrdersForPerson(Kitchen kitchen, Person person, int nDayOffset) {
+    private void createOrdersForPerson(Kitchen kitchen, Person person, int dayOffset) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
-        cal.add(Calendar.DAY_OF_YEAR, nDayOffset);
+        cal.add(Calendar.DAY_OF_YEAR, dayOffset);
 
         Order order = new Order();
         order.setKitchen(kitchen);
         order.setPerson(person);
         order.setDt(cal.getTime());
         order.setStatus(Status.ACTIVE);
+        order.setPrepared((dayOffset == 0 && new Random().nextBoolean()) ? "Vorbereitet" : null);
         orderRepository.save(order);
     }
 

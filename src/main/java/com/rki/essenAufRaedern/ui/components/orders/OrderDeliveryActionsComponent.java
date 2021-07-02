@@ -10,9 +10,9 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 
 public class OrderDeliveryActionsComponent extends VerticalLayout {
-    private Button deliveredButton = new Button("Geliefert");
-    private Button notDeliveredButton = new Button("Nicht Geliefert");
-    private Button callContactPersonButton = new Button("Kontaktperson");
+    private final Button deliveredButton = new Button("Geliefert");
+    private final Button notDeliveredButton = new Button("Nicht Geliefert");
+    private final Button callContactPersonButton = new Button("Kontaktperson");
 
     private Binder<Order> binder = new Binder(Order.class);
 

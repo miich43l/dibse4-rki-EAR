@@ -51,6 +51,10 @@ import java.util.stream.Collectors;
 @Secured({"ADMINISTRATION", "KITCHEN", "DEVELOPER"})
 public class KitchenView extends VerticalLayout {
 
+    // TODO:
+    // - Thomas
+    // - reorder functions (data, UI)
+
     private final KitchenService kitchenService;
     private final OrderService orderService;
     private final AdditionalInformationService additionalInformationService;

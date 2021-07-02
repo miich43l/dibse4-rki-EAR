@@ -30,6 +30,10 @@ import java.util.stream.Collectors;
 @PageTitle("Traveling salesman")
 public class TravelingSalesmanView extends VerticalLayout {
 
+    // TODO:
+    // - Thomas
+    // - refactor
+
     public TravelingSalesmanView() {
         addClassName("tsp-view");
 

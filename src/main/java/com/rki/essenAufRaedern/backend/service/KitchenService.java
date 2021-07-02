@@ -26,15 +26,13 @@ import java.util.logging.Logger;
 public class KitchenService {
     private static final Logger LOGGER = Logger.getLogger(KitchenService.class.getName());
     private final KitchenRepository kitchenRepository;
-    private final AddressRepository addressRepository;
     private final PersonRepository personRepository;
     private final EmployeeRepository employeeRepository;
     private final OrderRepository orderRepository;
 
 
-    public KitchenService(KitchenRepository kitchenRepository, AddressRepository addressRepository, PersonRepository personRepository, EmployeeRepository employeeRepository, OrderRepository orderRepository) {
+    public KitchenService(KitchenRepository kitchenRepository, PersonRepository personRepository, EmployeeRepository employeeRepository, OrderRepository orderRepository) {
         this.kitchenRepository = kitchenRepository;
-        this.addressRepository = addressRepository;
         this.personRepository = personRepository;
         this.employeeRepository = employeeRepository;
         this.orderRepository = orderRepository;

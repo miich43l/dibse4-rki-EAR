@@ -17,8 +17,7 @@ import com.vaadin.flow.shared.Registration;
 
 public class AdditionalInformationComponent extends VerticalLayout {
 
-    private Person person;
-    private Grid<AdditionalInformation> infoGrid = new Grid();
+    private final Grid<AdditionalInformation> infoGrid = new Grid(AdditionalInformation.class);
     private InformationType informationTypeFilter = null;
 
 
@@ -28,7 +27,6 @@ public class AdditionalInformationComponent extends VerticalLayout {
     }
 
     public void setPerson(Person person) {
-        this.person = person;
         this.infoGrid.setItems(informationTypeFilter == null ? person.getAdditionalInformation()
                                                              : person.getAdditionalInformation(informationTypeFilter));
     }

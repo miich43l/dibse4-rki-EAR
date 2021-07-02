@@ -6,13 +6,13 @@ package com.rki.essenAufRaedern.algorithm.tsp.solver;
  */
 public class TspSolverFactory {
 
-    private static final TspSolverFactory oInstance = new TspSolverFactory();
+    private static final TspSolverFactory instance = new TspSolverFactory();
 
     private TspSolverFactory() {
     }
 
     public static TspSolverFactory get() {
-        return oInstance;
+        return instance;
     }
 
     public ITspSolver createDefaultSolver() {

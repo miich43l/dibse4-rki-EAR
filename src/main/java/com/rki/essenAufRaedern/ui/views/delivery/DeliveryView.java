@@ -49,6 +49,11 @@ import java.util.stream.Collectors;
 @Secured({"DRIVER", "DEVELOPER"})
 public class DeliveryView extends VerticalLayout {
 
+    // TODO:
+    // - Thomas
+    // - reorder functions (data, UI)
+    // - service
+
     // Components:
     private final OrderDeliveriesList deliveriesList = new OrderDeliveriesList();
     private final OLMap mapComponent = new OLMap();
@@ -104,8 +109,6 @@ public class DeliveryView extends VerticalLayout {
         }
 
         Date date_ = new Date();
-
-        //TODO: Use service!
         Predicate<Order> orderPredicate = order -> {
             Calendar c1 = Calendar.getInstance();
             c1.setTime(date_);
