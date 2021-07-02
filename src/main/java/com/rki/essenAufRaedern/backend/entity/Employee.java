@@ -4,11 +4,9 @@ import com.rki.essenAufRaedern.backend.utility.Status;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 
 /**
- * @author arthurwaldner
  * The persistent class for the employees database table.
  */
 @Entity

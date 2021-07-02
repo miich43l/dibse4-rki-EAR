@@ -12,11 +12,10 @@ import java.util.stream.Collectors;
 
 
 /**
- * @author arthurwaldner
  * The persistent class for the person database table.
  */
 @Entity
-public class Person{
+public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -101,12 +100,12 @@ public class Person{
         return this.lastName;
     }
 
-    public String getFullName() {
-        return getFirstName() + " " + getLastName();
-    }
-
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getFullName() {
+        return getFirstName() + " " + getLastName();
     }
 
     public Status getStatus() {
@@ -121,8 +120,8 @@ public class Person{
         return this.additionalInformation;
     }
 
-    public List<AdditionalInformation> getAdditionalInformation(InformationType ... type) {
-        if(type.length > 0) {
+    public List<AdditionalInformation> getAdditionalInformation(InformationType... type) {
+        if (type.length > 0) {
             return additionalInformation.stream()
                     .filter(item -> Arrays.stream(type).anyMatch(item_ -> item.getInformationType() == item_) && item.getStatus() == Status.ACTIVE)
                     .collect(Collectors.toList());

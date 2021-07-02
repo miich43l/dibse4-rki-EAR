@@ -26,9 +26,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return delPasswordEncoder;
     }
 
-    /**
-     * Require login to access internal pages and configure login form.
-     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // Not using Spring CSRF here to be able to use plain HTML for the login page
@@ -58,10 +55,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
     }
 
-
-    /**
-     * Allows access to static resources, bypassing Spring security.
-     */
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers(

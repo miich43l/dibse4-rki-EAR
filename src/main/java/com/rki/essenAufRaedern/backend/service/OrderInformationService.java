@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 
 /**
- * @author arthurwaldner
  * The service class for the order_information database table.
  */
 

@@ -7,7 +7,6 @@ import java.util.Optional;
 
 
 /**
- * @author arthurwaldner
  * The repository class for the kitchen database table.
  */
 

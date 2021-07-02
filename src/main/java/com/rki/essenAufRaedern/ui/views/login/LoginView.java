@@ -1,16 +1,12 @@
 package com.rki.essenAufRaedern.ui.views.login;
 
 import com.rki.essenAufRaedern.security.SecurityUtils;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginOverlay;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.VaadinSession;
 
 @Route("login")
-    @PageTitle("Login | Vaadin CRM")
+@PageTitle("Login | Österreichisches Rotes Kreuz")
     public class LoginView extends LoginOverlay
             implements AfterNavigationObserver, BeforeEnterObserver {
 
@@ -18,7 +14,6 @@ import com.vaadin.flow.server.VaadinSession;
             LoginI18n i18n = LoginI18n.createDefault();
             i18n.setHeader(new LoginI18n.Header());
             i18n.getHeader().setTitle("Österreichisches Rotes Kreuz");
-            //i18n.getHeader().setDescription();
             i18n.setAdditionalInformation(null);
             i18n.setForm(new LoginI18n.Form());
             i18n.getForm().setSubmit("Sign in");

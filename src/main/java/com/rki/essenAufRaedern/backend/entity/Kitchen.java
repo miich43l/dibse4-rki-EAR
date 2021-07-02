@@ -5,15 +5,11 @@ import com.rki.essenAufRaedern.backend.utility.Status;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
 /**
- * @author arthurwaldner
  * The persistent class for the kitchen database table.
  */
 @Entity

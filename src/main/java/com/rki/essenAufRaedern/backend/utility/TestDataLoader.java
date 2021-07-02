@@ -85,7 +85,14 @@ public class TestDataLoader {
         employeeRepository.save(driver);
 
         // driver username = "Max_Vollgas"
-        userService.addUserForPerson(driverPerson);
+
+        User user = new User();
+        user.setUsername(driverPerson.getFirstName() + "_" + driverPerson.getLastName());
+        user.setEmail(driverPerson.getFirstName() + "." + driverPerson.getLastName() + "@rki.at");
+        user.setStatus(Status.ACTIVE);
+        user.setPerson(driverPerson);
+        user.setPassword("changeMe");
+        userService.save(user);
 
         List<Employee> employees = employeeRepository.findAll();
         System.out.println("Employees: " + employees.get(0).getKitchen());
@@ -95,12 +102,11 @@ public class TestDataLoader {
         int maxOrders = 9;
 
         //Add users
-        userService.addUser("test", "Administration", "+123", "test@rki.com", PersonType.ADMINISTRATION, "admin", "changeMe");
-        userService.addUser("test", "kitchen", "+123", "test@rki.com", PersonType.KITCHEN, "kitchen", "changeMe");
-        userService.addUser("Max", "Muster", "+123", "test@rki.com", PersonType.CLIENT, "client", "changeMe");
-        userService.addUser("test", "contactPerson", "+123", "test@rki.com", PersonType.CONTACT_PERSON, "contactPerson", "changeMe");
-        userService.addUser("test", "localCommunity", "+123", "test@rki.com", PersonType.LOCAL_COMMUNITY, "localCommunity", "changeMe");
-        userService.addUser("test", "developer", "+123", "test@rki.com", PersonType.DEVELOPER, "developer", "changeMe");
+        addUser("test", "Administration", "+123", "test@rki.com", PersonType.ADMINISTRATION, "admin", "changeMe");
+        addUser("test", "kitchen", "+123", "test@rki.com", PersonType.KITCHEN, "kitchen", "changeMe");
+        addUser("test", "contactPerson", "+123", "test@rki.com", PersonType.CONTACT_PERSON, "contactPerson", "changeMe");
+        addUser("test", "localCommunity", "+123", "test@rki.com", PersonType.LOCAL_COMMUNITY, "localCommunity", "changeMe");
+        addUser("test", "developer", "+123", "test@rki.com", PersonType.DEVELOPER, "developer", "changeMe");
 
 
         // Create persons:
@@ -119,7 +125,6 @@ public class TestDataLoader {
             personStrings.add("Benjamin;Wieser;Client;+123");
             personStrings.add("BERAT;Wimmer;Client;+123");
             personStrings.add("Sebastian;Vettel;Driver;+123");
-            personStrings.add("Maria;Mustermann;ContactPerson;+123");
             personStrings.add("Christina;Binder;ContactPerson;+123");
             personStrings.add("CHRISTOF;Brunner;ContactPerson;+123");
             personStrings.add("Christoph;Ebner;ContactPerson;+123");
@@ -237,6 +242,23 @@ public class TestDataLoader {
         orderInformation.setStatus(Status.ACTIVE);
         orderInformationRepository.save(orderInformation);
         person.addOrderInformation(orderInformation);
+    }
+
+    public void addUser(String firstName, String LastName, String phoneNumber, String email, PersonType personType, String username, String password) {
+        User user = new User();
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setStatus(Status.ACTIVE);
+        Person person = new Person();
+        person.setFirstName(firstName);
+        person.setLastName(LastName);
+        person.setPhoneNumber(phoneNumber);
+        person.setPersonType(personType);
+        person.setStatus(Status.ACTIVE);
+        personRepository.save(person);
+        user.setPerson(person);
+        user.setPassword(password);
+        userService.save(user);
     }
 
     private void createOrdersForPerson(Kitchen kitchen, Person person, int nDayOffset) {

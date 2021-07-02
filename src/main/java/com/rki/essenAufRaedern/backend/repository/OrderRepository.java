@@ -9,7 +9,6 @@ import java.util.List;
 
 
 /**
- * @author arthurwaldner
  * The repository class for the orders database table.
  */
 

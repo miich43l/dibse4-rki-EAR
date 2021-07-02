@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 
 
 /**
- * @author arthurwaldner
  * The service class for the additional_information database table.
  */
+
 @Service
 public class AdditionalInformationService {
     private static final Logger LOGGER = Logger.getLogger(AdditionalInformationService.class.getName());

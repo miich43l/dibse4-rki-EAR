@@ -18,8 +18,8 @@ import java.util.logging.Logger;
 
 
 /**
- * @author arthurwaldner
  * The service class for the kitchen database table.
+ * @getDriver(kitchenId) get all drivers for kitchen
  */
 
 @Service

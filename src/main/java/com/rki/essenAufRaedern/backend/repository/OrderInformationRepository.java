@@ -5,8 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 /**
- * @author arthurwaldner
- * The repositiry class for the order_information database table.
+ * The repository class for the order_information database table.
  */
 
 public interface OrderInformationRepository extends JpaRepository<OrderInformation, Long> {

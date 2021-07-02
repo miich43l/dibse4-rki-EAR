@@ -8,7 +8,6 @@ import java.util.Date;
 
 
 /**
- * @author arthurwaldner
  * The persistent class for the order_information database table.
  */
 @Entity
