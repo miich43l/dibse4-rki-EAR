@@ -1,15 +1,14 @@
 package com.rki.essenAufRaedern.backend.entity;
 
 import com.rki.essenAufRaedern.backend.utility.InformationType;
+import com.rki.essenAufRaedern.backend.utility.Status;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 
 /**
- * @author arthurwaldner
  * The persistent class for the additional_information database table.
  */
 @Entity
@@ -29,11 +28,15 @@ public class AdditionalInformation {
     private InformationType informationType;
 
     @NotNull
+    private Status status;
+
+    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id")
     private Person person;
 
     public AdditionalInformation() {
+        this.status = Status.ACTIVE;
     }
 
     public Long getId() {
@@ -68,4 +71,11 @@ public class AdditionalInformation {
         this.person = person;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 }

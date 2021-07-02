@@ -2,6 +2,7 @@ package com.rki.essenAufRaedern.backend.service;
 
 import com.rki.essenAufRaedern.backend.entity.Order;
 import com.rki.essenAufRaedern.backend.repository.OrderRepository;
+import com.rki.essenAufRaedern.backend.utility.Status;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -15,14 +16,13 @@ import java.util.stream.Collectors;
 
 
 /**
- * @author arthurwaldner
  * The service class for the orders database table.
  */
 
 @Service
 public class OrderService {
     private static final Logger LOGGER = Logger.getLogger(OrderService.class.getName());
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
     public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
@@ -37,15 +37,13 @@ public class OrderService {
     }
 
     public void delete(Order order) {
-        orderRepository.delete(order);
+        if (isNull(order)) return;
+        order.setStatus(Status.INACTIVE);
+        orderRepository.save(order);
     }
 
     public void save(Order order) {
-        if (order == null) {
-            LOGGER.log(Level.SEVERE,
-                    "Order is null");
-            return;
-        }
+        if (isNull(order)) return;
         orderRepository.save(order);
     }
 
@@ -77,5 +75,14 @@ public class OrderService {
     public void markAsNotDelivered(Order order) {
         order.setNotDeliverable(new Timestamp(new Date().getTime()));
         orderRepository.save(order);
+    }
+
+    private boolean isNull(Order order) {
+        if (order == null) {
+            LOGGER.log(Level.SEVERE,
+                    "Order is null");
+            return true;
+        }
+        return false;
     }
 }

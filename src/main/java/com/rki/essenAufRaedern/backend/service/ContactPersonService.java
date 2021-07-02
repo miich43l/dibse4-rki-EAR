@@ -3,10 +3,7 @@ package com.rki.essenAufRaedern.backend.service;
 import com.rki.essenAufRaedern.backend.entity.ContactPerson;
 import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.repository.ContactPersonRepository;
-import com.rki.essenAufRaedern.backend.repository.PersonRepository;
-import com.rki.essenAufRaedern.backend.utility.ContactPersonType;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
-import com.rki.essenAufRaedern.backend.utility.Status;
 import org.springframework.stereotype.Service;
 
 import java.util.logging.Level;
@@ -14,7 +11,6 @@ import java.util.logging.Logger;
 
 
 /**
- * @author arthurwaldner
  * The service class for the contact_person database table.
  */
 
@@ -41,18 +37,10 @@ public class ContactPersonService {
     }
 
     public void delete(ContactPerson contactPerson) {
-        if(contactPerson == null) {
+        if (contactPerson == null) {
             return;
         }
 
         contactPersonRepository.delete(contactPerson);
-    }
-
-    public ContactPerson createNewContactPerson() {
-        ContactPerson contactPerson = new ContactPerson();
-        Person person = personService.createNewPerson(PersonType.ContactPerson);
-        person.addContactPersonFrom(contactPerson);
-
-        return contactPerson;
     }
 }

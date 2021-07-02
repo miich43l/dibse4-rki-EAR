@@ -4,11 +4,10 @@ import com.rki.essenAufRaedern.backend.utility.Status;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
+import java.util.Date;
 
 
 /**
- * @author arthurwaldner
  * The persistent class for the order_information database table.
  */
 @Entity
@@ -39,6 +38,14 @@ public class OrderInformation {
 
     @NotNull
     private Status friday;
+
+    @NotNull
+    private Date dt_form;
+
+    private Date dt_to;
+
+    @NotNull
+    private Status status;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
@@ -110,6 +117,30 @@ public class OrderInformation {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public Date getDt_form() {
+        return dt_form;
+    }
+
+    public void setDt_form(Date dt_form) {
+        this.dt_form = dt_form;
+    }
+
+    public Date getDt_to() {
+        return dt_to;
+    }
+
+    public void setDt_to(Date dt_to) {
+        this.dt_to = dt_to;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
 }

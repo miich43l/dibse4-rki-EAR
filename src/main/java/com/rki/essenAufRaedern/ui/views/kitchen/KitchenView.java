@@ -17,7 +17,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridSortOrder;
-import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -28,7 +28,7 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.context.annotation.Scope;
-
+import org.springframework.security.access.annotation.Secured;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -48,19 +48,18 @@ import java.util.stream.Collectors;
 @PageTitle("Küche")
 @CssImport("./styles/kitchen-view.css")
 @Route(value = "kitchen", layout = MainLayout.class)
+@Secured({"ADMINISTRATION", "KITCHEN", "DEVELOPER"})
 public class KitchenView extends VerticalLayout {
 
     private final KitchenService kitchenService;
     private final OrderService orderService;
     private final AdditionalInformationService additionalInformationService;
     private final Kitchen kitchen;
-
-    private Date date = new Date();
-    private Grid<Order> ordersGrid;
-
     private final Label numberOfOrdersLabel = new Label("0");
     private final Label numberOfOrdersDoneLabel = new Label("0");
     private final Label driverLabel = new Label("");
+    private Date date = new Date();
+    private Grid<Order> ordersGrid;
 
     public KitchenView(KitchenService kitchenService, OrderService orderService, AdditionalInformationService additionalInformationService) {
         this.kitchenService = kitchenService;
@@ -80,7 +79,7 @@ public class KitchenView extends VerticalLayout {
     public void updateUI() {
         List<Person> drivers = kitchenService.getDriver(kitchen.getId());
 
-        if(!drivers.isEmpty()) {
+        if (!drivers.isEmpty()) {
             Person driver = drivers.get(0);
             driverLabel.setText(driver.getFullName());
         } else {
@@ -104,7 +103,7 @@ public class KitchenView extends VerticalLayout {
         dayTabs.setWidthFull();
         Date now = new Date();
 
-        for(int n = 0; n < 7; n++) {
+        for (int n = 0; n < 7; n++) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(now);
             cal.add(Calendar.DAY_OF_YEAR, n);
@@ -147,7 +146,7 @@ public class KitchenView extends VerticalLayout {
         ordersGrid.addColumn("dt").setHeader("Datum").setAutoWidth(true);
         ordersGrid.addColumn(new ComponentRenderer<>(order -> {
             Div div = new Div();
-            List<AdditionalInformation> additionalInformations = additionalInformationService.findForPersonAndType(order.getPerson().getId(), InformationType.Kitchen);
+            List<AdditionalInformation> additionalInformations = additionalInformationService.findForPersonAndType(order.getPerson().getId(), InformationType.KITCHEN);
             List<String> infoStrings = additionalInformations.stream().map(AdditionalInformation::getValue).collect(Collectors.toList());
             String content = String.join(", ", infoStrings);
 

@@ -4,11 +4,9 @@ import com.rki.essenAufRaedern.backend.utility.Status;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 
 /**
- * @author arthurwaldner
  * The persistent class for the employees database table.
  */
 @Entity
@@ -26,8 +24,7 @@ public class Employee {
     private Kitchen kitchen;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "person_id")
+    @OneToOne(fetch = FetchType.EAGER)
     private Person person;
 
     public Employee() {
@@ -63,6 +60,7 @@ public class Employee {
 
     public void setPerson(Person person) {
         this.person = person;
+        person.setEmployee(this);
     }
 
 }

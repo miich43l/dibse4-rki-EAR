@@ -1,29 +1,32 @@
 package com.rki.essenAufRaedern.backend.entity;
 
+import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 
 
 /**
- * @author arthurwaldner
  * The persistent class for the users database table.
  */
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Temporal(TemporalType.DATE)
-    private Date lastlogin;
+    private Date lastLogin;
 
     @NotNull
     @NotEmpty
@@ -36,10 +39,13 @@ public class User {
     @Email
     @NotNull
     @NotEmpty
-    private final String email = "";
+    private String email;
 
     @NotNull
     private Status status;
+
+    @NotNull
+    private String role;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
@@ -57,20 +63,26 @@ public class User {
         this.id = id;
     }
 
-    public Date getLastlogin() {
-        return this.lastlogin;
+    public Date getLastLogin() {
+        return this.lastLogin;
     }
 
-    public void setLastlogin(Date lastlogin) {
-        this.lastlogin = lastlogin;
+    public void setLastLogin(Date lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
     }
 
     public String getPassword() {
-        return this.password;
+        return password;
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
+        this.password = bcryptPasswordEncoder.encode(password);
     }
 
     public Status getStatus() {
@@ -85,16 +97,84 @@ public class User {
         return this.username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public static String[] getAllRoles() {
+        return new String[]{"ADMINISTRATION", "KITCHEN", "DRIVER", "CLIENT", "CONTACT_PERSON", "LOCAL_COMMUNITY", "DEVELOPER"};
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public PersonType getPersonType() {
+        return this.person.getPersonType();
+    }
+
+    public void setPersonType(PersonType personType) {
+        this.person.setPersonType(personType);
     }
 
     public Person getPerson() {
-        return this.person;
+        return person;
     }
 
     public void setPerson(Person person) {
         this.person = person;
+        setRole();
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public boolean isActive() {
+        return getStatus().equals(Status.ACTIVE);
+    }
+
+    public String getRole() {
+        PersonType personType = getPersonType();
+        if (personType.equals(PersonType.ADMINISTRATION)) {
+            return "ADMINISTRATION";
+        } else if (personType.equals(PersonType.KITCHEN)) {
+            return "KITCHEN";
+        } else if (personType.equals(PersonType.DRIVER)) {
+            return "DRIVER";
+        } else if (personType.equals(PersonType.CLIENT)) {
+            return "CLIENT";
+        } else if (personType.equals(PersonType.CONTACT_PERSON)) {
+            return "CONTACT_PERSON";
+        } else if (personType.equals(PersonType.LOCAL_COMMUNITY)) {
+            return "LOCAL_COMMUNITY";
+        } else if (personType.equals(PersonType.DEVELOPER)) {
+            return "DEVELOPER";
+        }
+        return null;
+    }
+
+    public void setRole() {
+        this.role = getRole();
+    }
 }

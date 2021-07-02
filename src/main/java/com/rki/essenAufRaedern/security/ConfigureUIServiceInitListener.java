@@ -1,33 +1,42 @@
 package com.rki.essenAufRaedern.security;
 
+import com.rki.essenAufRaedern.backend.entity.User;
+import com.rki.essenAufRaedern.backend.service.UserService;
+import com.rki.essenAufRaedern.ui.views.login.LoginView;
+import com.rki.essenAufRaedern.ui.views.login.WelcomeView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
-import com.rki.essenAufRaedern.ui.views.login.LoginView;
-import org.springframework.stereotype.Component;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Component
+@SpringComponent
 public class ConfigureUIServiceInitListener implements VaadinServiceInitListener {
 
-	@Override
-	public void serviceInit(ServiceInitEvent event) {
-		event.getSource().addUIInitListener(uiEvent -> {
-			final UI ui = uiEvent.getUI();
-			ui.addBeforeEnterListener(this::beforeEnter);
-		});
-	}
+    @Autowired
+    UserService userService;
 
-	/**
-	 * Reroutes the user if they're not authorized to access the view.
-	 *
-	 * @param event
-	 *            before navigation event with event details
-	 */
-	private void beforeEnter(BeforeEnterEvent event) {
-		if (!LoginView.class.equals(event.getNavigationTarget())
-		    && !SecurityUtils.isUserLoggedIn()) {
-			event.rerouteTo(LoginView.class);
-		}
-	}
+    @Override
+    public void serviceInit(ServiceInitEvent event) {
+        event.getSource().addUIInitListener(uiEvent -> {
+            final UI ui = uiEvent.getUI();
+            ui.addBeforeEnterListener(this::beforeEnter);
+        });
+    }
+
+    private void beforeEnter(BeforeEnterEvent event) {
+        User user = userService.getCurrentUser();
+        if (null == user) {
+            return;
+        }
+        final boolean accessGranted = SecurityUtils.isAccessGranted(event.getNavigationTarget(), user.getRole());
+        if (!accessGranted) {
+            if (SecurityUtils.isUserLoggedIn()) {
+                event.forwardTo(WelcomeView.class);
+            } else {
+                event.rerouteTo(LoginView.class);
+            }
+        }
+    }
 }

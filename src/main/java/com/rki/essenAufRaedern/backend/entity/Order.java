@@ -4,18 +4,16 @@ import com.rki.essenAufRaedern.backend.utility.Status;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
 
 /**
- * @author arthurwaldner
  * The persistent class for the orders database table.
  */
 @Entity
 @Table(name = "orders")
-public class Order{
+public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,7 +25,7 @@ public class Order{
 
     private Timestamp delivered;
 
-    private Timestamp notDeliverable ;
+    private Timestamp notDeliverable;
 
     private String prepared;
 

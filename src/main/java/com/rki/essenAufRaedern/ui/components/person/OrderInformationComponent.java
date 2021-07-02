@@ -59,7 +59,7 @@ public class OrderInformationComponent extends Div {
     }
     
     private void readDayOfWeekInformationAndUpdateUi(Status status, String dayOfWeek){
-        if(status == Status.Active){
+        if(status == Status.ACTIVE){
             checkboxGroup.select(dayOfWeek);
         } else {
             checkboxGroup.deselect(dayOfWeek);
@@ -68,9 +68,9 @@ public class OrderInformationComponent extends Div {
     
     private Status isDayOfWeekSelected(String dayOfWeek){
         if (checkboxGroup.isSelected(dayOfWeek)) {
-            return Status.Active;
+            return Status.ACTIVE;
         } else {
-            return Status.Inactive;
+            return Status.INACTIVE;
         }
     }
 }

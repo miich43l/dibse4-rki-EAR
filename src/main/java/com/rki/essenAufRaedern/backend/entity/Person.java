@@ -7,17 +7,15 @@ import com.rki.essenAufRaedern.backend.utility.Status;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
 /**
- * @author arthurwaldner
  * The persistent class for the person database table.
  */
 @Entity
-public class Person{
+public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,14 +34,15 @@ public class Person{
     @Column(name = "last_name")
     private String lastName = "";
 
-    //Todo add @NotNull and @NotEmpty
+    @NotNull
+    @NotEmpty
     @Column(name = "phone_number")
     private String phoneNumber;
     @NotNull
     private Status status;
 
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
-    private List<AdditionalInformation> additionalInformation = new ArrayList<>();
+    private Set<AdditionalInformation> additionalInformation = new HashSet<>();
 
     @OneToMany(mappedBy = "contactPersonFrom", fetch = FetchType.EAGER)
     private Set<ContactPerson> contactPersonFrom = new HashSet<>();
@@ -51,14 +50,14 @@ public class Person{
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
     private Set<ContactPerson> contactPersons = new HashSet<>();
 
-    @OneToMany(mappedBy = "person")
-    private List<Employee> employees = new ArrayList<>();
+    @OneToOne(mappedBy = "person")
+    private Employee employee;
 
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
     private Set<OrderInformation> orderInformation = new HashSet<>();
 
     @OneToMany(mappedBy = "person")
-    private List<Order> orders = new ArrayList<>();
+    private Set<Order> orders = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
@@ -101,12 +100,12 @@ public class Person{
         return this.lastName;
     }
 
-    public String getFullName() {
-        return getFirstName() + " " + getLastName();
-    }
-
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getFullName() {
+        return getFirstName() + " " + getLastName();
     }
 
     public Status getStatus() {
@@ -117,29 +116,33 @@ public class Person{
         this.status = status;
     }
 
-    public List<AdditionalInformation> getAdditionalInformation(InformationType ... type) {
-        if(type.length > 0) {
-            return additionalInformation.stream()
-                                        .filter(item -> Arrays.stream(type).anyMatch(item_ -> item.getInformationType() == item_))
-                                        .collect(Collectors.toList());
-        }
-
+    public Set<AdditionalInformation> getAllAdditionalInformation() {
         return this.additionalInformation;
     }
 
-    public void setAdditionalInformation(List<AdditionalInformation> additionalInformation) {
+    public List<AdditionalInformation> getAdditionalInformation(InformationType... type) {
+        if (type.length > 0) {
+            return additionalInformation.stream()
+                    .filter(item -> Arrays.stream(type).anyMatch(item_ -> item.getInformationType() == item_) && item.getStatus() == Status.ACTIVE)
+                    .collect(Collectors.toList());
+        }
+
+        return this.additionalInformation.stream().filter(item -> item.getStatus() == Status.ACTIVE).collect(Collectors.toList());
+    }
+
+    public void setAdditionalInformation(Set<AdditionalInformation> additionalInformation) {
         this.additionalInformation = additionalInformation;
     }
 
     public AdditionalInformation addAdditionalInformation(AdditionalInformation additionalInformation) {
-        getAdditionalInformation().add(additionalInformation);
+        this.additionalInformation.add(additionalInformation);
         additionalInformation.setPerson(this);
 
         return additionalInformation;
     }
 
     public AdditionalInformation removeAdditionalInformation(AdditionalInformation additionalInformation) {
-        getAdditionalInformation().remove(additionalInformation);
+        this.additionalInformation.remove(additionalInformation);
         additionalInformation.setPerson(null);
 
         return additionalInformation;
@@ -187,26 +190,12 @@ public class Person{
         this.contactPersons.remove(contactPerson);
     }
 
-    public List<Employee> getEmployees() {
-        return this.employees;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
-
-    public Employee addEmployee(Employee employee) {
-        getEmployees().add(employee);
-        employee.setPerson(this);
-
+    public Employee getEmployee() {
         return employee;
     }
 
-    public Employee removeEmployee(Employee employee) {
-        getEmployees().remove(employee);
-        employee.setPerson(null);
-
-        return employee;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
     public Set<OrderInformation> getOrderInformation() {
@@ -231,11 +220,11 @@ public class Person{
         return orderInformation;
     }
 
-    public List<Order> getOrders() {
+    public Set<Order> getOrders() {
         return this.orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setOrders(Set<Order> orders) {
         this.orders = orders;
     }
 

@@ -1,10 +1,7 @@
 package com.rki.essenAufRaedern.ui.views.customer;
 
-//import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.entity.*;
 import com.rki.essenAufRaedern.backend.service.*;
-
-import com.rki.essenAufRaedern.backend.utility.ContactPersonType;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import com.rki.essenAufRaedern.ui.MainLayout;
@@ -17,6 +14,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -26,15 +24,15 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.component.notification.Notification.Position;
+import org.springframework.security.access.annotation.Secured;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @PageTitle("Kunden")
 @Route(value = "kunden", layout = MainLayout.class)
-//@CssImport("./styles/shared-styles.css")
-
+@Secured({"ADMINISTRATION", "LOCAL_COMMUNITY", "DEVELOPER"})
 public class CustomerView extends VerticalLayout{
 
     CustomerForm personForm;
@@ -91,6 +89,8 @@ public class CustomerView extends VerticalLayout{
             addressForm.validateAndSave();
             addressService.save(person.getAddress());
             personService.save(person);
+            personService.saveAllUnsavedAdditionalInformation(person);
+            personService.saveAllUnsavedContactPersons(person);
             orderInformationService.save(orderInformationForm.getOrderInformation());
 
         } catch (ValidationException e) {
@@ -118,19 +118,8 @@ public class CustomerView extends VerticalLayout{
     private void addPerson() {
         grid.asSingleSelect().clear();
 
-        Person newPerson = new Person();
-        newPerson.setAddress(new Address());
-        newPerson.setStatus(Status.Active);
-        newPerson.setPersonType(PersonType.Client);
-        OrderInformation orderInformation = new OrderInformation();
-        orderInformation.setMonday(Status.Inactive);
-        orderInformation.setTuesday(Status.Inactive);
-        orderInformation.setWednesday(Status.Inactive);
-        orderInformation.setThursday(Status.Inactive);
-        orderInformation.setFriday(Status.Inactive);
-        orderInformation.setSaturday(Status.Inactive);
-        orderInformation.setSunday(Status.Inactive);
-        newPerson.addOrderInformation(orderInformation);
+        Person newPerson = createNewPerson(PersonType.CLIENT);
+
         editPerson(newPerson);
     }
 
@@ -204,8 +193,9 @@ public class CustomerView extends VerticalLayout{
                 if (!addAdditionalInformationForm.isValid()){
                     return;
                 }
+                System.out.println("Event received ID: " + addAdditionalInformationForm.getAdditionalInformation().getId());
+
                 person.addAdditionalInformation(addAdditionalInformationForm.getAdditionalInformation());
-                additionalInformationService.save(addAdditionalInformationForm.getAdditionalInformation());
                 additionalInformationForm.setPerson(person);
                 addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
             });
@@ -215,8 +205,13 @@ public class CustomerView extends VerticalLayout{
             additionalInformationForm.setPerson(person);
             additionalInformationForm.setWidthFull();
             additionalInformationForm.addListener(AdditionalInformationComponent.DeleteButtonPressedEvent.class,event ->{
-                System.out.println("Event received");
-                additionalInformationService.delete(event.getAdditionalInformation());
+                System.out.println("Event received ID: " + event.getAdditionalInformation().getId());
+                if(event.getAdditionalInformation().getId() == null) {
+                    person.removeAdditionalInformation(event.getAdditionalInformation());
+                } else {
+                    additionalInformationService.delete(event.getAdditionalInformation());
+                }
+
                 additionalInformationForm.setPerson(person);
             });
             tabLayout.add(additionalInformationForm);
@@ -252,7 +247,7 @@ public class CustomerView extends VerticalLayout{
             HorizontalLayout addLayout = new HorizontalLayout();
             addLayout.setDefaultVerticalComponentAlignment(Alignment.END);
             contactPersonForm = new ContactPersonForm();
-            contactPersonForm.setContactPerson(contactPersonService.createNewContactPerson());
+            contactPersonForm.setContactPerson(createNewContactPerson());
             addLayout.add(contactPersonForm);
             tabLayout.add(addLayout);
 
@@ -265,14 +260,9 @@ public class CustomerView extends VerticalLayout{
                 ContactPerson newContactPerson = contactPersonForm.getContactPerson();
                 newContactPerson.setPerson(person);
                 person.addContactPerson(newContactPerson);
-                personService.save(newContactPerson.getContactPersonFrom());
-                contactPersonService.save(newContactPerson);
-
-                System.out.println("Contact persons: " + person.getContactPersons());
 
                 contactPersonComponent.setPerson(person);
-
-                contactPersonForm.setContactPerson(contactPersonService.createNewContactPerson());
+                contactPersonForm.setContactPerson(createNewContactPerson());
             });
 
             tabLayout.add(addContactPersonButton);
@@ -338,8 +328,43 @@ public class CustomerView extends VerticalLayout{
         return dialog;
     }
 
+    private ContactPerson createNewContactPerson() {
+        ContactPerson contactPerson = new ContactPerson();
+        Person person = createNewPerson(PersonType.CONTACT_PERSON);
+        person.addContactPersonFrom(contactPerson);
+
+        return contactPerson;
+    }
+
+    public Person createNewPerson(PersonType personType) {
+        Person newPerson = new Person();
+        newPerson.setStatus(Status.ACTIVE);
+        newPerson.setPersonType(personType);
+
+        if (personType == PersonType.CLIENT) {
+            Address address = new Address();
+            address.setStatus(Status.ACTIVE);
+            newPerson.setAddress(address);
+
+            OrderInformation orderInformation = new OrderInformation();
+            orderInformation.setStatus(Status.ACTIVE);
+            orderInformation.setMonday(Status.INACTIVE);
+            orderInformation.setTuesday(Status.INACTIVE);
+            orderInformation.setWednesday(Status.INACTIVE);
+            orderInformation.setThursday(Status.INACTIVE);
+            orderInformation.setFriday(Status.INACTIVE);
+            orderInformation.setSaturday(Status.INACTIVE);
+            orderInformation.setSunday(Status.INACTIVE);
+            orderInformation.setDt_form(new Date());
+
+            newPerson.addOrderInformation(orderInformation);
+        }
+
+        return newPerson;
+    }
+
     private void closeEditor() {
-        if(editDialog == null) {
+        if (editDialog == null) {
             return;
         }
 
