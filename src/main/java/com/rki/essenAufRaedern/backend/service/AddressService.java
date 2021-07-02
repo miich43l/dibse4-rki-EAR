@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 
 /**
- * @author arthurwaldner
  * The service class for the address database table.
  */
 

@@ -15,7 +15,6 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.router.RouteConfiguration;
 import com.vaadin.flow.router.RouterLink;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ public class MainLayout extends AppLayout {
     private final ConfirmDialog confirmDialog = new ConfirmDialog();
 
     @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     public MainLayout(UserService userService) {
         this.userService = userService;
@@ -57,13 +56,13 @@ public class MainLayout extends AppLayout {
     protected void afterNavigation() {
         super.afterNavigation();
         confirmDialog.setOpened(false);
-        if (!RouteConfiguration.forSessionScope().isRouteRegistered(this.getContent().getClass())){
+        if (!RouteConfiguration.forSessionScope().isRouteRegistered(this.getContent().getClass())) {
             //toDo add error page
         }
     }
 
     private void createDrawer() {
-        if(SecurityUtils.getPrincipal() == null) {
+        if (SecurityUtils.getPrincipal() == null) {
             return;
         }
 

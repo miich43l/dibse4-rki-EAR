@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 /**
- * @author arthurwaldner
  * The repository class for the address database table.
  */
 

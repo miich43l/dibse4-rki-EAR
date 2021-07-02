@@ -1,4 +1,5 @@
 package com.rki.essenAufRaedern.ui.views.customer;
+
 import com.rki.essenAufRaedern.backend.entity.*;
 import com.rki.essenAufRaedern.backend.service.*;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
@@ -13,6 +14,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -22,9 +24,9 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.component.notification.Notification.Position;
 import org.springframework.security.access.annotation.Secured;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -116,7 +118,7 @@ public class CustomerView extends VerticalLayout{
     private void addPerson() {
         grid.asSingleSelect().clear();
 
-        Person newPerson = personService.createNewPerson(PersonType.CLIENT);
+        Person newPerson = createNewPerson(PersonType.CLIENT);
 
         editPerson(newPerson);
     }
@@ -245,7 +247,7 @@ public class CustomerView extends VerticalLayout{
             HorizontalLayout addLayout = new HorizontalLayout();
             addLayout.setDefaultVerticalComponentAlignment(Alignment.END);
             contactPersonForm = new ContactPersonForm();
-            contactPersonForm.setContactPerson(contactPersonService.createNewContactPerson());
+            contactPersonForm.setContactPerson(createNewContactPerson());
             addLayout.add(contactPersonForm);
             tabLayout.add(addLayout);
 
@@ -260,7 +262,7 @@ public class CustomerView extends VerticalLayout{
                 person.addContactPerson(newContactPerson);
 
                 contactPersonComponent.setPerson(person);
-                contactPersonForm.setContactPerson(contactPersonService.createNewContactPerson());
+                contactPersonForm.setContactPerson(createNewContactPerson());
             });
 
             tabLayout.add(addContactPersonButton);
@@ -326,8 +328,43 @@ public class CustomerView extends VerticalLayout{
         return dialog;
     }
 
+    private ContactPerson createNewContactPerson() {
+        ContactPerson contactPerson = new ContactPerson();
+        Person person = createNewPerson(PersonType.CONTACT_PERSON);
+        person.addContactPersonFrom(contactPerson);
+
+        return contactPerson;
+    }
+
+    public Person createNewPerson(PersonType personType) {
+        Person newPerson = new Person();
+        newPerson.setStatus(Status.ACTIVE);
+        newPerson.setPersonType(personType);
+
+        if (personType == PersonType.CLIENT) {
+            Address address = new Address();
+            address.setStatus(Status.ACTIVE);
+            newPerson.setAddress(address);
+
+            OrderInformation orderInformation = new OrderInformation();
+            orderInformation.setStatus(Status.ACTIVE);
+            orderInformation.setMonday(Status.INACTIVE);
+            orderInformation.setTuesday(Status.INACTIVE);
+            orderInformation.setWednesday(Status.INACTIVE);
+            orderInformation.setThursday(Status.INACTIVE);
+            orderInformation.setFriday(Status.INACTIVE);
+            orderInformation.setSaturday(Status.INACTIVE);
+            orderInformation.setSunday(Status.INACTIVE);
+            orderInformation.setDt_form(new Date());
+
+            newPerson.addOrderInformation(orderInformation);
+        }
+
+        return newPerson;
+    }
+
     private void closeEditor() {
-        if(editDialog == null) {
+        if (editDialog == null) {
             return;
         }
 

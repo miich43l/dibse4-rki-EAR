@@ -15,7 +15,6 @@ import java.util.Date;
 
 
 /**
- * @author arthurwaldner
  * The persistent class for the users database table.
  */
 @Entity
@@ -98,6 +97,10 @@ public class User implements UserDetails {
         return this.username;
     }
 
+    public static String[] getAllRoles() {
+        return new String[]{"ADMINISTRATION", "KITCHEN", "DRIVER", "CLIENT", "CONTACT_PERSON", "LOCAL_COMMUNITY", "DEVELOPER"};
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -116,10 +119,6 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public PersonType getPersonType() {
@@ -147,17 +146,12 @@ public class User implements UserDetails {
         this.email = email;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public boolean isActive() {
-        if (getStatus().equals(Status.ACTIVE)) return true;
-        return false;
-    }
-
-    public void setRole() {
-        this.role =  getRole();
-    }
-
-    public static String[] getAllRoles() {
-        return new String[]{"ADMINISTRATION", "KITCHEN", "DRIVER", "CLIENT", "CONTACT_PERSON", "LOCAL_COMMUNITY", "DEVELOPER"};
+        return getStatus().equals(Status.ACTIVE);
     }
 
     public String getRole() {
@@ -178,5 +172,9 @@ public class User implements UserDetails {
             return "DEVELOPER";
         }
         return null;
+    }
+
+    public void setRole() {
+        this.role = getRole();
     }
 }

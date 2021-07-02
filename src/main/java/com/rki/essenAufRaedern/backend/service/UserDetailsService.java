@@ -7,16 +7,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * The service class for security.
+ */
 @Service
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
 
     @Autowired
-    private UserRepository repository;
+    private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = repository.findByUsernameIgnoreCase(username);
+        User user = userRepository.findByUsernameIgnoreCase(username);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }

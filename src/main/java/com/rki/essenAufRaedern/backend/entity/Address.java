@@ -8,7 +8,6 @@ import javax.validation.constraints.NotNull;
 
 
 /**
- * @author arthurwaldner
  * The persistent class for the address database table.
  */
 @Entity

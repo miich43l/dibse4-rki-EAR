@@ -16,14 +16,13 @@ import java.util.stream.Collectors;
 
 
 /**
- * @author arthurwaldner
  * The service class for the orders database table.
  */
 
 @Service
 public class OrderService {
     private static final Logger LOGGER = Logger.getLogger(OrderService.class.getName());
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
     public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;

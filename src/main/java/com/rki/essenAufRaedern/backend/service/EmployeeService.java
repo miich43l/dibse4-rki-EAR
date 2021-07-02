@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 
 /**
- * @author arthurwaldner
  * The service class for the employees database table.
  */
 
@@ -28,7 +27,9 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
-    public List<Employee> findByKitchenId(Long id) { return employeeRepository.findByKitchenId(id);}
+    public List<Employee> findByKitchenId(Long id) {
+        return employeeRepository.findByKitchenId(id);
+    }
 
     public long count() {
         return employeeRepository.count();

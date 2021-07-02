@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 
 
 /**
- * @author arthurwaldner
  * The persistent class for the additional_information database table.
  */
 @Entity

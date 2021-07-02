@@ -7,7 +7,6 @@ import java.util.List;
 
 
 /**
- * @author arthurwaldner
  * The repository class for the employees database table.
  */
 
