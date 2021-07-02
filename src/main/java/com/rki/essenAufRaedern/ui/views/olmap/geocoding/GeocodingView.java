@@ -22,6 +22,10 @@ import java.awt.geom.Point2D;
 @Route(value = "geocoding", layout = MainLayout.class)
 public class GeocodingView extends VerticalLayout {
 
+    // TODO:
+    // - Thomas
+    // - refactor
+
     public GeocodingView() {
         addClassName("geocoding-view");
 

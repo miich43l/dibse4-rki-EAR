@@ -11,6 +11,11 @@ import com.vaadin.flow.data.converter.LocalDateToDateConverter;
 
 public class CustomerForm extends FormLayout {
 
+    //TODO:
+    // - Sandra
+    // - private final
+    // - move to component package
+
     TextField firstName = new TextField("Vorname");
     TextField lastName = new TextField("Nachname");
 

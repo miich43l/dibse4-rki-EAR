@@ -12,21 +12,21 @@ import java.util.List;
 import java.util.Set;
 
 
-public class OrderDeliveriesWidget extends VerticalLayout {
+public class OrderDeliveriesList extends VerticalLayout {
 
     private final Grid<Order> ordersGrid = new Grid<>();
     private List<Order> orders;
 
-    public OrderDeliveriesWidget() {
+    public OrderDeliveriesList() {
         ordersGrid.addColumn(new ComponentRenderer<>(item -> {
-            OrderDeliveryWidget comp = new OrderDeliveryWidget(item);
-            comp.addListener(OrderDeliveryWidget.InfoButtonPressedEvent.class, e -> this.onAdditionalInfoButtonPressed(e.getOrder()));
+            OrderDeliveryComponent comp = new OrderDeliveryComponent(item);
+            comp.addListener(OrderDeliveryComponent.InfoButtonPressedEvent.class, e -> this.onAdditionalInfoButtonPressed(e.getOrder()));
             return comp;
         })).setAutoWidth(true);
         ordersGrid.setSelectionMode(Grid.SelectionMode.SINGLE);
         ordersGrid.addItemClickListener(e -> this.onDidSelectOrderItem());
 
-        ordersGrid.setItemDetailsRenderer(new ComponentRenderer<OrderDeliveryActionsComponent, Order>(item -> {
+        ordersGrid.setItemDetailsRenderer(new ComponentRenderer<>(item -> {
             OrderDeliveryActionsComponent actionsComponent = new OrderDeliveryActionsComponent(item);
 
             actionsComponent.addListener(OrderDeliveryActionsComponent.DeliveredEvent.class, e -> this.onDeliveredPressed(item));
@@ -85,10 +85,10 @@ public class OrderDeliveriesWidget extends VerticalLayout {
     }
 
     // -- EVENTS:
-    public static abstract class Event extends ComponentEvent<OrderDeliveriesWidget> {
+    public static abstract class Event extends ComponentEvent<OrderDeliveriesList> {
         private Order order;
 
-        protected Event(OrderDeliveriesWidget source, Order order) {
+        protected Event(OrderDeliveriesList source, Order order) {
             super(source, false);
             this.order = order;
         }
@@ -99,31 +99,31 @@ public class OrderDeliveriesWidget extends VerticalLayout {
     }
 
     public static class DidSelectEvent extends Event {
-        protected DidSelectEvent(OrderDeliveriesWidget source, Order order) {
+        protected DidSelectEvent(OrderDeliveriesList source, Order order) {
             super(source, order);
         }
     }
 
     public static class InfoButtonPressedEvent extends Event {
-        protected InfoButtonPressedEvent(OrderDeliveriesWidget source, Order order) {
+        protected InfoButtonPressedEvent(OrderDeliveriesList source, Order order) {
             super(source, order);
         }
     }
 
     public static class DeliveredEvent extends Event {
-        protected DeliveredEvent(OrderDeliveriesWidget source, Order order) {
+        protected DeliveredEvent(OrderDeliveriesList source, Order order) {
             super(source, order);
         }
     }
 
     public static class NotDeliveredEvent extends Event {
-        protected NotDeliveredEvent(OrderDeliveriesWidget source, Order order) {
+        protected NotDeliveredEvent(OrderDeliveriesList source, Order order) {
             super(source, order);
         }
     }
 
     public static class CallContactPersonEvent extends Event {
-        protected CallContactPersonEvent(OrderDeliveriesWidget source, Order order) {
+        protected CallContactPersonEvent(OrderDeliveriesList source, Order order) {
             super(source, order);
         }
     }

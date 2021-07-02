@@ -2,6 +2,10 @@ package com.rki.essenAufRaedern.algorithm.tsp.util;
 
 import java.util.List;
 
+/**
+ * @author Thomas Widmann
+ * Represents the sequence of the path (Point1, Point3, Point5, Point4, Point2) and the corresponding cost.
+ */
 public class TspPathSequence {
 
     public TspPathSequence(double cost, List<Integer> path) {

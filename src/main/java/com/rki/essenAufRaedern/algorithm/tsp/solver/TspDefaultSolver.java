@@ -6,41 +6,50 @@ import com.rki.essenAufRaedern.algorithm.tsp.util.TspPathSequence;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Thomas Widmann
+ * Default traveling salesman algorithm implementation.
+ */
 public class TspDefaultSolver implements ITspSolver {
 
-    public TspDefaultSolver() {
-    }
+    // TODO:
+    // - remove hungarian notation
+
+    private int numberOfLocations = 0;
+    private double[][] graphData;
+    private boolean[] pointsVisited;
+    private List<Integer> bestPath = new ArrayList<>();
 
     @Override
     public TspPathSequence solve(AdjacencyMatrix matrix, int startLocation) {
-        m_nLocations = matrix.getDimension();
-        m_arrGraph = matrix.getMatrix();
-        m_arrVisited = new boolean[matrix.getDimension()];
-        m_arrVisited[0] = true;
+        numberOfLocations = matrix.getDimension();
+        graphData = matrix.getMatrix();
+        pointsVisited = new boolean[matrix.getDimension()];
+        pointsVisited[0] = true;
 
         List<Integer> lstTmpPath = new ArrayList<>();
         double cost = tsp(startLocation, 1, 0, Double.MAX_VALUE, lstTmpPath);
 
-        m_lstBestPath.add(m_lstBestPath.size(), startLocation);
+        bestPath.add(bestPath.size(), startLocation);
 
-        System.out.println("Best path: " + m_lstBestPath);
+        System.out.println("Best path: " + bestPath);
 
-        return new TspPathSequence(cost, m_lstBestPath);
+        return new TspPathSequence(cost, bestPath);
     }
 
     private double tsp(int nCurrentPosIdx, int nDepth, double dCurrentCost, double dBestCost, List<Integer> lstVisits) {
         lstVisits.add(nCurrentPosIdx);
 
-        if (nDepth == m_nLocations && m_arrGraph[nCurrentPosIdx][0] > 0) {
-            double dNewCost = dCurrentCost + m_arrGraph[nCurrentPosIdx][0];
+        if (nDepth == numberOfLocations && graphData[nCurrentPosIdx][0] > 0) {
+            double dNewCost = dCurrentCost + graphData[nCurrentPosIdx][0];
 
             //System.out.println("End reached. Path: " + lstVisits + " Cost: " + dNewCost + " Best: " + dBestCost);
 
             if(dNewCost < dBestCost)
             {
                 dBestCost = dNewCost;
-                m_lstBestPath.clear();
-                m_lstBestPath.addAll(lstVisits);
+                bestPath.clear();
+                bestPath.addAll(lstVisits);
             }
 
             lstVisits.remove(lstVisits.size() - 1);
@@ -48,14 +57,14 @@ public class TspDefaultSolver implements ITspSolver {
             return dBestCost;
         }
 
-        for (int nLocIdx = 0; nLocIdx < m_nLocations; nLocIdx++)
+        for (int nLocIdx = 0; nLocIdx < numberOfLocations; nLocIdx++)
         {
-            if (!m_arrVisited[nLocIdx]
-                    && m_arrGraph[nCurrentPosIdx][nLocIdx] > 0)
+            if (!pointsVisited[nLocIdx]
+                    && graphData[nCurrentPosIdx][nLocIdx] > 0)
             {
-                m_arrVisited[nLocIdx] = true;
-                dBestCost = tsp(nLocIdx, nDepth + 1,  dCurrentCost + m_arrGraph[nCurrentPosIdx][nLocIdx], dBestCost, lstVisits);
-                m_arrVisited[nLocIdx] = false;
+                pointsVisited[nLocIdx] = true;
+                dBestCost = tsp(nLocIdx, nDepth + 1,  dCurrentCost + graphData[nCurrentPosIdx][nLocIdx], dBestCost, lstVisits);
+                pointsVisited[nLocIdx] = false;
             }
         }
 
@@ -63,10 +72,4 @@ public class TspDefaultSolver implements ITspSolver {
 
         return dBestCost;
     }
-
-
-    int m_nLocations = 0;
-    double[][] m_arrGraph;
-    boolean[] m_arrVisited;
-    List<Integer> m_lstBestPath = new ArrayList<>();
 }

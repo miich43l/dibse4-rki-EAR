@@ -1,5 +1,9 @@
 package com.rki.essenAufRaedern.algorithm.tsp.util;
 
+/**
+ * @author Thomas Widmann
+ * Represents an adjacency matrix.
+ */
 public class AdjacencyMatrix {
 
     public AdjacencyMatrix(int nDimension) {
