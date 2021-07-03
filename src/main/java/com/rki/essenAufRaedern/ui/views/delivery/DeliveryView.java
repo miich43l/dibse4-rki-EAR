@@ -1,15 +1,10 @@
 package com.rki.essenAufRaedern.ui.views.delivery;
 
-import com.rki.essenAufRaedern.algorithm.tsp.TSP;
-import com.rki.essenAufRaedern.algorithm.tsp.api.IRoutingService;
-import com.rki.essenAufRaedern.algorithm.tsp.api.RoutingServiceFactory;
-import com.rki.essenAufRaedern.algorithm.tsp.solver.TspSolverFactory;
+import com.rki.essenAufRaedern.algorithm.tsp.service.TSPService;
 import com.rki.essenAufRaedern.algorithm.tsp.util.TspPath;
-import com.rki.essenAufRaedern.algorithm.tsp.util.TspPathSequence;
 import com.rki.essenAufRaedern.backend.entity.*;
 import com.rki.essenAufRaedern.backend.service.KitchenService;
 import com.rki.essenAufRaedern.backend.service.OrderService;
-import com.rki.essenAufRaedern.backend.service.UserService;
 import com.rki.essenAufRaedern.backend.utility.InformationType;
 import com.rki.essenAufRaedern.ui.MainLayout;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMap;
@@ -33,8 +28,6 @@ import org.springframework.security.access.annotation.Secured;
 import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * @author Thomas Widmann
@@ -52,7 +45,6 @@ public class DeliveryView extends VerticalLayout {
     // TODO:
     // - Thomas
     // - reorder functions (data, UI)
-    // - service
 
     // Components:
     private final OrderDeliveriesList deliveriesList = new OrderDeliveriesList();
@@ -64,127 +56,49 @@ public class DeliveryView extends VerticalLayout {
     // Services:
     private final OrderService orderService;
     private final KitchenService kitchenService;
-    private final UserService userService;
 
     // Variables:
     private Kitchen kitchen;
-    private Point2D kitchenCoordinates;
     private List<Order> orders = new ArrayList<>();
     private final Map<Long, OLMapMarker> mapOrderIdToMarker = new HashMap<>();
     private final Map<Integer, Order> mapMarkerToOrder = new HashMap<>();
-    private final Map<Long, Point2D> mapOrderToCoordinate = new HashMap<>();
+    private final DeliveryOptimizer deliveryOptimizer;
 
-    private final IRoutingService routingService;
-    private final TSP tsp;
-    private final TspPath tspRoute;
-
-    public DeliveryView(KitchenService kitchenService, OrderService orderService, UserService userService) {
-        this.kitchenService = kitchenService;
+    public DeliveryView(OrderService orderService, KitchenService kitchenService, TSPService tspService) {
         this.orderService = orderService;
-        this.userService = userService;
+        this.kitchenService = kitchenService;
+        this.deliveryOptimizer = new DeliveryOptimizer(tspService);
 
         addClassName("main-layout");
         setWidthFull();
         setPadding(false);
 
-        routingService = RoutingServiceFactory.get().createGraphHopperRoutingService();
-        tsp = new TSP(routingService, TspSolverFactory.get().createDefaultSolver());
-
         loadDataFromDatabase();
-        resolveAddresses();
 
-        List<Point2D> pointsToVisitMinDistance = calculatePathForPointsToVisit();
-        tspRoute = calculateRouteFromPoints(pointsToVisitMinDistance);
-        sortOrdersByPointsToVisit(pointsToVisitMinDistance);
+        optimizeDeliveryOrder();
 
         add(createMainLayout());
         addEventListener();
     }
 
     private void loadDataFromDatabase() {
-        kitchen = getKitchenFromCurrentUser();
+        kitchen = kitchenService.getKitchenForCurrentDriver();
 
         if(kitchen == null) {
             return;
         }
 
-        Date date_ = new Date();
-        Predicate<Order> orderPredicate = order -> {
-            Calendar c1 = Calendar.getInstance();
-            c1.setTime(date_);
-
-            Calendar c2 = Calendar.getInstance();
-            c2.setTime(order.getDt());
-
-            return (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
-                        && c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
-                        && c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH))
-                    && (order.getDelivered() == null
-                        && order.getNotDeliverable() == null);
-        };
-
-        orders = kitchen.getOrders().stream().filter(orderPredicate).collect(Collectors.toList());
+        orders = kitchenService.getOpenOrdersForKitchen(kitchen, new Date());
     }
 
-    private Kitchen getKitchenFromCurrentUser() {
-        User currentUser = userService.getCurrentUser();
-        Person currentPerson = currentUser.getPerson();
-        Employee currentEmployee = currentPerson.getEmployee();
-        if(currentEmployee == null) {
-            return null;
-        }
-
-        return currentEmployee.getKitchen();
+    private void optimizeDeliveryOrder() {
+        deliveryOptimizer.optimizeDeliveries(orders, kitchen.getAddress());
+        sortOrdersByPointsToVisit(deliveryOptimizer.getOptimizedDeliverySequence());
     }
 
     private void sortOrdersByPointsToVisit(List<Point2D> pointsToVisitMinDistance) {
-        orders.sort(Comparator.comparingInt(item -> pointsToVisitMinDistance.indexOf(mapOrderToCoordinate.get(item.getId()))));
+        orders.sort(Comparator.comparingInt(item -> pointsToVisitMinDistance.indexOf(deliveryOptimizer.getMapOrderIdToCoordinate().get(item.getId()))));
         Collections.reverse(orders);
-    }
-
-    private TspPath calculateRouteFromPoints(List<Point2D> pointsToVisitMinDistance) {
-        if(pointsToVisitMinDistance.isEmpty()) {
-            return new TspPath();
-        }
-        return tsp.calculatePathFromCoordinateList(pointsToVisitMinDistance);
-    }
-
-    private List<Point2D> calculatePathForPointsToVisit() {
-        List<Point2D> pointsToVisit = createPointsToVisitList();
-
-        if(pointsToVisit.size() < 2) {
-            return new ArrayList<>();
-        }
-
-        try {
-            TspPathSequence tspSequence = tsp.calculateShortestPathSequence(pointsToVisit, 0);
-            return tspSequence.getPath().stream().map(pointsToVisit::get).collect(Collectors.toList());
-        } catch (Exception exception) {
-            return new ArrayList<>();
-        }
-    }
-
-    private void resolveAddresses() {
-        if(kitchen == null) {
-            return;
-        }
-
-        kitchenCoordinates = routingService.requestCoordinateFromAddress(kitchen.getAddress().toString());
-        for(Order order : orders) {
-            Point2D coordinate = routingService.requestCoordinateFromAddress(order.getPerson().getAddress().toString());
-            mapOrderToCoordinate.put(order.getId(), coordinate);
-        }
-    }
-
-    private List<Point2D> createPointsToVisitList() {
-        List<Point2D> pointsToVisit = new ArrayList<>();
-        pointsToVisit.add(kitchenCoordinates);
-
-        mapOrderToCoordinate.forEach((order, coordinate) -> {
-            pointsToVisit.add(coordinate);
-        });
-
-        return pointsToVisit;
     }
 
     private Component createMainLayout() {
@@ -227,7 +141,7 @@ public class DeliveryView extends VerticalLayout {
         mapComponent.setWidthFull();
 
         if(kitchen != null) {
-            OLMapMarker kitchenMarker = new OLMapMarker(kitchen.getName(), kitchenCoordinates, "house.png");
+            OLMapMarker kitchenMarker = new OLMapMarker(kitchen.getName(), deliveryOptimizer.getKitchenCoordinate(), "house.png");
             mapComponent.addMarker(kitchenMarker);
         }
 
@@ -239,7 +153,7 @@ public class DeliveryView extends VerticalLayout {
         }
 
         for(Order order : orders) {
-            Point2D coordinates = mapOrderToCoordinate.get(order.getId());
+            Point2D coordinates = deliveryOptimizer.getMapOrderIdToCoordinate().get(order.getId());
             OLMapMarker marker = createMapMarkerForOrder(order, coordinates);
 
             mapComponent.addMarker(marker);
@@ -248,8 +162,8 @@ public class DeliveryView extends VerticalLayout {
             System.out.println("Marker: " + marker.getId() + " -> " + order.getPerson().getFullName());
         }
 
-        if(tspRoute != null) {
-            OLMapRoute route = new OLMapRoute(tspRoute.getPoints());
+        if(deliveryOptimizer.getTspPath() != null) {
+            OLMapRoute route = new OLMapRoute(deliveryOptimizer.getTspPath().getPoints());
             mapComponent.addRoute(route);
             mapComponent.setPositionSimulationRoute(route);
         }

@@ -15,7 +15,7 @@ public class TspSolverFactory {
         return instance;
     }
 
-    public ITspSolver createDefaultSolver() {
-        return new TspDefaultSolver();
+    public ITspSolver createBacktrackSolver() {
+        return new TspBacktrackSolver();
     }
 }

@@ -91,7 +91,7 @@ public class TravelingSalesmanView extends VerticalLayout {
 
         performTspButton.addClickListener(event -> {
             TSP oTSP = new TSP(RoutingServiceFactory.get().createGraphHopperRoutingService(),
-                               TspSolverFactory.get().createDefaultSolver());
+                               TspSolverFactory.get().createBacktrackSolver());
             List<Point2D> pointsToVisit = map.getMarkers().stream().map(OLMapMarker::getCoordinates).collect(Collectors.toList());
             TspPathSequence tspSequence = oTSP.calculateShortestPathSequence(pointsToVisit, 0);
             List<Point2D> tspSequenceCoordinates = tspSequence.getPath().stream().map(pointsToVisit::get).collect(Collectors.toList());
