@@ -18,13 +18,13 @@ import com.rki.essenAufRaedern.ui.components.olmap.OLMapMarker;
 
 import java.awt.geom.Point2D;
 
+/**
+ *     !!! This view is only for testing purpose !!!
+ */
+
 @PageTitle("Geocoding")
 @Route(value = "geocoding", layout = MainLayout.class)
 public class GeocodingView extends VerticalLayout {
-
-    // TODO:
-    // - Thomas
-    // - refactor
 
     public GeocodingView() {
         addClassName("geocoding-view");

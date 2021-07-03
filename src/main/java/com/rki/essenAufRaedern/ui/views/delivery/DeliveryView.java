@@ -1,7 +1,6 @@
 package com.rki.essenAufRaedern.ui.views.delivery;
 
 import com.rki.essenAufRaedern.algorithm.tsp.service.TSPService;
-import com.rki.essenAufRaedern.algorithm.tsp.util.TspPath;
 import com.rki.essenAufRaedern.backend.entity.*;
 import com.rki.essenAufRaedern.backend.service.KitchenService;
 import com.rki.essenAufRaedern.backend.service.OrderService;
@@ -42,10 +41,6 @@ import java.util.List;
 @Secured({"DRIVER", "DEVELOPER"})
 public class DeliveryView extends VerticalLayout {
 
-    // TODO:
-    // - Thomas
-    // - reorder functions (data, UI)
-
     // Components:
     private final OrderDeliveriesList deliveriesList = new OrderDeliveriesList();
     private final OLMap mapComponent = new OLMap();
@@ -82,7 +77,7 @@ public class DeliveryView extends VerticalLayout {
     }
 
     private void loadDataFromDatabase() {
-        kitchen = kitchenService.getKitchenForCurrentDriver();
+        kitchen = kitchenService.getKitchenForLoggedInEmployee();
 
         if(kitchen == null) {
             return;

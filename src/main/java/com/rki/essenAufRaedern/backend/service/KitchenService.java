@@ -76,7 +76,7 @@ public class KitchenService {
         return orderRepository.findByDtAndKitchenIdAndStatus(date, kitchenId, Status.ACTIVE);
     }
 
-    public Kitchen getKitchenForCurrentDriver() {
+    public Kitchen getKitchenForLoggedInEmployee() {
         User currentUser = userService.getCurrentUser();
         Person currentPerson = currentUser.getPerson();
         Employee currentEmployee = currentPerson.getEmployee();
