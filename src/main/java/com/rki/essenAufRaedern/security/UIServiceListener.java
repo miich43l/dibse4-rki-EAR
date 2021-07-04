@@ -12,7 +12,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SpringComponent
-public class ConfigureUIServiceInitListener implements VaadinServiceInitListener {
+public class UIServiceListener implements VaadinServiceInitListener {
 
     @Autowired
     UserService userService;
