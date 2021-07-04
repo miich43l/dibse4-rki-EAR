@@ -48,6 +48,7 @@ public final class SecurityUtils {
     public static String getUsername() {
         return String.valueOf(getPrincipal().getUsername());
     }
+
     public static boolean hasRole(String role) {
         return getPrincipal().getAuthorities().contains(new SimpleGrantedAuthority(role));
     }
