@@ -18,8 +18,8 @@ public enum InformationType {
     @Override
     public String toString() {
         return switch (this) {
-            case KITCHEN -> "Kitchen";
-            case DRIVER -> "Driver";
+            case KITCHEN -> "Küche";
+            case DRIVER -> "Fahrer";
             case ADMINISTRATION -> "Administration";
         };
     }

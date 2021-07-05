@@ -52,10 +52,9 @@ public class AdditionalInformationComponent extends VerticalLayout {
         infoGrid.getColumnByKey("type").setVisible(visible);
     }
 
-    private Component createInfoComponent() {
-        VerticalLayout mainLayout = new VerticalLayout();
+    private Component createInfoComponent() { VerticalLayout mainLayout = new VerticalLayout();
 
-        infoGrid.addColumn(new ComponentRenderer<>(info -> new Text(info.getInformationType().toString()))).setHeader("Type").setKey("type");
+        infoGrid.addColumn(new ComponentRenderer<>(info -> new Text(info.getInformationType().toString()))).setHeader("Typ").setKey("type");
         infoGrid.addColumn(AdditionalInformation::getValue).setHeader("Information");
         infoGrid.addColumn(new ComponentRenderer<>(info -> {
             Icon icon = VaadinIcon.TRASH.create();
@@ -63,7 +62,7 @@ public class AdditionalInformationComponent extends VerticalLayout {
             Button deleteButton = new Button(icon);
             deleteButton.addClickListener(e ->{System.out.println("before fire event");fireEvent(new DeleteButtonPressedEvent(this, info));});
             return deleteButton;
-        })).setHeader("Actions").setKey("actions");
+        })).setHeader("Aktion").setKey("actions");
 
         mainLayout.add(infoGrid);
         mainLayout.setPadding(false);
