@@ -31,4 +31,11 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
             "and ((lower(p.firstName) like lower(concat('%', :firstname, '%')) or lower(p.lastName) like lower(concat('%', :lastname, '%'))) " +
             "\t or (lower(p.firstName) like lower(concat('%', :lastname, '%')) or lower(p.lastName) like lower(concat('%', :firstname, '%'))))")
     List<Person> findDistinctByPersonTypeAndStatusAndFirstNameAndLastName(@Param("type") PersonType client, @Param("active") Status active, @Param("firstname") String firstname, @Param("lastname") String lastname);
+
+    @Query("select p from Person p " +
+            "where p.personType = :type " +
+            "and p.status = :active " +
+            "and lower(p.firstName) like lower(concat('%', :searchTerm, '%')) " +
+            "or lower(p.lastName) like lower(concat('%', :searchTerm, '%'))")
+    List<Person> findByFieldInputPersonTypeAndStatus(@Param("searchTerm") String searchTerm, @Param("type") PersonType client, @Param("active") Status active);
 }
