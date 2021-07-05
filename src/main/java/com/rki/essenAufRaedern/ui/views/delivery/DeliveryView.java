@@ -87,6 +87,10 @@ public class DeliveryView extends VerticalLayout {
     }
 
     private void optimizeDeliveryOrder() {
+        if(kitchen == null) {
+            return;
+        }
+        
         deliveryOptimizer.optimizeDeliveries(orders, kitchen.getAddress());
         sortOrdersByPointsToVisit(deliveryOptimizer.getOptimizedDeliverySequence());
     }

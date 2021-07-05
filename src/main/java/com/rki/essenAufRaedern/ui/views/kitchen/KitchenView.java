@@ -77,6 +77,10 @@ public class KitchenView extends VerticalLayout {
     }
 
     public void updateUI() {
+        if(this.kitchen == null) {
+            return;
+        }
+
         List<Person> drivers = kitchenService.getDriver(kitchen.getId());
 
         if (!drivers.isEmpty()) {
