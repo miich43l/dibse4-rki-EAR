@@ -55,6 +55,14 @@ public class PersonService {
         return personRepository.findByPersonTypeAndStatus(PersonType.CLIENT, Status.ACTIVE);
     }
 
+    public List<Person> getActiveClientsBySearchFieldInput(String stringFilter) {
+        if (stringFilter == null || stringFilter.isEmpty()) {
+            return personRepository.findByPersonTypeAndStatus(PersonType.CLIENT, Status.ACTIVE);
+        } else {
+            return personRepository.findByFieldInputPersonTypeAndStatus(stringFilter, PersonType.CLIENT, Status.ACTIVE);
+        }
+    }
+
     public List<Person> getActiveClientsByName(String firstname, String lastname) {
         if (firstname == null && lastname == null){
             return  getActiveClients();

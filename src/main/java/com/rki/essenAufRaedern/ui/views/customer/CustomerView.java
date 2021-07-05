@@ -76,6 +76,7 @@ public class CustomerView extends VerticalLayout{
         add(getToolBar(), content);
         updateList();
         closeEditor();
+        updateSearchList();
     }
 
     private void deletePerson() {
@@ -113,6 +114,7 @@ public class CustomerView extends VerticalLayout{
         filterText.setPlaceholder("nach Namen filtern...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
+        filterText.addValueChangeListener(e-> updateSearchList());
 
         Button addPersonButton = new Button("Kunde hinzufügen", click -> addPerson());
 
@@ -382,5 +384,7 @@ public class CustomerView extends VerticalLayout{
     private void updateList() {
         grid.setItems(personService.getActiveClients());
     }
+
+    private void updateSearchList(){grid.setItems(personService.getActiveClientsBySearchFieldInput(filterText.getValue()));}
 
 }
