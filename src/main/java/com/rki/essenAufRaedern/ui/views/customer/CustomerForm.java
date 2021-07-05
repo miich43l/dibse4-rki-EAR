@@ -21,8 +21,6 @@ public class CustomerForm extends FormLayout {
 
     DatePicker birthdate = new DatePicker();
     TextField phoneNumber = new TextField("Telefonnummer");
-    TextField firstNameContact = new TextField("Kontaktperson Vorname");
-    TextField lastNameContact = new TextField("Kontaktperson Nachname");
 
     Binder<Person> personBinder = new BeanValidationBinder<>(Person.class);
     private Person person;
@@ -37,9 +35,7 @@ public class CustomerForm extends FormLayout {
                 firstName,
                 lastName,
                 birthdate,
-                phoneNumber,
-                firstNameContact,
-                lastNameContact
+                phoneNumber
         );
     }
 
