@@ -67,7 +67,7 @@ public class MainLayout extends AppLayout {
         }
 
         String role = userService.getUserByUsernameIgnoreCase(SecurityUtils.getUsername()).getRole();
-        addToDrawer(new VerticalLayout(new RouterLink("home", WelcomeView.class)));
+        addToDrawer(new VerticalLayout(new RouterLink("Home", WelcomeView.class)));
 
         if (SecurityUtils.isAccessGranted(KitchenView.class, role)) {
             addToDrawer(new VerticalLayout(new RouterLink("Küche", KitchenView.class)));
