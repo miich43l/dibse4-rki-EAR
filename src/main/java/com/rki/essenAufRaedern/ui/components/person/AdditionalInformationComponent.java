@@ -45,6 +45,7 @@ public class AdditionalInformationComponent extends VerticalLayout {
 
     private Component createInfoComponent() { VerticalLayout mainLayout = new VerticalLayout();
 
+        infoGrid.removeAllColumns();
         infoGrid.addColumn(new ComponentRenderer<>(info -> new Text(info.getInformationType().toString()))).setHeader("Typ").setKey("type");
         infoGrid.addColumn(AdditionalInformation::getValue).setHeader("Information");
         infoGrid.addColumn(new ComponentRenderer<>(info -> {
