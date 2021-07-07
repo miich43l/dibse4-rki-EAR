@@ -8,6 +8,9 @@ import java.util.List;
  */
 public class TspPathSequence {
 
+    private final double cost;
+    private final List<Integer> path;
+
     public TspPathSequence(double cost, List<Integer> path) {
         this.cost = cost;
         this.path = path;
@@ -27,7 +30,4 @@ public class TspPathSequence {
                 "path=" + path +
                 '}';
     }
-
-    private final double cost;
-    private final List<Integer> path;
 }

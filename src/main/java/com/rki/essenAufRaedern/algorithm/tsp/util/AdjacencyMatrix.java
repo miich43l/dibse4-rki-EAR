@@ -5,8 +5,8 @@ package com.rki.essenAufRaedern.algorithm.tsp.util;
  */
 public class AdjacencyMatrix {
 
-    int dimension;
-    double[][] matrixData;
+    private final int dimension;
+    private final double[][] matrixData;
 
     public AdjacencyMatrix(int dimension) {
         this.dimension = dimension;

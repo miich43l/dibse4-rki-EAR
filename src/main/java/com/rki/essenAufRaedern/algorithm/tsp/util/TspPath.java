@@ -10,6 +10,8 @@ import java.util.List;
  */
 public class TspPath {
 
+    private List<Point2D> path;
+
     public TspPath() {
         this.path = new ArrayList<>();
     }
@@ -29,6 +31,4 @@ public class TspPath {
     public void addPoint(Point2D point) {
         path.add(path.size(), point);
     }
-
-    private List<Point2D> path;
 }
