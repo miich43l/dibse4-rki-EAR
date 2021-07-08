@@ -5,7 +5,7 @@ import com.rki.essenAufRaedern.backend.service.*;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import com.rki.essenAufRaedern.ui.MainLayout;
-import com.rki.essenAufRaedern.ui.components.address.AddressEditorComponent;
+import com.rki.essenAufRaedern.ui.components.person.AddressEditorComponent;
 import com.rki.essenAufRaedern.ui.components.person.*;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
