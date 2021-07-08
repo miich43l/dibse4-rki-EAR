@@ -21,7 +21,6 @@ public class OrderInformationComponent extends Div {
 
         checkboxGroup.setLabel("Liefertage");
         checkboxGroup.setItems("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag");
-        //checkboxGroup.addThemeVariants(CheckboxGroupVariant.LUMO_VERTICAL);
         checkboxGroup.
         setWidthFull();
         add(checkboxGroup);

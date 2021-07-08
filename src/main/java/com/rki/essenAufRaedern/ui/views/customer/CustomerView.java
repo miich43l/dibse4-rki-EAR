@@ -5,7 +5,7 @@ import com.rki.essenAufRaedern.backend.service.*;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import com.rki.essenAufRaedern.ui.MainLayout;
-import com.rki.essenAufRaedern.ui.components.address.AddressEditorComponent;
+import com.rki.essenAufRaedern.ui.components.person.AddressEditorComponent;
 import com.rki.essenAufRaedern.ui.components.person.*;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -35,14 +35,14 @@ import java.util.Map;
 @Secured({"ADMINISTRATION", "LOCAL_COMMUNITY", "DEVELOPER"})
 public class CustomerView extends VerticalLayout{
 
-    CustomerForm personForm;
+    GeneralCustomerForm personForm;
     AddressEditorComponent addressForm;
     AdditionalInformationComponent additionalInformationForm;
     AdditionalInformationForm addAdditionalInformationForm;
     OrderInformationComponent orderInformationForm;
     ContactPersonComponent contactPersonComponent;
     ContactPersonForm contactPersonForm;
-    Grid<Person> grid = new Grid<>(Person.class);
+    Grid<Person> customerGrid = new Grid<>(Person.class);
     TextField filterText = new TextField();
     Dialog editDialog;
     Map<Tab, VerticalLayout> tabViews = new HashMap<>();
@@ -63,7 +63,7 @@ public class CustomerView extends VerticalLayout{
         setSizeFull();
         configureGrid();
 
-        Div content = new Div(grid);
+        Div content = new Div(customerGrid);
         content.addClassName("content");
         content.setSizeFull();
 
@@ -118,7 +118,7 @@ public class CustomerView extends VerticalLayout{
     }
 
     private void addPerson() {
-        grid.asSingleSelect().clear();
+        customerGrid.asSingleSelect().clear();
 
         Person newPerson = createNewPerson(PersonType.CLIENT);
 
@@ -126,14 +126,14 @@ public class CustomerView extends VerticalLayout{
     }
 
     private void configureGrid() {
-        grid.addClassName("customer-grid");
-        grid.setSizeFull();
-        grid.setColumns("firstName", "lastName", "address");
-        grid.getColumnByKey("firstName").setHeader("Vorname");
-        grid.getColumnByKey("lastName").setHeader("Nachname");
-        grid.getColumnByKey("address").setHeader("Adresse");
-        grid.getColumns().forEach(col -> col.setAutoWidth(true));
-        grid.asSingleSelect().addValueChangeListener(evt -> editPerson(evt.getValue()));
+        customerGrid.addClassName("customer-grid");
+        customerGrid.setSizeFull();
+        customerGrid.setColumns("firstName", "lastName", "address");
+        customerGrid.getColumnByKey("firstName").setHeader("Vorname");
+        customerGrid.getColumnByKey("lastName").setHeader("Nachname");
+        customerGrid.getColumnByKey("address").setHeader("Adresse");
+        customerGrid.getColumns().forEach(col -> col.setAutoWidth(true));
+        customerGrid.asSingleSelect().addValueChangeListener(evt -> editPerson(evt.getValue()));
     }
 
     private void editPerson(Person person) {
@@ -156,7 +156,7 @@ public class CustomerView extends VerticalLayout{
             tab.setLabel("Allgemein");
 
             VerticalLayout tabLayout = new VerticalLayout();
-            personForm = new CustomerForm();
+            personForm = new GeneralCustomerForm();
             personForm.setPerson(person);
             tabLayout.add(personForm);
 
@@ -375,9 +375,9 @@ public class CustomerView extends VerticalLayout{
     }
 
     private void updateList() {
-        grid.setItems(personService.getActiveClients());
+        customerGrid.setItems(personService.getActiveClients());
     }
 
-    private void updateSearchList(){grid.setItems(personService.getActiveClientsBySearchFieldInput(filterText.getValue()));}
+    private void updateSearchList(){customerGrid.setItems(personService.getActiveClientsBySearchFieldInput(filterText.getValue()));}
 
 }

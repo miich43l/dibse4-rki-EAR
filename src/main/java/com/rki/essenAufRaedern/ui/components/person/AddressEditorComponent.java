@@ -1,4 +1,4 @@
-package com.rki.essenAufRaedern.ui.components.address;
+package com.rki.essenAufRaedern.ui.components.person;
 
 import com.rki.essenAufRaedern.backend.entity.Address;
 import com.vaadin.flow.component.formlayout.FormLayout;
