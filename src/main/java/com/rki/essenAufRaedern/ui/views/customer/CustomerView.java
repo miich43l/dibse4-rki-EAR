@@ -5,7 +5,6 @@ import com.rki.essenAufRaedern.backend.service.*;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import com.rki.essenAufRaedern.ui.MainLayout;
-import com.rki.essenAufRaedern.ui.components.person.AddressEditorComponent;
 import com.rki.essenAufRaedern.ui.components.person.*;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -33,7 +32,7 @@ import java.util.Map;
 @PageTitle("Kunden")
 @Route(value = "kunden", layout = MainLayout.class)
 @Secured({"ADMINISTRATION", "LOCAL_COMMUNITY", "DEVELOPER"})
-public class CustomerView extends VerticalLayout{
+public class CustomerView extends VerticalLayout {
 
     GeneralCustomerForm personForm;
     AddressEditorComponent addressForm;
@@ -108,7 +107,7 @@ public class CustomerView extends VerticalLayout{
         filterText.setPlaceholder("nach Namen filtern...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
-        filterText.addValueChangeListener(e-> updateSearchList());
+        filterText.addValueChangeListener(e -> updateSearchList());
 
         Button addPersonButton = new Button("Kunde hinzufügen", click -> addPerson());
 
@@ -192,7 +191,7 @@ public class CustomerView extends VerticalLayout{
             addAdditionalInformationForm = new AdditionalInformationForm();
             addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
             Button addInfoButton = new Button("Information hinzufügen", click -> {
-                if (!addAdditionalInformationForm.isValid()){
+                if (!addAdditionalInformationForm.isValid()) {
                     return;
                 }
                 System.out.println("Event received ID: " + addAdditionalInformationForm.getAdditionalInformation().getId());
@@ -206,9 +205,9 @@ public class CustomerView extends VerticalLayout{
             additionalInformationForm = new AdditionalInformationComponent();
             additionalInformationForm.setPerson(person);
             additionalInformationForm.setWidthFull();
-            additionalInformationForm.addListener(AdditionalInformationComponent.DeleteButtonPressedEvent.class,event ->{
+            additionalInformationForm.addListener(AdditionalInformationComponent.DeleteButtonPressedEvent.class, event -> {
                 System.out.println("Event received ID: " + event.getAdditionalInformation().getId());
-                if(event.getAdditionalInformation().getId() == null) {
+                if (event.getAdditionalInformation().getId() == null) {
                     person.removeAdditionalInformation(event.getAdditionalInformation());
                 } else {
                     additionalInformationService.delete(event.getAdditionalInformation());
@@ -254,7 +253,7 @@ public class CustomerView extends VerticalLayout{
             tabLayout.add(addLayout);
 
             Button addContactPersonButton = new Button("Hinzufügen", e -> {
-                if(!contactPersonForm.isValid()) {
+                if (!contactPersonForm.isValid()) {
                     Notification.show("Kontaktperson ungültig.");
                     return;
                 }
@@ -378,6 +377,8 @@ public class CustomerView extends VerticalLayout{
         customerGrid.setItems(personService.getActiveClients());
     }
 
-    private void updateSearchList(){customerGrid.setItems(personService.getActiveClientsBySearchFieldInput(filterText.getValue()));}
+    private void updateSearchList() {
+        customerGrid.setItems(personService.getActiveClientsBySearchFieldInput(filterText.getValue()));
+    }
 
 }

@@ -3,15 +3,12 @@ package com.rki.essenAufRaedern.ui.components.person;
 import com.rki.essenAufRaedern.backend.entity.ContactPerson;
 import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.utility.ContactPersonType;
-import com.rki.essenAufRaedern.backend.utility.InformationType;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.converter.LocalDateToDateConverter;
 
 public class ContactPersonForm extends FormLayout {
 
