@@ -9,10 +9,6 @@ import com.vaadin.flow.data.binder.ValidationException;
 
 public class AddressEditorComponent extends FormLayout {
 
-    // TODO:
-    // - Sandra
-    // private final
-
     TextField street = new TextField("Strasse");
     TextField houseNumber = new TextField("Hausnummer");
     TextField floor = new TextField("Stock");

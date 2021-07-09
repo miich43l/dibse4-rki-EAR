@@ -33,7 +33,6 @@ public class AdditionalInformationForm extends FormLayout {
         } catch (ValidationException e) {
             e.printStackTrace();
         }
-
         return additionalInformation;
     }
 

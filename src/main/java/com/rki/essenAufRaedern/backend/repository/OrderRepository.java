@@ -13,5 +13,6 @@ import java.util.List;
  */
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
+
     List<Order> findByDtAndKitchenIdAndStatus(Date date, Long kitchenId, Status active);
 }

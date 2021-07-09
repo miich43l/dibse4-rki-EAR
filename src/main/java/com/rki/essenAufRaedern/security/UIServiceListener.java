@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class UIServiceListener implements VaadinServiceInitListener {
 
     @Autowired
-    private UserService userService;
+    UserService userService;
 
     @Override
     public void serviceInit(ServiceInitEvent event) {

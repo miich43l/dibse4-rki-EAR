@@ -16,13 +16,10 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.shared.Registration;
 
 public class ContactPersonComponent extends VerticalLayout {
-    private final Grid<ContactPerson> contactPersonGrid = new Grid();
-    private final Config config;
+    private Person person;
+    private Grid<ContactPerson> contactPersonGrid = new Grid();
+    private Config config;
 
-    /**
-     * Use this class to configure the ContactPersonComponent.
-     * Pattern: Builder - with fluent interface design.
-     */
     public static class Config {
 
         public Config allowDelete(boolean deleteAllowed) {
@@ -51,6 +48,7 @@ public class ContactPersonComponent extends VerticalLayout {
     }
 
     public void setPerson(Person person) {
+        this.person = person;
         this.contactPersonGrid.setItems(person.getContactPersons());
     }
 

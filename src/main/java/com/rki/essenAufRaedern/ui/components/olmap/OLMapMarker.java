@@ -4,14 +4,10 @@ import com.google.gson.Gson;
 
 import java.awt.geom.Point2D;
 
-/**
- * @author Thomas Widmann
- * Represents a marker on a OLMap component.
- */
 public class OLMapMarker {
     private transient OLMap map;
     private String title;
-    private final Point2D.Double coordinates = new Point2D.Double();
+    private Point2D.Double coordinates = new Point2D.Double();
     private int id;
     private String icon = "marker_red.png";
 

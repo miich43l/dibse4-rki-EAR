@@ -8,20 +8,21 @@ import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 
-public class OrderDeliveryComponent extends VerticalLayout {
+public class OrderDeliveryWidget extends VerticalLayout {
     private final H5 personNameLabel = new H5("Name");
     private final H6 addressLabel = new H6("Address");
 
     private final Binder<Order> orderBinder = new Binder<>(Order.class);
     private final Binder<Person> personBinder = new Binder<>(Person.class);
 
-    public OrderDeliveryComponent(Order order) {
+    public OrderDeliveryWidget(Order order) {
         orderBinder.setBean(order);
         personBinder.setBean(order.getPerson());
 
@@ -64,15 +65,15 @@ public class OrderDeliveryComponent extends VerticalLayout {
     }
 
     private void onInfoButtonPressed() {
-        fireEvent(new OrderDeliveryComponent.InfoButtonPressedEvent(this, orderBinder.getBean()));
+        fireEvent(new OrderDeliveryWidget.InfoButtonPressedEvent(this, orderBinder.getBean()));
     }
 
 
     // -- EVENTS:
-    public static abstract class Event extends ComponentEvent<OrderDeliveryComponent> {
+    public static abstract class Event extends ComponentEvent<OrderDeliveryWidget> {
         private Order order;
 
-        protected Event(OrderDeliveryComponent source, Order order) {
+        protected Event(OrderDeliveryWidget source, Order order) {
             super(source, false);
             this.order = order;
         }
@@ -82,8 +83,8 @@ public class OrderDeliveryComponent extends VerticalLayout {
         }
     }
 
-    public static class InfoButtonPressedEvent extends OrderDeliveryComponent.Event {
-        protected InfoButtonPressedEvent(OrderDeliveryComponent source, Order order) {
+    public static class InfoButtonPressedEvent extends OrderDeliveryWidget.Event {
+        protected InfoButtonPressedEvent(OrderDeliveryWidget source, Order order) {
             super(source, order);
         }
     }
