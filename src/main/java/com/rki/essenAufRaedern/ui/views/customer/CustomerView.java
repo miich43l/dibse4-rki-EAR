@@ -35,13 +35,7 @@ import java.util.Map;
 @Secured({"ADMINISTRATION", "LOCAL_COMMUNITY", "DEVELOPER"})
 public class CustomerView extends VerticalLayout{
 
-    // TODO:
-    //  - Sandra
-    //  - private final:
-    //  - reorder functions (data, UI)
-    //  - searchbar not working
-
-    CustomerForm personForm;
+    GeneralCustomerForm personForm;
     AddressEditorComponent addressForm;
     AdditionalInformationComponent additionalInformationForm; // TODO: better naming
     AdditionalInformationForm addAdditionalInformationForm;
@@ -163,10 +157,10 @@ public class CustomerView extends VerticalLayout{
         createContactPersonDialogTab(person, dialog, tabs);
         createDialogButtonsLayout(person, dialog);
 
-        tabs.addSelectedChangeListener(e -> {
-            tabViews.keySet().forEach(key -> {
-                tabViews.get(key).setVisible(false);
-            });
+            VerticalLayout tabLayout = new VerticalLayout();
+            personForm = new GeneralCustomerForm();
+            personForm.setPerson(person);
+            tabLayout.add(personForm);
 
             tabViews.get(e.getSelectedTab()).setVisible(true);
         });

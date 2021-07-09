@@ -1,4 +1,4 @@
-package com.rki.essenAufRaedern.ui.views.customer;
+package com.rki.essenAufRaedern.ui.components.person;
 
 import com.rki.essenAufRaedern.backend.entity.Person;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -9,7 +9,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.LocalDateToDateConverter;
 
-public class CustomerForm extends FormLayout {
+public class GeneralCustomerForm extends FormLayout {
 
     //TODO:
     // - Sandra
@@ -25,7 +25,7 @@ public class CustomerForm extends FormLayout {
     Binder<Person> personBinder = new BeanValidationBinder<>(Person.class);
     private Person person;
 
-    public CustomerForm() {
+    public GeneralCustomerForm() {
         birthdate.setLabel("Geburtsdatum");
 
         personBinder.forField(birthdate).withConverter(new LocalDateToDateConverter()).bind(Person::getBirthdate, Person::setBirthdate);
