@@ -15,10 +15,6 @@ import com.vaadin.flow.data.converter.LocalDateToDateConverter;
 
 public class ContactPersonForm extends FormLayout {
 
-    // TODO:
-    // - Sandra
-    // - private final
-
     TextField firstName = new TextField("Vorname");
     TextField lastName = new TextField("Nachname");
     TextField phoneNumber = new TextField("Telefonnummer");

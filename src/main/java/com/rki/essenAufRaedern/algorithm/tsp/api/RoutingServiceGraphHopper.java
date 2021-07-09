@@ -19,16 +19,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * @author Thomas Widmann
- * Routing service implementation for Graphhopper.
- */
 public class RoutingServiceGraphHopper implements IRoutingService {
 
-    private final String apiKey;
-
-    public RoutingServiceGraphHopper(String apiKey) {
-        this.apiKey = apiKey;
+    public RoutingServiceGraphHopper(String strApiKey) {
+        m_strApiKey = strApiKey;
     }
 
     @Override
@@ -93,9 +87,9 @@ public class RoutingServiceGraphHopper implements IRoutingService {
         return oStringBuilder.toString();
     }
 
-    private String createAdjacencyMatrixURI(List<Point2D> points) {
+    private String createAdjacencyMatrixURI(List<Point2D> lstPoints) {
         return getMatrixBaseURI() +
-                createPointListString(points) +
+                createPointListString(lstPoints) +
                 "type=json&vehicle=car&debug=true&out_array=weights";
     }
 
@@ -106,7 +100,7 @@ public class RoutingServiceGraphHopper implements IRoutingService {
     }
 
     private String createGeocodingURI(String query) {
-        String encodedQuery;
+        String encodedQuery = null;
         try {
             encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
         } catch (UnsupportedEncodingException e) {
@@ -123,7 +117,7 @@ public class RoutingServiceGraphHopper implements IRoutingService {
         StringBuilder oStringBuilder = new StringBuilder();
         oStringBuilder.append(strURI);
         oStringBuilder.append("&key=");
-        oStringBuilder.append(apiKey);
+        oStringBuilder.append(m_strApiKey);
 
         System.out.println("GraphHopper request: " + oStringBuilder.toString());
 
@@ -138,7 +132,7 @@ public class RoutingServiceGraphHopper implements IRoutingService {
             connection.connect();
 
             InputStream inStream = connection.getInputStream();
-            return new Scanner(inStream, StandardCharsets.UTF_8).useDelimiter("\\Z").next();
+            return new Scanner(inStream, "UTF-8").useDelimiter("\\Z").next();
 
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -230,4 +224,6 @@ public class RoutingServiceGraphHopper implements IRoutingService {
         point.setLocation(dLat, dLon);
         return point;
     }
+
+    private final String m_strApiKey;
 }

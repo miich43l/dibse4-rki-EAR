@@ -21,9 +21,11 @@ import java.util.logging.Logger;
 public class UserService {
     private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
     private UserRepository userRepository;
+    private PersonRepository personRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PersonRepository personRepository) {
         this.userRepository = userRepository;
+        this.personRepository = personRepository;
     }
 
     public List<User> findAll() {
