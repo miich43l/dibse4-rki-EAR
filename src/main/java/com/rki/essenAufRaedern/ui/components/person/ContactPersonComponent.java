@@ -17,8 +17,8 @@ import com.vaadin.flow.shared.Registration;
 
 public class ContactPersonComponent extends VerticalLayout {
     private Person person;
-    private Grid<ContactPerson> contactPersonGrid = new Grid();
-    private Config config;
+    private final Grid<ContactPerson> contactPersonGrid = new Grid();
+    private final Config config;
 
     public static class Config {
 
@@ -58,23 +58,27 @@ public class ContactPersonComponent extends VerticalLayout {
         contactPersonGrid.addColumn(new ComponentRenderer<>(info -> new Text(info.getContactPersonType().toString()))).setHeader("Type").setKey("type");
         contactPersonGrid.addColumn(item -> item.getContactPersonFrom().getFullName()).setHeader("Name");
 
-        if(config.isActionColumnNeeded()) {
+        if (config.isActionColumnNeeded()) {
             contactPersonGrid.addColumn(new ComponentRenderer<>(info -> {
                 HorizontalLayout layout = new HorizontalLayout();
 
-                if(config.deleteAllowed) {
+                if (config.deleteAllowed) {
                     Icon icon = VaadinIcon.TRASH.create();
                     icon.setColor("red");
                     Button deleteButton = new Button(icon);
-                    deleteButton.addClickListener(e ->{fireEvent(new ContactPersonComponent.DeleteButtonPressedEvent(this, info));});
+                    deleteButton.addClickListener(e -> {
+                        fireEvent(new ContactPersonComponent.DeleteButtonPressedEvent(this, info));
+                    });
                     layout.add(deleteButton);
                 }
 
-                if(config.callAllowed) {
+                if (config.callAllowed) {
                     Icon icon = VaadinIcon.PHONE.create();
                     icon.setColor("red");
                     Button deleteButton = new Button(icon);
-                    deleteButton.addClickListener(e ->{fireEvent(new CallButtonPressedEvent(this, info));});
+                    deleteButton.addClickListener(e -> {
+                        fireEvent(new CallButtonPressedEvent(this, info));
+                    });
                     layout.add(deleteButton);
                 }
 
