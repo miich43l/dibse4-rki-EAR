@@ -35,7 +35,7 @@ import java.util.Map;
 @Secured({"ADMINISTRATION", "LOCAL_COMMUNITY", "DEVELOPER"})
 public class CustomerView extends VerticalLayout{
 
-    CustomerForm personForm;
+    GeneralCustomerForm personForm;
     AddressEditorComponent addressForm;
     AdditionalInformationComponent additionalInformationForm;
     AdditionalInformationForm addAdditionalInformationForm;
@@ -156,7 +156,7 @@ public class CustomerView extends VerticalLayout{
             tab.setLabel("Allgemein");
 
             VerticalLayout tabLayout = new VerticalLayout();
-            personForm = new CustomerForm();
+            personForm = new GeneralCustomerForm();
             personForm.setPerson(person);
             tabLayout.add(personForm);
 
