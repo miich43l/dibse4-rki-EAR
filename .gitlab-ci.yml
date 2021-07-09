@@ -1,8 +1,12 @@
+# Author: michaelmoesl
+
+# Importing created Docker image
 image: miich43l/vaddinn123:latest
 
 variables:
   MAVEN_CLI_OPTIONS: "--batch-mode"
 
+# Create build and test Stage
 stages:
   - build
   - test
@@ -11,7 +15,7 @@ build-job:
   stage: build
   script:
     - echo "Usinging Maven with CLI Options to build Artifact"
-    - mvn $MAVEN_CLI_OPTIONS clean package -Pproduction -e
+    - mvn $MAVEN_CLI_OPTIONS clean package -Pproduction -e # using Maven -pProdcution flag to build with production profile
   artifacts:
     paths:
       - target/*.jar
@@ -21,4 +25,4 @@ test-job:
   script:
     - echo "If the files are built successfully, test some files with one command:"
     - echo "Running Unit Tests"
-    - mvn test
+    - mvn test # running Mavens built in Unittest framework for testing

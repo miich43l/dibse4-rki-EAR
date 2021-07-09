@@ -1,20 +1,14 @@
 package com.rki.essenAufRaedern.ui.views.delivery;
 
-import com.rki.essenAufRaedern.algorithm.tsp.TSP;
-import com.rki.essenAufRaedern.algorithm.tsp.api.IRoutingService;
-import com.rki.essenAufRaedern.algorithm.tsp.api.RoutingServiceFactory;
-import com.rki.essenAufRaedern.algorithm.tsp.util.TspPath;
-import com.rki.essenAufRaedern.algorithm.tsp.util.TspPathSequence;
+import com.rki.essenAufRaedern.algorithm.tsp.service.TSPService;
 import com.rki.essenAufRaedern.backend.entity.*;
 import com.rki.essenAufRaedern.backend.service.KitchenService;
 import com.rki.essenAufRaedern.backend.service.OrderService;
-import com.rki.essenAufRaedern.backend.service.UserService;
 import com.rki.essenAufRaedern.backend.utility.InformationType;
 import com.rki.essenAufRaedern.ui.MainLayout;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMap;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMapMarker;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMapRoute;
-import com.rki.essenAufRaedern.ui.components.orders.OrderDeliveriesWidget;
 import com.rki.essenAufRaedern.ui.components.person.AdditionalInformationComponent;
 import com.rki.essenAufRaedern.ui.components.person.ContactPersonComponent;
 import com.vaadin.flow.component.Component;
@@ -27,13 +21,19 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.rki.essenAufRaedern.ui.components.orders.OrderDeliveriesList;
 import org.springframework.security.access.annotation.Secured;
 
 import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+
+/**
+ * @author Thomas Widmann
+ * View for the driver.
+ * It shows the orders that must be delivered.
+ * A map of the addresses and the sequence (TSP).
+ */
 
 @PageTitle("Fahrer")
 @CssImport("./styles/delivery-view.css")
@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 public class DeliveryView extends VerticalLayout {
 
     // Components:
-    private final OrderDeliveriesWidget deliveriesList = new OrderDeliveriesWidget();
+    private final OrderDeliveriesList deliveriesList = new OrderDeliveriesList();
     private final OLMap mapComponent = new OLMap();
     private final Button posSimulationStartButton = new Button("Start");
     private final Button posSimulationPauseButton = new Button("Pause");
@@ -51,128 +51,53 @@ public class DeliveryView extends VerticalLayout {
     // Services:
     private final OrderService orderService;
     private final KitchenService kitchenService;
-    private final UserService userService;
 
     // Variables:
     private Kitchen kitchen;
-    private Point2D kitchenCoordinates;
     private List<Order> orders = new ArrayList<>();
     private final Map<Long, OLMapMarker> mapOrderIdToMarker = new HashMap<>();
     private final Map<Integer, Order> mapMarkerToOrder = new HashMap<>();
-    private final Map<Long, Point2D> mapOrderToCoordinate = new HashMap<>();
+    private final DeliveryOptimizer deliveryOptimizer;
 
-    private final IRoutingService routingService;
-    private final TSP tsp = new TSP();
-    private final TspPath tspRoute;
-
-    public DeliveryView(KitchenService kitchenService, OrderService orderService, UserService userService) {
-        this.kitchenService = kitchenService;
+    public DeliveryView(OrderService orderService, KitchenService kitchenService, TSPService tspService) {
         this.orderService = orderService;
-        this.userService = userService;
+        this.kitchenService = kitchenService;
+        this.deliveryOptimizer = new DeliveryOptimizer(tspService);
 
         addClassName("main-layout");
         setWidthFull();
         setPadding(false);
 
-        routingService = RoutingServiceFactory.get().createGraphHopperRoutingService();
-
         loadDataFromDatabase();
-        resolveAddresses();
 
-        List<Point2D> pointsToVisitMinDistance = calculatePathForPointsToVisit();
-        tspRoute = calculateRouteFromPoints(pointsToVisitMinDistance);
-        sortOrdersByPointsToVisit(pointsToVisitMinDistance);
+        optimizeDeliveryOrder();
 
         add(createMainLayout());
         addEventListener();
     }
 
     private void loadDataFromDatabase() {
-        kitchen = getKitchenFromCurrentUser();
+        kitchen = kitchenService.getKitchenForLoggedInEmployee();
 
         if(kitchen == null) {
             return;
         }
 
-        Date date_ = new Date();
-
-        //TODO: Use service!
-        Predicate<Order> orderPredicate = order -> {
-            Calendar c1 = Calendar.getInstance();
-            c1.setTime(date_);
-
-            Calendar c2 = Calendar.getInstance();
-            c2.setTime(order.getDt());
-
-            return (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
-                        && c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
-                        && c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH))
-                    && (order.getDelivered() == null
-                        && order.getNotDeliverable() == null);
-        };
-
-        orders = kitchen.getOrders().stream().filter(orderPredicate).collect(Collectors.toList());
+        orders = kitchenService.getOpenOrdersForKitchen(kitchen, new Date());
     }
 
-    private Kitchen getKitchenFromCurrentUser() {
-        User currentUser = userService.getCurrentUser();
-        Person currentPerson = currentUser.getPerson();
-        Employee currentEmployee = currentPerson.getEmployee();
-        if(currentEmployee == null) {
-            return null;
+    private void optimizeDeliveryOrder() {
+        if(kitchen == null) {
+            return;
         }
 
-        return currentEmployee.getKitchen();
+        deliveryOptimizer.optimizeDeliveries(orders, kitchen.getAddress());
+        sortOrdersByPointsToVisit(deliveryOptimizer.getOptimizedDeliverySequence());
     }
 
     private void sortOrdersByPointsToVisit(List<Point2D> pointsToVisitMinDistance) {
-        orders.sort(Comparator.comparingInt(item -> pointsToVisitMinDistance.indexOf(mapOrderToCoordinate.get(item.getId()))));
+        orders.sort(Comparator.comparingInt(item -> pointsToVisitMinDistance.indexOf(deliveryOptimizer.getMapOrderIdToCoordinate().get(item.getId()))));
         Collections.reverse(orders);
-    }
-
-    private TspPath calculateRouteFromPoints(List<Point2D> pointsToVisitMinDistance) {
-        if(pointsToVisitMinDistance.isEmpty()) {
-            return new TspPath();
-        }
-        return tsp.calculatePathFromCoordinateList(pointsToVisitMinDistance);
-    }
-
-    private List<Point2D> calculatePathForPointsToVisit() {
-        List<Point2D> pointsToVisit = createPointsToVisitList();
-
-        if(pointsToVisit.size() < 2) {
-            return new ArrayList<>();
-        }
-
-        try {
-            TspPathSequence tspSequence = tsp.calculateShortestPathSequence(pointsToVisit, 0);
-            return tspSequence.getPath().stream().map(pointsToVisit::get).collect(Collectors.toList());
-        } catch (Exception exception) {
-            return new ArrayList<>();
-        }
-    }
-
-    private void resolveAddresses() {
-        if(kitchen == null) {
-            return;
-        }
-
-        kitchenCoordinates = routingService.requestCoordinateFromAddress(kitchen.getAddress().toString());
-        for(Order order : orders) {
-            Point2D coordinate = routingService.requestCoordinateFromAddress(order.getPerson().getAddress().toString());
-            mapOrderToCoordinate.put(order.getId(), coordinate);
-        }
-    }
-
-    private List<Point2D> createPointsToVisitList() {
-        List<Point2D> pointsToVisit = new ArrayList<>();
-        pointsToVisit.add(kitchenCoordinates);
-
-        mapOrderToCoordinate.forEach((order, coordinate) -> {
-            pointsToVisit.add(coordinate);
-        });
-
-        return pointsToVisit;
     }
 
     private Component createMainLayout() {
@@ -215,7 +140,7 @@ public class DeliveryView extends VerticalLayout {
         mapComponent.setWidthFull();
 
         if(kitchen != null) {
-            OLMapMarker kitchenMarker = new OLMapMarker(kitchen.getName(), kitchenCoordinates, "house.png");
+            OLMapMarker kitchenMarker = new OLMapMarker(kitchen.getName(), deliveryOptimizer.getKitchenCoordinate(), "house.png");
             mapComponent.addMarker(kitchenMarker);
         }
 
@@ -227,7 +152,7 @@ public class DeliveryView extends VerticalLayout {
         }
 
         for(Order order : orders) {
-            Point2D coordinates = mapOrderToCoordinate.get(order.getId());
+            Point2D coordinates = deliveryOptimizer.getMapOrderIdToCoordinate().get(order.getId());
             OLMapMarker marker = createMapMarkerForOrder(order, coordinates);
 
             mapComponent.addMarker(marker);
@@ -236,8 +161,8 @@ public class DeliveryView extends VerticalLayout {
             System.out.println("Marker: " + marker.getId() + " -> " + order.getPerson().getFullName());
         }
 
-        if(tspRoute != null) {
-            OLMapRoute route = new OLMapRoute(tspRoute.getPoints());
+        if(deliveryOptimizer.getTspPath() != null) {
+            OLMapRoute route = new OLMapRoute(deliveryOptimizer.getTspPath().getPoints());
             mapComponent.addRoute(route);
             mapComponent.setPositionSimulationRoute(route);
         }
@@ -267,11 +192,11 @@ public class DeliveryView extends VerticalLayout {
 
     private void addEventListener() {
         // Events of the deliveries component:
-        deliveriesList.addListener(OrderDeliveriesWidget.DeliveredEvent.class, event -> this.onDeliveredPressed(event.getOrder()));
-        deliveriesList.addListener(OrderDeliveriesWidget.NotDeliveredEvent.class, event -> this.onNotDeliveredPressed(event.getOrder()));
-        deliveriesList.addListener(OrderDeliveriesWidget.CallContactPersonEvent.class, event -> this.onCallContactPersonPressed(event.getOrder()));
-        deliveriesList.addListener(OrderDeliveriesWidget.DidSelectEvent.class, event -> this.onDidSelectDelivery(event.getOrder()));
-        deliveriesList.addListener(OrderDeliveriesWidget.InfoButtonPressedEvent.class, event -> this.onAdditionalInfoButtonPressed(event.getOrder()));
+        deliveriesList.addListener(OrderDeliveriesList.DeliveredEvent.class, event -> this.onDeliveredPressed(event.getOrder()));
+        deliveriesList.addListener(OrderDeliveriesList.NotDeliveredEvent.class, event -> this.onNotDeliveredPressed(event.getOrder()));
+        deliveriesList.addListener(OrderDeliveriesList.CallContactPersonEvent.class, event -> this.onCallContactPersonPressed(event.getOrder()));
+        deliveriesList.addListener(OrderDeliveriesList.DidSelectEvent.class, event -> this.onDidSelectDelivery(event.getOrder()));
+        deliveriesList.addListener(OrderDeliveriesList.InfoButtonPressedEvent.class, event -> this.onAdditionalInfoButtonPressed(event.getOrder()));
 
         // Events for position tracking:
         mapComponent.addMarkerVisitedListener(this::onVisitedPersonsAddress);

@@ -1,5 +1,6 @@
 package com.rki.essenAufRaedern.ui.views.olmap.tsp;
 
+import com.rki.essenAufRaedern.algorithm.tsp.service.TSPService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
@@ -10,11 +11,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.rki.essenAufRaedern.algorithm.tsp.TSP;
 import com.rki.essenAufRaedern.algorithm.tsp.api.IRoutingService;
 import com.rki.essenAufRaedern.algorithm.tsp.api.RoutingServiceFactory;
 import com.rki.essenAufRaedern.algorithm.tsp.util.TspPath;
-import com.rki.essenAufRaedern.algorithm.tsp.util.TspPathSequence;
 import com.rki.essenAufRaedern.ui.MainLayout;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMap;
 import com.rki.essenAufRaedern.ui.components.olmap.OLMapMarker;
@@ -25,11 +24,15 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ *     !!! This view is only for testing purpose !!!
+ */
+
 @Route(value = "travelingsalesman", layout = MainLayout.class)
 @PageTitle("Traveling salesman")
 public class TravelingSalesmanView extends VerticalLayout {
 
-    public TravelingSalesmanView() {
+    public TravelingSalesmanView(TSPService tspService) {
         addClassName("tsp-view");
 
         HorizontalLayout topLayout = new HorizontalLayout();
@@ -85,14 +88,11 @@ public class TravelingSalesmanView extends VerticalLayout {
         markersLayout.add(tspResultLabel);
 
         performTspButton.addClickListener(event -> {
-            TSP oTSP = new TSP();
             List<Point2D> pointsToVisit = map.getMarkers().stream().map(OLMapMarker::getCoordinates).collect(Collectors.toList());
-            TspPathSequence tspSequence = oTSP.calculateShortestPathSequence(pointsToVisit, 0);
-            List<Point2D> tspSequenceCoordinates = tspSequence.getPath().stream().map(pointsToVisit::get).collect(Collectors.toList());
-
-            TspPath tspRoute = oTSP.calculatePathFromCoordinateList(tspSequenceCoordinates);
+            List<Point2D> pointsToVisitOptimized = tspService.calculateShortestPathSequenceBetweenPoints(pointsToVisit, 0);
+            TspPath tspRoute = tspService.calculateRouteBetweenPoints(pointsToVisitOptimized);
             List<OLMapMarker> markers = map.getMarkers();
-            markers.sort(Comparator.comparingInt(item -> tspSequenceCoordinates.indexOf(item.getCoordinates())));
+            markers.sort(Comparator.comparingInt(item -> pointsToVisitOptimized.indexOf(item.getCoordinates())));
 
             StringBuilder strPath = new StringBuilder();
             for(OLMapMarker marker : markers) {

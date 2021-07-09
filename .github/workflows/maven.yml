@@ -1,5 +1,6 @@
+# Author: michaelmoesl
 name: Java CI with Maven
-
+# on Push and Pull-Requests run this workflow
 on:
   push:
     branches: [master]
@@ -8,16 +9,16 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # defining underlaying OS
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 16
-        uses: actions/setup-java@v2
-        with:
+        uses: actions/setup-java@v2 #checkout Java
+        with: # defining the Java Package paramter e.g. 16
           java-version: "16"
           distribution: "adopt"
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: mvn -B package --file pom.xml # -B = build the application --file using pom.xml
 
   test:
     runs-on: ubuntu-latest
@@ -25,8 +26,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set up JDK 16
         uses: actions/setup-java@v2
-        with:
+        with: # defining the Java Package paramter e.g. 16
           java-version: "16"
           distribution: "adopt"
       - name: Test application
-        run: mvn test -e
+        run: mvn test -e # test the application running
