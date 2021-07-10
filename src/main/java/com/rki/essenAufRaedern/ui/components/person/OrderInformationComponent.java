@@ -7,6 +7,10 @@ import com.vaadin.flow.component.html.Div;
 
 public class OrderInformationComponent extends Div {
 
+    // TODO:
+    // - Sandra
+    // - private final
+
     CheckboxGroup<String> checkboxGroup = new CheckboxGroup<>();
     private OrderInformation orderInformation = new OrderInformation();
 

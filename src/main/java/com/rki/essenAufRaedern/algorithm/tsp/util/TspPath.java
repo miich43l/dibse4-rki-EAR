@@ -4,7 +4,13 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Thomas Widmann
+ * Represents a path between points.
+ */
 public class TspPath {
+
+    private List<Point2D> path;
 
     public TspPath() {
         this.path = new ArrayList<>();
@@ -25,6 +31,4 @@ public class TspPath {
     public void addPoint(Point2D point) {
         path.add(path.size(), point);
     }
-
-    private List<Point2D> path;
 }

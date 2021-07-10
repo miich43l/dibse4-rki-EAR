@@ -69,30 +69,59 @@ public class TestDataLoader {
         kitchen.setStatus(Status.ACTIVE);
         kitchenRepository.save(kitchen);
 
-        Person driverPerson = new Person();
-        driverPerson.setStatus(Status.ACTIVE);
-        driverPerson.setFirstName("Max");
-        driverPerson.setLastName("Vollgas");
-        driverPerson.setBirthdate(new Date());
-        driverPerson.setPhoneNumber("+43 664 12345678");
-        driverPerson.setPersonType(PersonType.DRIVER);
-        personRepository.save(driverPerson);
+        // Driver:
+        {
+            Person driverPerson = new Person();
+            driverPerson.setStatus(Status.ACTIVE);
+            driverPerson.setFirstName("Max");
+            driverPerson.setLastName("Vollgas");
+            driverPerson.setBirthdate(new Date());
+            driverPerson.setPhoneNumber("+43 664 12345678");
+            driverPerson.setPersonType(PersonType.DRIVER);
+            personRepository.save(driverPerson);
 
-        Employee driver = new Employee();
-        driver.setStatus(Status.ACTIVE);
-        driver.setKitchen(kitchen);
-        driver.setPerson(driverPerson);
-        employeeRepository.save(driver);
+            Employee driver = new Employee();
+            driver.setStatus(Status.ACTIVE);
+            driver.setKitchen(kitchen);
+            driver.setPerson(driverPerson);
+            employeeRepository.save(driver);
 
-        // driver username = "Max_Vollgas"
+            // driver username = "Max_Vollgas"
+            User driverUser = new User();
+            driverUser.setUsername(driverPerson.getFirstName() + "_" + driverPerson.getLastName());
+            driverUser.setEmail(driverPerson.getFirstName() + "." + driverPerson.getLastName() + "@rki.at");
+            driverUser.setStatus(Status.ACTIVE);
+            driverUser.setPerson(driverPerson);
+            driverUser.setPassword("changeMe");
+            userService.save(driverUser);
+        }
 
-        User user = new User();
-        user.setUsername(driverPerson.getFirstName() + "_" + driverPerson.getLastName());
-        user.setEmail(driverPerson.getFirstName() + "." + driverPerson.getLastName() + "@rki.at");
-        user.setStatus(Status.ACTIVE);
-        user.setPerson(driverPerson);
-        user.setPassword("changeMe");
-        userService.save(user);
+        // Kitchen employee:
+        {
+            Person kitchenPerson = new Person();
+            kitchenPerson.setStatus(Status.ACTIVE);
+            kitchenPerson.setFirstName("Max");
+            kitchenPerson.setLastName("Koch");
+            kitchenPerson.setBirthdate(new Date());
+            kitchenPerson.setPhoneNumber("+43 664 12345678");
+            kitchenPerson.setPersonType(PersonType.KITCHEN);
+            personRepository.save(kitchenPerson);
+
+            Employee kitchenEmployee = new Employee();
+            kitchenEmployee.setStatus(Status.ACTIVE);
+            kitchenEmployee.setKitchen(kitchen);
+            kitchenEmployee.setPerson(kitchenPerson);
+            employeeRepository.save(kitchenEmployee);
+
+            // kitchen username = "kitchen"
+            User kitchenUser = new User();
+            kitchenUser.setUsername("kitchen");
+            kitchenUser.setEmail(kitchenPerson.getFirstName() + "." + kitchenPerson.getLastName() + "@rki.at");
+            kitchenUser.setStatus(Status.ACTIVE);
+            kitchenUser.setPerson(kitchenPerson);
+            kitchenUser.setPassword("changeMe");
+            userService.save(kitchenUser);
+        }
 
         List<Employee> employees = employeeRepository.findAll();
         System.out.println("Employees: " + employees.get(0).getKitchen());
@@ -103,7 +132,6 @@ public class TestDataLoader {
 
         //Add users
         addUser("test", "Administration", "+123", "test@rki.com", PersonType.ADMINISTRATION, "admin", "changeMe");
-        addUser("test", "kitchen", "+123", "test@rki.com", PersonType.KITCHEN, "kitchen", "changeMe");
         addUser("test", "contactPerson", "+123", "test@rki.com", PersonType.CONTACT_PERSON, "contactPerson", "changeMe");
         addUser("test", "localCommunity", "+123", "test@rki.com", PersonType.LOCAL_COMMUNITY, "localCommunity", "changeMe");
         addUser("test", "developer", "+123", "test@rki.com", PersonType.DEVELOPER, "developer", "changeMe");
@@ -261,16 +289,17 @@ public class TestDataLoader {
         userService.save(user);
     }
 
-    private void createOrdersForPerson(Kitchen kitchen, Person person, int nDayOffset) {
+    private void createOrdersForPerson(Kitchen kitchen, Person person, int dayOffset) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
-        cal.add(Calendar.DAY_OF_YEAR, nDayOffset);
+        cal.add(Calendar.DAY_OF_YEAR, dayOffset);
 
         Order order = new Order();
         order.setKitchen(kitchen);
         order.setPerson(person);
         order.setDt(cal.getTime());
         order.setStatus(Status.ACTIVE);
+        order.setPrepared((dayOffset == 0 && new Random().nextBoolean()) ? "Vorbereitet" : null);
         orderRepository.save(order);
     }
 

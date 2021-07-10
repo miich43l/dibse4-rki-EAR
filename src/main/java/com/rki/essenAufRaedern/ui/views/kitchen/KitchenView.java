@@ -36,6 +36,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author Thomas Widmann
+ * View for the kitchen.
+ * It shows the orders for a given date
+ * and some general informations like the driver.
+ */
+
 @org.springframework.stereotype.Component
 @Scope("prototype")
 @PageTitle("Küche")
@@ -48,10 +55,11 @@ public class KitchenView extends VerticalLayout {
     private final OrderService orderService;
     private final AdditionalInformationService additionalInformationService;
     private final Kitchen kitchen;
+    private Date ordersDate = new Date();
+
     private final Label numberOfOrdersLabel = new Label("0");
     private final Label numberOfOrdersDoneLabel = new Label("0");
     private final Label driverLabel = new Label("");
-    private Date date = new Date();
     private Grid<Order> ordersGrid;
 
     public KitchenView(KitchenService kitchenService, OrderService orderService, AdditionalInformationService additionalInformationService) {
@@ -61,8 +69,7 @@ public class KitchenView extends VerticalLayout {
 
         setClassName("main-layout");
 
-        // TODO: kitchen id!
-        kitchen = kitchenService.findAll().get(0);
+        kitchen = kitchenService.getKitchenForLoggedInEmployee();
 
         add(createDaySelectionTab(), createInfoComponent(), createOrdersComponent());
 
@@ -70,6 +77,10 @@ public class KitchenView extends VerticalLayout {
     }
 
     public void updateUI() {
+        if(this.kitchen == null) {
+            return;
+        }
+
         List<Person> drivers = kitchenService.getDriver(kitchen.getId());
 
         if (!drivers.isEmpty()) {
@@ -79,7 +90,7 @@ public class KitchenView extends VerticalLayout {
             driverLabel.setText("Kein Fahrer");
         }
 
-        List<Order> orders = orderService.getOrdersForKitchenAndDay(kitchen.getId(), date);
+        List<Order> orders = orderService.getOrdersForKitchenAndDay(kitchen.getId(), ordersDate);
         ordersGrid.setItems(orders);
         //ordersGrid.getColumnByKey("status").setVisible(Util.DateUtil.isToday(date));
 
@@ -110,7 +121,7 @@ public class KitchenView extends VerticalLayout {
         }
 
         dayTabs.addSelectedChangeListener(selectedChangeEvent -> {
-            date = Util.DateUtil.getDayFromNow(dayTabs.getSelectedIndex());
+            ordersDate = Util.DateUtil.getDayFromNow(dayTabs.getSelectedIndex());
             updateUI();
         });
 

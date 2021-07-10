@@ -20,6 +20,10 @@ public class ContactPersonComponent extends VerticalLayout {
     private final Grid<ContactPerson> contactPersonGrid = new Grid();
     private final Config config;
 
+    /**
+     * Use this class to configure the ContactPersonComponent.
+     * Pattern: Builder - with fluent interface design.
+     */
     public static class Config {
 
         public Config allowDelete(boolean deleteAllowed) {
