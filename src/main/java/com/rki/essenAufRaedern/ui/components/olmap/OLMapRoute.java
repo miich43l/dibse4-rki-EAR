@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author Thomas Widmann
+ * Represents a route on a OLMap component.
+ */
 public class OLMapRoute {
     private transient OLMap map;
     private List<Point2D.Double> points = new ArrayList<>();

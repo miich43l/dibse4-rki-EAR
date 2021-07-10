@@ -149,174 +149,12 @@ public class CustomerView extends VerticalLayout {
         Tabs tabs = new Tabs();
         dialog.add(tabs);
 
-        // Create person edit form:
-        {
-            Tab tab = new Tab();
-            tab.setLabel("Allgemein");
-
-            VerticalLayout tabLayout = new VerticalLayout();
-            personForm = new GeneralCustomerForm();
-            personForm.setPerson(person);
-            tabLayout.add(personForm);
-
-            tabs.add(tab);
-            dialog.add(tabLayout);
-            tabViews.put(tab, tabLayout);
-        }
-
-        // Address:
-        {
-            Tab tab = new Tab();
-            tab.setLabel("Adresse");
-
-            VerticalLayout tabLayout = new VerticalLayout();
-            addressForm = new AddressEditorComponent();
-            addressForm.setAddress(person.getAddress());
-            tabLayout.add(addressForm);
-            tabLayout.setVisible(false);
-
-            tabs.add(tab);
-            dialog.add(tabLayout);
-            tabViews.put(tab, tabLayout);
-        }
-
-        // AdditionalInformation:
-        {
-            Tab tab = new Tab();
-            tab.setLabel("Zusatzinformationen");
-
-            VerticalLayout tabLayout = new VerticalLayout();
-            HorizontalLayout addLayout = new HorizontalLayout();
-            addLayout.setDefaultVerticalComponentAlignment(Alignment.END);
-            addAdditionalInformationForm = new AdditionalInformationForm();
-            addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
-            Button addInfoButton = new Button("Information hinzufügen", click -> {
-                if (!addAdditionalInformationForm.isValid()) {
-                    return;
-                }
-                System.out.println("Event received ID: " + addAdditionalInformationForm.getAdditionalInformation().getId());
-
-                person.addAdditionalInformation(addAdditionalInformationForm.getAdditionalInformation());
-                additionalInformationForm.setPerson(person);
-                addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
-            });
-            addLayout.add(addAdditionalInformationForm, addInfoButton);
-            tabLayout.add(addLayout);
-            additionalInformationForm = new AdditionalInformationComponent();
-            additionalInformationForm.setPerson(person);
-            additionalInformationForm.setWidthFull();
-            additionalInformationForm.addListener(AdditionalInformationComponent.DeleteButtonPressedEvent.class, event -> {
-                System.out.println("Event received ID: " + event.getAdditionalInformation().getId());
-                if (event.getAdditionalInformation().getId() == null) {
-                    person.removeAdditionalInformation(event.getAdditionalInformation());
-                } else {
-                    additionalInformationService.delete(event.getAdditionalInformation());
-                }
-
-                additionalInformationForm.setPerson(person);
-            });
-            tabLayout.add(additionalInformationForm);
-            tabLayout.setVisible(false);
-
-            tabs.add(tab);
-            dialog.add(tabLayout);
-            tabViews.put(tab, tabLayout);
-        }
-
-        // OrderInformation - Deliverydays:
-        {
-            Tab tab = new Tab();
-            tab.setLabel("Liefertage");
-
-            VerticalLayout tabLayout = new VerticalLayout();
-            orderInformationForm = new OrderInformationComponent();
-            orderInformationForm.setOrderInformation(person.getOrderInformation().iterator().next());
-            tabLayout.add(orderInformationForm);
-            tabLayout.setVisible(false);
-
-            tabs.add(tab);
-            dialog.add(tabLayout);
-            tabViews.put(tab, tabLayout);
-        }
-
-        // ContactPerson:
-        {
-            Tab tab = new Tab();
-            tab.setLabel("Kontaktperson");
-
-            VerticalLayout tabLayout = new VerticalLayout();
-            HorizontalLayout addLayout = new HorizontalLayout();
-            addLayout.setDefaultVerticalComponentAlignment(Alignment.END);
-            contactPersonForm = new ContactPersonForm();
-            contactPersonForm.setContactPerson(createNewContactPerson());
-            addLayout.add(contactPersonForm);
-            tabLayout.add(addLayout);
-
-            Button addContactPersonButton = new Button("Hinzufügen", e -> {
-                if (!contactPersonForm.isValid()) {
-                    Notification.show("Kontaktperson ungültig.");
-                    return;
-                }
-
-                ContactPerson newContactPerson = contactPersonForm.getContactPerson();
-                newContactPerson.setPerson(person);
-                person.addContactPerson(newContactPerson);
-
-                contactPersonComponent.setPerson(person);
-                contactPersonForm.setContactPerson(createNewContactPerson());
-            });
-
-            tabLayout.add(addContactPersonButton);
-
-            contactPersonComponent = new ContactPersonComponent(new ContactPersonComponent.Config().allowDelete(true).allowCall(false));
-            contactPersonComponent.setPerson(person);
-            contactPersonComponent.addListener(ContactPersonComponent.DeleteButtonPressedEvent.class, e -> {
-                ContactPerson contactPerson = e.getContactPerson();
-                personService.delete(contactPerson.getPerson());
-
-                System.out.println("BEFORE Contact persons: " + person.getContactPersons() + " - " + person.getContactPersonFrom());
-
-                contactPerson.setPerson(null);
-                person.removeContactPerson(contactPerson);
-
-                System.out.println("AFTER Contact persons: " + person.getContactPersons() + " - " + person.getContactPersonFrom());
-
-                contactPersonService.delete(contactPerson);
-                contactPersonComponent.setPerson(person);
-                personService.save(person);
-            });
-
-            tabLayout.add(contactPersonComponent);
-            tabLayout.setVisible(false);
-
-            tabs.add(tab);
-            dialog.add(tabLayout);
-            tabViews.put(tab, tabLayout);
-        }
-
-        // Buttons:
-        {
-            HorizontalLayout layout = new HorizontalLayout();
-            dialog.add(layout);
-
-            Button save = new Button("Speichern");
-            Button delete = new Button("Löschen");
-            Button close = new Button("Schließen");
-            layout.add(save, delete, close);
-
-            save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
-            close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-
-            save.addClickShortcut(Key.ENTER);
-            close.addClickShortcut(Key.ESCAPE);
-
-            save.addClickListener(click -> validateAndSave(person));
-            delete.addClickListener(click -> deletePerson());
-            close.addClickListener(click -> {
-                closeEditor();
-            });
-        }
+        createPersonDialogTab(person, dialog, tabs);
+        createAddressDialogTab(person, dialog, tabs);
+        createAdditionalInformationDialogTab(person, dialog, tabs);
+        createOrderInformationDialogTab(person, dialog, tabs);
+        createContactPersonDialogTab(person, dialog, tabs);
+        createDialogButtonsLayout(person, dialog);
 
         tabs.addSelectedChangeListener(e -> {
             tabViews.keySet().forEach(key -> {
@@ -327,6 +165,169 @@ public class CustomerView extends VerticalLayout {
         });
 
         return dialog;
+    }
+
+    private void createDialogButtonsLayout(Person person, Dialog dialog) {
+        HorizontalLayout layout = new HorizontalLayout();
+        dialog.add(layout);
+
+        Button save = new Button("Speichern");
+        Button delete = new Button("Löschen");
+        Button close = new Button("Schließen");
+        layout.add(save, delete, close);
+
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+
+        save.addClickShortcut(Key.ENTER);
+        close.addClickShortcut(Key.ESCAPE);
+
+        save.addClickListener(click -> validateAndSave(person));
+        delete.addClickListener(click -> deletePerson());
+        close.addClickListener(click -> {
+            closeEditor();
+        });
+    }
+
+    private void createContactPersonDialogTab(Person person, Dialog dialog, Tabs tabs) {
+        Tab tab = new Tab();
+        tab.setLabel("Kontaktperson");
+
+        VerticalLayout tabLayout = new VerticalLayout();
+        HorizontalLayout addLayout = new HorizontalLayout();
+        addLayout.setDefaultVerticalComponentAlignment(Alignment.END);
+        contactPersonForm = new ContactPersonForm();
+        contactPersonForm.setContactPerson(createNewContactPerson());
+        addLayout.add(contactPersonForm);
+        tabLayout.add(addLayout);
+
+        Button addContactPersonButton = new Button("Hinzufügen", e -> {
+            if(!contactPersonForm.isValid()) {
+                Notification.show("Kontaktperson ungültig.");
+                return;
+            }
+
+            ContactPerson newContactPerson = contactPersonForm.getContactPerson();
+            newContactPerson.setPerson(person);
+            person.addContactPerson(newContactPerson);
+
+            contactPersonComponent.setPerson(person);
+            contactPersonForm.setContactPerson(createNewContactPerson());
+        });
+
+        tabLayout.add(addContactPersonButton);
+
+        contactPersonComponent = new ContactPersonComponent(new ContactPersonComponent.Config().allowDelete(true).allowCall(false));
+        contactPersonComponent.setPerson(person);
+        contactPersonComponent.addListener(ContactPersonComponent.DeleteButtonPressedEvent.class, e -> {
+            ContactPerson contactPerson = e.getContactPerson();
+            personService.delete(contactPerson.getPerson());
+
+            System.out.println("BEFORE Contact persons: " + person.getContactPersons() + " - " + person.getContactPersonFrom());
+
+            contactPerson.setPerson(null);
+            person.removeContactPerson(contactPerson);
+
+            System.out.println("AFTER Contact persons: " + person.getContactPersons() + " - " + person.getContactPersonFrom());
+
+            contactPersonService.delete(contactPerson);
+            contactPersonComponent.setPerson(person);
+            personService.save(person);
+        });
+
+        tabLayout.add(contactPersonComponent);
+        tabLayout.setVisible(false);
+
+        tabs.add(tab);
+        dialog.add(tabLayout);
+        tabViews.put(tab, tabLayout);
+    }
+
+    private void createOrderInformationDialogTab(Person person, Dialog dialog, Tabs tabs) {
+        Tab tab = new Tab();
+        tab.setLabel("Liefertage");
+
+        VerticalLayout tabLayout = new VerticalLayout();
+        orderInformationForm = new OrderInformationComponent();
+        orderInformationForm.setOrderInformation(person.getOrderInformation().iterator().next());
+        tabLayout.add(orderInformationForm);
+        tabLayout.setVisible(false);
+
+        tabs.add(tab);
+        dialog.add(tabLayout);
+        tabViews.put(tab, tabLayout);
+    }
+
+    private void createAdditionalInformationDialogTab(Person person, Dialog dialog, Tabs tabs) {
+        Tab tab = new Tab();
+        tab.setLabel("Zusatzinformationen");
+
+        VerticalLayout tabLayout = new VerticalLayout();
+        HorizontalLayout addLayout = new HorizontalLayout();
+        addLayout.setDefaultVerticalComponentAlignment(Alignment.END);
+        addAdditionalInformationForm = new AdditionalInformationForm();
+        addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
+        Button addInfoButton = new Button("Information hinzufügen", click -> {
+            if (!addAdditionalInformationForm.isValid()){
+                return;
+            }
+            System.out.println("Event received ID: " + addAdditionalInformationForm.getAdditionalInformation().getId());
+
+            person.addAdditionalInformation(addAdditionalInformationForm.getAdditionalInformation());
+            additionalInformationForm.setPerson(person);
+            addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
+        });
+        addLayout.add(addAdditionalInformationForm, addInfoButton);
+        tabLayout.add(addLayout);
+        additionalInformationForm = new AdditionalInformationComponent();
+        additionalInformationForm.setPerson(person);
+        additionalInformationForm.setWidthFull();
+        additionalInformationForm.addListener(AdditionalInformationComponent.DeleteButtonPressedEvent.class,event ->{
+            System.out.println("Event received ID: " + event.getAdditionalInformation().getId());
+            if(event.getAdditionalInformation().getId() == null) {
+                person.removeAdditionalInformation(event.getAdditionalInformation());
+            } else {
+                additionalInformationService.delete(event.getAdditionalInformation());
+            }
+
+            additionalInformationForm.setPerson(person);
+        });
+        tabLayout.add(additionalInformationForm);
+        tabLayout.setVisible(false);
+
+        tabs.add(tab);
+        dialog.add(tabLayout);
+        tabViews.put(tab, tabLayout);
+    }
+
+    private void createPersonDialogTab(Person person, Dialog dialog, Tabs tabs) {
+        Tab tab = new Tab();
+        tab.setLabel("Allgemein");
+
+        VerticalLayout tabLayout = new VerticalLayout();
+        personForm = new GeneralCustomerForm();
+        personForm.setPerson(person);
+        tabLayout.add(personForm);
+
+        tabs.add(tab);
+        dialog.add(tabLayout);
+        tabViews.put(tab, tabLayout);
+    }
+
+    private void createAddressDialogTab(Person person, Dialog dialog, Tabs tabs) {
+        Tab tab = new Tab();
+        tab.setLabel("Adresse");
+
+        VerticalLayout tabLayout = new VerticalLayout();
+        addressForm = new AddressEditorComponent();
+        addressForm.setAddress(person.getAddress());
+        tabLayout.add(addressForm);
+        tabLayout.setVisible(false);
+
+        tabs.add(tab);
+        dialog.add(tabLayout);
+        tabViews.put(tab, tabLayout);
     }
 
     private ContactPerson createNewContactPerson() {

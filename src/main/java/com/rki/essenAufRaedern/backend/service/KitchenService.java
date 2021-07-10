@@ -1,20 +1,16 @@
 package com.rki.essenAufRaedern.backend.service;
 
-import com.rki.essenAufRaedern.backend.entity.Employee;
-import com.rki.essenAufRaedern.backend.entity.Kitchen;
-import com.rki.essenAufRaedern.backend.entity.Order;
-import com.rki.essenAufRaedern.backend.entity.Person;
+import com.rki.essenAufRaedern.backend.entity.*;
 import com.rki.essenAufRaedern.backend.repository.*;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 /**
@@ -26,18 +22,18 @@ import java.util.logging.Logger;
 public class KitchenService {
     private static final Logger LOGGER = Logger.getLogger(KitchenService.class.getName());
     private final KitchenRepository kitchenRepository;
-    private final AddressRepository addressRepository;
     private final PersonRepository personRepository;
     private final EmployeeRepository employeeRepository;
     private final OrderRepository orderRepository;
+    private final UserService userService;
 
 
-    public KitchenService(KitchenRepository kitchenRepository, AddressRepository addressRepository, PersonRepository personRepository, EmployeeRepository employeeRepository, OrderRepository orderRepository) {
+    public KitchenService(KitchenRepository kitchenRepository, PersonRepository personRepository, EmployeeRepository employeeRepository, OrderRepository orderRepository, UserService userService) {
         this.kitchenRepository = kitchenRepository;
-        this.addressRepository = addressRepository;
         this.personRepository = personRepository;
         this.employeeRepository = employeeRepository;
         this.orderRepository = orderRepository;
+        this.userService = userService;
     }
 
     public List<Kitchen> findAll() {
@@ -78,6 +74,36 @@ public class KitchenService {
 
     public List<Order> getActiveOrdersByDateAndKitchenId(Date date, Long kitchenId) {
         return orderRepository.findByDtAndKitchenIdAndStatus(date, kitchenId, Status.ACTIVE);
+    }
+
+    public Kitchen getKitchenForLoggedInEmployee() {
+        User currentUser = userService.getCurrentUser();
+        Person currentPerson = currentUser.getPerson();
+        Employee currentEmployee = currentPerson.getEmployee();
+        if(currentEmployee == null) {
+            return null;
+        }
+
+        return currentEmployee.getKitchen();
+    }
+
+    public List<Order> getOpenOrdersForKitchen(Kitchen kitchen, Date date) {
+        Predicate<Order> orderPredicate = order -> {
+            Calendar c1 = Calendar.getInstance();
+            c1.setTime(date);
+
+            Calendar c2 = Calendar.getInstance();
+            c2.setTime(order.getDt());
+
+            return (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
+                    && c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
+                    && c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH))
+                    && (order.getDelivered() == null
+                    && order.getNotDeliverable() == null
+                    && order.getStatus() == Status.ACTIVE);
+        };
+
+        return kitchen.getOrders().stream().filter(orderPredicate).collect(Collectors.toList());
     }
 
     public void delete(Kitchen kitchen) {

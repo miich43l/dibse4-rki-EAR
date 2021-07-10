@@ -17,6 +17,8 @@ public enum PersonType {
                 return CONTACT_PERSON;
             case "LocalCommunity":
                 return LOCAL_COMMUNITY;
+            case "Developer":
+                return DEVELOPER;
         }
 
         throw new IllegalArgumentException("Invalid enum type!");

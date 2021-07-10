@@ -19,11 +19,9 @@ public class ContactPersonService {
     private static final Logger LOGGER = Logger.getLogger(ContactPersonService.class.getName());
 
     private final ContactPersonRepository contactPersonRepository;
-    private final PersonService personService;
 
-    public ContactPersonService(ContactPersonRepository contactPersonRepository, PersonService personService) {
+    public ContactPersonService(ContactPersonRepository contactPersonRepository) {
         this.contactPersonRepository = contactPersonRepository;
-        this.personService = personService;
     }
 
     public void save(ContactPerson contactPerson) {

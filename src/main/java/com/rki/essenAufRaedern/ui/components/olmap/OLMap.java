@@ -14,17 +14,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Thomas Widmann
+ * The OLMap Component allows to use a openlayer map in the application.
+ * It uses a JavaScript connector for communication between the client and the server.
+ *
+ * It is possible to add markers (OLMapMarker) or routes (OLMapRoute).
+ *
+ * You can also add some POIs (Points of interesst).
+ * When the user visits a POI, an event is sent.
+ */
+
 @Tag("openlayers")
 @NpmPackage(value = "ol", version = "6.1.1")
 @CssImport("ol/ol.css")
 @JsModule("./src/openlayers-connector.js")
 public class OLMap extends Div {
-
     private int nextLayerId = 0;
     private boolean positionSimulationActive = false;
     private OLMapRoute simulationRoute;
-    private Map<Integer, OLMapMarker> markers = new HashMap<>();
-    private List<OLMapRoute> routes = new ArrayList<>();
+    private final Map<Integer, OLMapMarker> markers = new HashMap<>();
+    private final List<OLMapRoute> routes = new ArrayList<>();
 
     public OLMap() {
         initConnector();

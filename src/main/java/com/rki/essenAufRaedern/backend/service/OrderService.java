@@ -48,6 +48,11 @@ public class OrderService {
     }
 
     public List<Order> getOrdersForKitchenAndDay(Long kitchenId, Date date) {
+        return orderRepository.findByDtAndKitchenIdAndStatus(date, kitchenId, Status.ACTIVE);
+    }
+
+    /*
+    public List<Order> getOrdersForKitchenAndDay(Long kitchenId, Date date) {
         Predicate<Order> orderPredicate = order -> {
             Calendar c1 = Calendar.getInstance();
             c1.setTime(date);
@@ -66,6 +71,7 @@ public class OrderService {
 
         return findAll().stream().filter(orderPredicate).collect(Collectors.toList());
     }
+     */
 
     public void markAsDelivered(Order order) {
         order.setDelivered(new Timestamp(new Date().getTime()));
