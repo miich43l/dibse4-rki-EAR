@@ -38,4 +38,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
             "and lower(p.firstName) like lower(concat('%', :searchTerm, '%')) " +
             "or lower(p.lastName) like lower(concat('%', :searchTerm, '%'))")
     List<Person> findByFieldInputPersonTypeAndStatus(@Param("searchTerm") String searchTerm, @Param("type") PersonType client, @Param("active") Status active);
+
+    Optional<Person> findByFirstNameContainingAndLastNameContaining(String firstname, String lastname);
 }

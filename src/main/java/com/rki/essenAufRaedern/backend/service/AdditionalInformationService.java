@@ -29,6 +29,10 @@ public class AdditionalInformationService {
         return additionalInformationRepository.findAll();
     }
 
+    public List<AdditionalInformation> findByPersonId(Long personId) {
+        return additionalInformationRepository.findByPersonId(personId);
+    }
+
     public long count() {
         return additionalInformationRepository.count();
     }
