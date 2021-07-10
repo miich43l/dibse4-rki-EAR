@@ -43,6 +43,10 @@ public class PersonService {
         return personRepository.findByFirstNameContainingOrLastNameContaining(name, name);
     }
 
+    public Optional<Person> findByFirstnameAndLastname(String firstname, String lastname) {
+        return personRepository.findByFirstNameContainingAndLastNameContaining(firstname, lastname);
+    }
+
     public Optional<Person> findById(Long id) {
         return personRepository.findById(id);
     }

@@ -4,8 +4,10 @@ import com.rki.essenAufRaedern.backend.entity.ContactPerson;
 import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.repository.ContactPersonRepository;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
+import com.rki.essenAufRaedern.backend.utility.Status;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +24,10 @@ public class ContactPersonService {
 
     public ContactPersonService(ContactPersonRepository contactPersonRepository) {
         this.contactPersonRepository = contactPersonRepository;
+    }
+
+    public List<ContactPerson> getContactPersons(Long personId) {
+        return contactPersonRepository.findByContactPersonFromId(personId);
     }
 
     public void save(ContactPerson contactPerson) {

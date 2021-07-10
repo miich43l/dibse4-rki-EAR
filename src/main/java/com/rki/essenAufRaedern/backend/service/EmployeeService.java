@@ -1,6 +1,7 @@
 package com.rki.essenAufRaedern.backend.service;
 
 import com.rki.essenAufRaedern.backend.entity.Employee;
+import com.rki.essenAufRaedern.backend.entity.Person;
 import com.rki.essenAufRaedern.backend.repository.EmployeeRepository;
 import com.rki.essenAufRaedern.backend.utility.Status;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,12 @@ public class EmployeeService {
     public List<Employee> findByKitchenId(Long id) {
         return employeeRepository.findByKitchenId(id);
     }
+
+    public List<Employee> findByPersonId(Long id) {
+        return employeeRepository.findByPersonId(id);
+    }
+
+
 
     public long count() {
         return employeeRepository.count();
