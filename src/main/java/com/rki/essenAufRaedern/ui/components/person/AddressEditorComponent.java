@@ -9,18 +9,14 @@ import com.vaadin.flow.data.binder.ValidationException;
 
 public class AddressEditorComponent extends FormLayout {
 
-    // TODO:
-    // - Sandra
-    // private final
+    private final TextField street = new TextField("Strasse");
+    private final TextField houseNumber = new TextField("Hausnummer");
+    private final TextField floor = new TextField("Stock");
+    private final TextField zipCode = new TextField("PLZ");
+    private final TextField city = new TextField("Stadt");
+    private final TextField country = new TextField("Land");
 
-    TextField street = new TextField("Strasse");
-    TextField houseNumber = new TextField("Hausnummer");
-    TextField floor = new TextField("Stock");
-    TextField zipCode = new TextField("PLZ");
-    TextField city = new TextField("Stadt");
-    TextField country = new TextField("Land");
-
-    Binder<Address> addressBinder = new BeanValidationBinder<>(Address.class);
+    private final Binder<Address> addressBinder = new BeanValidationBinder<>(Address.class);
     private Address address = new Address();
 
     public AddressEditorComponent() {

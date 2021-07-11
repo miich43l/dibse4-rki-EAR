@@ -29,6 +29,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * View for administrators to create and manage customers
+ * - it shows all customers in a grid
+ * - it has a filter function to filter by name or last name
+ * - customers can be created and edited (address, additional information, delivery days, contact person)
+ */
+
 @PageTitle("Kunden")
 @Route(value = "kunden", layout = MainLayout.class)
 @Secured({"ADMINISTRATION", "LOCAL_COMMUNITY", "DEVELOPER"})
@@ -36,21 +43,21 @@ public class CustomerView extends VerticalLayout {
 
     GeneralCustomerForm personForm;
     AddressEditorComponent addressForm;
-    AdditionalInformationComponent additionalInformationForm;
+    AdditionalInformationComponent additionalInformationComponent;
     AdditionalInformationForm addAdditionalInformationForm;
-    OrderInformationComponent orderInformationForm;
+    OrderInformationComponent orderInformationComponent;
     ContactPersonComponent contactPersonComponent;
     ContactPersonForm contactPersonForm;
-    Grid<Person> customerGrid = new Grid<>(Person.class);
-    TextField filterText = new TextField();
+    private final Grid<Person> customerGrid = new Grid<>(Person.class);
+    private final TextField filterText = new TextField();
     Dialog editDialog;
-    Map<Tab, VerticalLayout> tabViews = new HashMap<>();
+    private final Map<Tab, VerticalLayout> tabViews = new HashMap<>();
 
-    PersonService personService;
-    AddressService addressService;
-    AdditionalInformationService additionalInformationService;
-    OrderInformationService orderInformationService;
-    ContactPersonService contactPersonService;
+    private final PersonService personService;
+    private final AddressService addressService;
+    private final AdditionalInformationService additionalInformationService;
+    private final OrderInformationService orderInformationService;
+    private final ContactPersonService contactPersonService;
 
     public CustomerView(PersonService personService, AddressService addressService, AdditionalInformationService additionalInformationService, OrderInformationService orderInformationService, ContactPersonService contactPersonService) {
         this.personService = personService;
@@ -91,7 +98,7 @@ public class CustomerView extends VerticalLayout {
             personService.save(person);
             personService.saveAllUnsavedAdditionalInformation(person);
             personService.saveAllUnsavedContactPersons(person);
-            orderInformationService.save(orderInformationForm.getOrderInformation());
+            orderInformationService.save(orderInformationComponent.getOrderInformation());
 
         } catch (ValidationException e) {
             e.printStackTrace();
@@ -249,9 +256,9 @@ public class CustomerView extends VerticalLayout {
         tab.setLabel("Liefertage");
 
         VerticalLayout tabLayout = new VerticalLayout();
-        orderInformationForm = new OrderInformationComponent();
-        orderInformationForm.setOrderInformation(person.getOrderInformation().iterator().next());
-        tabLayout.add(orderInformationForm);
+        orderInformationComponent = new OrderInformationComponent();
+        orderInformationComponent.setOrderInformation(person.getOrderInformation().iterator().next());
+        tabLayout.add(orderInformationComponent);
         tabLayout.setVisible(false);
 
         tabs.add(tab);
@@ -275,15 +282,15 @@ public class CustomerView extends VerticalLayout {
             System.out.println("Event received ID: " + addAdditionalInformationForm.getAdditionalInformation().getId());
 
             person.addAdditionalInformation(addAdditionalInformationForm.getAdditionalInformation());
-            additionalInformationForm.setPerson(person);
+            additionalInformationComponent.setPerson(person);
             addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
         });
         addLayout.add(addAdditionalInformationForm, addInfoButton);
         tabLayout.add(addLayout);
-        additionalInformationForm = new AdditionalInformationComponent();
-        additionalInformationForm.setPerson(person);
-        additionalInformationForm.setWidthFull();
-        additionalInformationForm.addListener(AdditionalInformationComponent.DeleteButtonPressedEvent.class,event ->{
+        additionalInformationComponent = new AdditionalInformationComponent();
+        additionalInformationComponent.setPerson(person);
+        additionalInformationComponent.setWidthFull();
+        additionalInformationComponent.addListener(AdditionalInformationComponent.DeleteButtonPressedEvent.class,event ->{
             System.out.println("Event received ID: " + event.getAdditionalInformation().getId());
             if(event.getAdditionalInformation().getId() == null) {
                 person.removeAdditionalInformation(event.getAdditionalInformation());
@@ -291,9 +298,9 @@ public class CustomerView extends VerticalLayout {
                 additionalInformationService.delete(event.getAdditionalInformation());
             }
 
-            additionalInformationForm.setPerson(person);
+            additionalInformationComponent.setPerson(person);
         });
-        tabLayout.add(additionalInformationForm);
+        tabLayout.add(additionalInformationComponent);
         tabLayout.setVisible(false);
 
         tabs.add(tab);
