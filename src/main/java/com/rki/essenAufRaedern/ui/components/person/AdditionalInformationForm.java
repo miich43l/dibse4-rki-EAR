@@ -11,10 +11,10 @@ import com.vaadin.flow.data.binder.ValidationException;
 
 public class AdditionalInformationForm extends FormLayout {
 
-    ComboBox<InformationType> informationType = new ComboBox<>("Typ");
-    TextField value = new TextField("Information");
+    private final ComboBox<InformationType> informationType = new ComboBox<>("Typ");
+    private final TextField value = new TextField("Information");
 
-    Binder<AdditionalInformation> additionalInformationBinder = new BeanValidationBinder<>(AdditionalInformation.class);
+    private final Binder<AdditionalInformation> additionalInformationBinder = new BeanValidationBinder<>(AdditionalInformation.class);
     private AdditionalInformation additionalInformation;
 
     public AdditionalInformationForm() {

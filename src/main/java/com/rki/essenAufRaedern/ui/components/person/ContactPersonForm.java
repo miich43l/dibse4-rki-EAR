@@ -12,19 +12,15 @@ import com.vaadin.flow.data.binder.ValidationException;
 
 public class ContactPersonForm extends FormLayout {
 
-    // TODO:
-    // - Sandra
-    // - private final
+    private final TextField firstName = new TextField("Vorname");
+    private final TextField lastName = new TextField("Nachname");
+    private final TextField phoneNumber = new TextField("Telefonnummer");
+    private final ComboBox<ContactPersonType> contactPersonType = new ComboBox<>("Kontakttyp");
 
-    TextField firstName = new TextField("Vorname");
-    TextField lastName = new TextField("Nachname");
-    TextField phoneNumber = new TextField("Telefonnummer");
-    ComboBox<ContactPersonType> contactPersonType = new ComboBox<>("Kontakttyp");
-
-    Binder<Person> personBinder = new BeanValidationBinder<>(Person.class);
+    private final Binder<Person> personBinder = new BeanValidationBinder<>(Person.class);
     private Person person;
 
-    Binder<ContactPerson> contactPersonBinder = new BeanValidationBinder<>(ContactPerson.class);
+    private final Binder<ContactPerson> contactPersonBinder = new BeanValidationBinder<>(ContactPerson.class);
     private ContactPerson contactPerson;
 
     public ContactPersonForm() {

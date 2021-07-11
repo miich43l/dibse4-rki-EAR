@@ -11,18 +11,13 @@ import com.vaadin.flow.data.converter.LocalDateToDateConverter;
 
 public class GeneralCustomerForm extends FormLayout {
 
-    //TODO:
-    // - Sandra
-    // - private final
-    // - move to component package
+    private final TextField firstName = new TextField("Vorname");
+    private final TextField lastName = new TextField("Nachname");
 
-    TextField firstName = new TextField("Vorname");
-    TextField lastName = new TextField("Nachname");
+    private final DatePicker birthdate = new DatePicker();
+    private final TextField phoneNumber = new TextField("Telefonnummer");
 
-    DatePicker birthdate = new DatePicker();
-    TextField phoneNumber = new TextField("Telefonnummer");
-
-    Binder<Person> personBinder = new BeanValidationBinder<>(Person.class);
+    private final Binder<Person> personBinder = new BeanValidationBinder<>(Person.class);
     private Person person;
 
     public GeneralCustomerForm() {
