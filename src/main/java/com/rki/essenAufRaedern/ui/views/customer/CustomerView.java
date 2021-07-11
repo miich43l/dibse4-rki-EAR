@@ -53,6 +53,7 @@ public class CustomerView extends VerticalLayout {
     Dialog editDialog;
     private final Map<Tab, VerticalLayout> tabViews = new HashMap<>();
 
+    //Services:
     private final PersonService personService;
     private final AddressService addressService;
     private final AdditionalInformationService additionalInformationService;
@@ -65,6 +66,7 @@ public class CustomerView extends VerticalLayout {
         this.additionalInformationService = additionalInformationService;
         this.orderInformationService = orderInformationService;
         this.contactPersonService = contactPersonService;
+
         addClassName("customer-view");
         setSizeFull();
         configureGrid();
@@ -79,15 +81,21 @@ public class CustomerView extends VerticalLayout {
         updateSearchList();
     }
 
-    private void deletePerson() {
-        personForm.getPerson().setAddress(null);
-        personService.save(personForm.getPerson());
+    private void addPerson() {
+        customerGrid.asSingleSelect().clear();
 
-        personService.delete(personForm.getPerson());
-        addressService.delete(addressForm.getAddress());
+        Person newPerson = createNewPerson(PersonType.CLIENT);
 
-        updateList();
-        closeEditor();
+        editPerson(newPerson);
+    }
+
+    private void editPerson(Person person) {
+        if (person == null) {
+            closeEditor();
+        } else {
+            editDialog = createEditDialog(person);
+            editDialog.open();
+        }
     }
 
     private void validateAndSave(Person person) {
@@ -110,45 +118,15 @@ public class CustomerView extends VerticalLayout {
         closeEditor();
     }
 
-    private HorizontalLayout getToolBar() {
-        filterText.setPlaceholder("nach Namen filtern...");
-        filterText.setClearButtonVisible(true);
-        filterText.setValueChangeMode(ValueChangeMode.LAZY);
-        filterText.addValueChangeListener(e -> updateSearchList());
+    private void deletePerson() {
+        personForm.getPerson().setAddress(null);
+        personService.save(personForm.getPerson());
 
-        Button addPersonButton = new Button("Kunde hinzufügen", click -> addPerson());
+        personService.delete(personForm.getPerson());
+        addressService.delete(addressForm.getAddress());
 
-        HorizontalLayout toolbar = new HorizontalLayout(filterText, addPersonButton);
-        toolbar.addClassName("toolbar");
-        return toolbar;
-    }
-
-    private void addPerson() {
-        customerGrid.asSingleSelect().clear();
-
-        Person newPerson = createNewPerson(PersonType.CLIENT);
-
-        editPerson(newPerson);
-    }
-
-    private void configureGrid() {
-        customerGrid.addClassName("customer-grid");
-        customerGrid.setSizeFull();
-        customerGrid.setColumns("firstName", "lastName", "address");
-        customerGrid.getColumnByKey("firstName").setHeader("Vorname");
-        customerGrid.getColumnByKey("lastName").setHeader("Nachname");
-        customerGrid.getColumnByKey("address").setHeader("Adresse");
-        customerGrid.getColumns().forEach(col -> col.setAutoWidth(true));
-        customerGrid.asSingleSelect().addValueChangeListener(evt -> editPerson(evt.getValue()));
-    }
-
-    private void editPerson(Person person) {
-        if (person == null) {
-            closeEditor();
-        } else {
-            editDialog = createEditDialog(person);
-            editDialog.open();
-        }
+        updateList();
+        closeEditor();
     }
 
     private Dialog createEditDialog(Person person) {
@@ -174,28 +152,92 @@ public class CustomerView extends VerticalLayout {
         return dialog;
     }
 
-    private void createDialogButtonsLayout(Person person, Dialog dialog) {
-        HorizontalLayout layout = new HorizontalLayout();
-        dialog.add(layout);
+    private void createPersonDialogTab(Person person, Dialog dialog, Tabs tabs) {
+        Tab tab = new Tab();
+        tab.setLabel("Allgemein");
 
-        Button save = new Button("Speichern");
-        Button delete = new Button("Löschen");
-        Button close = new Button("Schließen");
-        layout.add(save, delete, close);
+        VerticalLayout tabLayout = new VerticalLayout();
+        personForm = new GeneralCustomerForm();
+        personForm.setPerson(person);
+        tabLayout.add(personForm);
 
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-
-        save.addClickShortcut(Key.ENTER);
-        close.addClickShortcut(Key.ESCAPE);
-
-        save.addClickListener(click -> validateAndSave(person));
-        delete.addClickListener(click -> deletePerson());
-        close.addClickListener(click -> {
-            closeEditor();
-        });
+        tabs.add(tab);
+        dialog.add(tabLayout);
+        tabViews.put(tab, tabLayout);
     }
+
+    private void createAddressDialogTab(Person person, Dialog dialog, Tabs tabs) {
+        Tab tab = new Tab();
+        tab.setLabel("Adresse");
+
+        VerticalLayout tabLayout = new VerticalLayout();
+        addressForm = new AddressEditorComponent();
+        addressForm.setAddress(person.getAddress());
+        tabLayout.add(addressForm);
+        tabLayout.setVisible(false);
+
+        tabs.add(tab);
+        dialog.add(tabLayout);
+        tabViews.put(tab, tabLayout);
+    }
+
+    private void createAdditionalInformationDialogTab(Person person, Dialog dialog, Tabs tabs) {
+        Tab tab = new Tab();
+        tab.setLabel("Zusatzinformationen");
+
+        VerticalLayout tabLayout = new VerticalLayout();
+        HorizontalLayout addLayout = new HorizontalLayout();
+        addLayout.setDefaultVerticalComponentAlignment(Alignment.END);
+        addAdditionalInformationForm = new AdditionalInformationForm();
+        addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
+        Button addInfoButton = new Button("Information hinzufügen", click -> {
+            if (!addAdditionalInformationForm.isValid()) {
+                return;
+            }
+            System.out.println("Event received ID: " + addAdditionalInformationForm.getAdditionalInformation().getId());
+
+            person.addAdditionalInformation(addAdditionalInformationForm.getAdditionalInformation());
+            additionalInformationComponent.setPerson(person);
+            addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
+        });
+        addLayout.add(addAdditionalInformationForm, addInfoButton);
+        tabLayout.add(addLayout);
+        additionalInformationComponent = new AdditionalInformationComponent();
+        additionalInformationComponent.setPerson(person);
+        additionalInformationComponent.setWidthFull();
+        additionalInformationComponent.addListener(AdditionalInformationComponent.DeleteButtonPressedEvent.class, event -> {
+            System.out.println("Event received ID: " + event.getAdditionalInformation().getId());
+            if (event.getAdditionalInformation().getId() == null) {
+                person.removeAdditionalInformation(event.getAdditionalInformation());
+            } else {
+                additionalInformationService.delete(event.getAdditionalInformation());
+            }
+
+            additionalInformationComponent.setPerson(person);
+        });
+        tabLayout.add(additionalInformationComponent);
+        tabLayout.setVisible(false);
+
+        tabs.add(tab);
+        dialog.add(tabLayout);
+        tabViews.put(tab, tabLayout);
+    }
+
+    private void createOrderInformationDialogTab(Person person, Dialog dialog, Tabs tabs) {
+        Tab tab = new Tab();
+        tab.setLabel("Liefertage");
+
+        VerticalLayout tabLayout = new VerticalLayout();
+        orderInformationComponent = new OrderInformationComponent();
+        orderInformationComponent.setOrderInformation(person.getOrderInformation().iterator().next());
+        tabLayout.add(orderInformationComponent);
+        tabLayout.setVisible(false);
+
+        tabs.add(tab);
+        dialog.add(tabLayout);
+        tabViews.put(tab, tabLayout);
+    }
+
 
     private void createContactPersonDialogTab(Person person, Dialog dialog, Tabs tabs) {
         Tab tab = new Tab();
@@ -210,7 +252,7 @@ public class CustomerView extends VerticalLayout {
         tabLayout.add(addLayout);
 
         Button addContactPersonButton = new Button("Hinzufügen", e -> {
-            if(!contactPersonForm.isValid()) {
+            if (!contactPersonForm.isValid()) {
                 Notification.show("Kontaktperson ungültig.");
                 return;
             }
@@ -251,99 +293,6 @@ public class CustomerView extends VerticalLayout {
         tabViews.put(tab, tabLayout);
     }
 
-    private void createOrderInformationDialogTab(Person person, Dialog dialog, Tabs tabs) {
-        Tab tab = new Tab();
-        tab.setLabel("Liefertage");
-
-        VerticalLayout tabLayout = new VerticalLayout();
-        orderInformationComponent = new OrderInformationComponent();
-        orderInformationComponent.setOrderInformation(person.getOrderInformation().iterator().next());
-        tabLayout.add(orderInformationComponent);
-        tabLayout.setVisible(false);
-
-        tabs.add(tab);
-        dialog.add(tabLayout);
-        tabViews.put(tab, tabLayout);
-    }
-
-    private void createAdditionalInformationDialogTab(Person person, Dialog dialog, Tabs tabs) {
-        Tab tab = new Tab();
-        tab.setLabel("Zusatzinformationen");
-
-        VerticalLayout tabLayout = new VerticalLayout();
-        HorizontalLayout addLayout = new HorizontalLayout();
-        addLayout.setDefaultVerticalComponentAlignment(Alignment.END);
-        addAdditionalInformationForm = new AdditionalInformationForm();
-        addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
-        Button addInfoButton = new Button("Information hinzufügen", click -> {
-            if (!addAdditionalInformationForm.isValid()){
-                return;
-            }
-            System.out.println("Event received ID: " + addAdditionalInformationForm.getAdditionalInformation().getId());
-
-            person.addAdditionalInformation(addAdditionalInformationForm.getAdditionalInformation());
-            additionalInformationComponent.setPerson(person);
-            addAdditionalInformationForm.setAdditionalInformation(new AdditionalInformation());
-        });
-        addLayout.add(addAdditionalInformationForm, addInfoButton);
-        tabLayout.add(addLayout);
-        additionalInformationComponent = new AdditionalInformationComponent();
-        additionalInformationComponent.setPerson(person);
-        additionalInformationComponent.setWidthFull();
-        additionalInformationComponent.addListener(AdditionalInformationComponent.DeleteButtonPressedEvent.class,event ->{
-            System.out.println("Event received ID: " + event.getAdditionalInformation().getId());
-            if(event.getAdditionalInformation().getId() == null) {
-                person.removeAdditionalInformation(event.getAdditionalInformation());
-            } else {
-                additionalInformationService.delete(event.getAdditionalInformation());
-            }
-
-            additionalInformationComponent.setPerson(person);
-        });
-        tabLayout.add(additionalInformationComponent);
-        tabLayout.setVisible(false);
-
-        tabs.add(tab);
-        dialog.add(tabLayout);
-        tabViews.put(tab, tabLayout);
-    }
-
-    private void createPersonDialogTab(Person person, Dialog dialog, Tabs tabs) {
-        Tab tab = new Tab();
-        tab.setLabel("Allgemein");
-
-        VerticalLayout tabLayout = new VerticalLayout();
-        personForm = new GeneralCustomerForm();
-        personForm.setPerson(person);
-        tabLayout.add(personForm);
-
-        tabs.add(tab);
-        dialog.add(tabLayout);
-        tabViews.put(tab, tabLayout);
-    }
-
-    private void createAddressDialogTab(Person person, Dialog dialog, Tabs tabs) {
-        Tab tab = new Tab();
-        tab.setLabel("Adresse");
-
-        VerticalLayout tabLayout = new VerticalLayout();
-        addressForm = new AddressEditorComponent();
-        addressForm.setAddress(person.getAddress());
-        tabLayout.add(addressForm);
-        tabLayout.setVisible(false);
-
-        tabs.add(tab);
-        dialog.add(tabLayout);
-        tabViews.put(tab, tabLayout);
-    }
-
-    private ContactPerson createNewContactPerson() {
-        ContactPerson contactPerson = new ContactPerson();
-        Person person = createNewPerson(PersonType.CONTACT_PERSON);
-        person.addContactPersonFrom(contactPerson);
-
-        return contactPerson;
-    }
 
     public Person createNewPerson(PersonType personType) {
         Person newPerson = new Person();
@@ -372,6 +321,16 @@ public class CustomerView extends VerticalLayout {
         return newPerson;
     }
 
+
+    private ContactPerson createNewContactPerson() {
+        ContactPerson contactPerson = new ContactPerson();
+        Person person = createNewPerson(PersonType.CONTACT_PERSON);
+        person.addContactPersonFrom(contactPerson);
+
+        return contactPerson;
+    }
+
+
     private void closeEditor() {
         if (editDialog == null) {
             return;
@@ -387,6 +346,53 @@ public class CustomerView extends VerticalLayout {
 
     private void updateSearchList() {
         customerGrid.setItems(personService.getActiveClientsBySearchFieldInput(filterText.getValue()));
+    }
+
+    private HorizontalLayout getToolBar() {
+        filterText.setPlaceholder("nach Namen filtern...");
+        filterText.setClearButtonVisible(true);
+        filterText.setValueChangeMode(ValueChangeMode.LAZY);
+        filterText.addValueChangeListener(e -> updateSearchList());
+
+        Button addPersonButton = new Button("Kunde hinzufügen", click -> addPerson());
+
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, addPersonButton);
+        toolbar.addClassName("toolbar");
+        return toolbar;
+    }
+
+    private void configureGrid() {
+        customerGrid.addClassName("customer-grid");
+        customerGrid.setSizeFull();
+        customerGrid.setColumns("firstName", "lastName", "address");
+        customerGrid.getColumnByKey("firstName").setHeader("Vorname");
+        customerGrid.getColumnByKey("lastName").setHeader("Nachname");
+        customerGrid.getColumnByKey("address").setHeader("Adresse");
+        customerGrid.getColumns().forEach(col -> col.setAutoWidth(true));
+        customerGrid.asSingleSelect().addValueChangeListener(evt -> editPerson(evt.getValue()));
+    }
+
+    private void createDialogButtonsLayout(Person person, Dialog dialog) {
+        HorizontalLayout layout = new HorizontalLayout();
+        dialog.add(layout);
+
+        Button save = new Button("Speichern");
+        Button delete = new Button("Löschen");
+        Button close = new Button("Schließen");
+        layout.add(save, delete, close);
+
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+
+        save.addClickShortcut(Key.ENTER);
+        close.addClickShortcut(Key.ESCAPE);
+
+        save.addClickListener(click -> validateAndSave(person));
+        delete.addClickListener(click -> deletePerson());
+        close.addClickListener(click -> {
+            closeEditor();
+        });
     }
 
 }
