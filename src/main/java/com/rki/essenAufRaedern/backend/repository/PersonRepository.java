@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 /**
@@ -19,7 +20,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     Optional<Person> findById(Long id);
 
-    Optional<Person> findByFirstNameContainingOrLastNameContaining(String firstname, String lastname);
+    Set<Person> findByFirstNameContainingOrLastNameContaining(String firstname, String lastname);
 
     List<Person> findByPersonTypeAndStatus(PersonType personType, Status status);
 
@@ -39,5 +40,5 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
             "or (lower(p.lastName) like lower(concat('%', :searchTerm, '%'))))")
     List<Person> findByFieldInputPersonTypeAndStatus(@Param("searchTerm") String searchTerm, @Param("type") PersonType client, @Param("active") Status active);
 
-    Optional<Person> findByFirstNameContainingAndLastNameContaining(String firstname, String lastname);
+    Set<Person> findByFirstNameContainingAndLastNameContaining(String firstname, String lastname);
 }

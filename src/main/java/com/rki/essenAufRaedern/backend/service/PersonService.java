@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,11 +40,11 @@ public class PersonService {
         return personRepository.findAll();
     }
 
-    public Optional<Person> findByFirstnameOrLastname(String name) {
+    public Set<Person> findByFirstnameOrLastname(String name) {
         return personRepository.findByFirstNameContainingOrLastNameContaining(name, name);
     }
 
-    public Optional<Person> findByFirstnameAndLastname(String firstname, String lastname) {
+    public Set<Person> findByFirstnameAndLastname(String firstname, String lastname) {
         return personRepository.findByFirstNameContainingAndLastNameContaining(firstname, lastname);
     }
 

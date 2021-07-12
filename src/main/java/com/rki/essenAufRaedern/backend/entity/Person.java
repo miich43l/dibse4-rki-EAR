@@ -38,6 +38,7 @@ public class Person {
     @NotEmpty
     @Column(name = "phone_number")
     private String phoneNumber;
+
     @NotNull
     private Status status;
 
