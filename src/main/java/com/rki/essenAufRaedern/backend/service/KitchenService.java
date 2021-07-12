@@ -41,10 +41,6 @@ public class KitchenService {
         return kitchenRepository.findAll();
     }
 
-    public Optional<Kitchen> findByName(String name) {
-        return kitchenRepository.findByName(name);
-    }
-
     public long count() {
         return kitchenRepository.count();
     }
@@ -56,7 +52,7 @@ public class KitchenService {
                     "Kitchen is null");
             return new ArrayList<>();
         }
-        List<Employee> employees = employeeRepository.findByKitchenId(kitchen.get().getId());
+        List<Employee> employees = employeeRepository.findByKitchenId(id);
         if (employees.isEmpty()) {
             LOGGER.log(Level.SEVERE,
                     "no Employees for Kitchen with id = " + kitchen.get().getId());
@@ -70,10 +66,6 @@ public class KitchenService {
             }
         }
         return driverList;
-    }
-
-    public List<Order> getActiveOrdersByDateAndKitchenId(Date date, Long kitchenId) {
-        return orderRepository.findByDtAndKitchenIdAndStatus(date, kitchenId, Status.ACTIVE);
     }
 
     public Kitchen getKitchenForLoggedInEmployee() {
