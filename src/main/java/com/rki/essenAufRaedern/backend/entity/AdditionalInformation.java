@@ -78,4 +78,6 @@ public class AdditionalInformation {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+
 }

@@ -57,11 +57,7 @@ public class AdditionalInformationService {
         return false;
     }
 
-    public List<AdditionalInformation> findForPerson(Long personId) {
-        return findAll().stream().filter(item -> item.getPerson().getId() == personId).collect(Collectors.toList());
-    }
-
     public List<AdditionalInformation> findForPersonAndType(Long personId, InformationType type) {
-        return findForPerson(personId).stream().filter(item -> item.getInformationType() == type).collect(Collectors.toList());
+        return findByPersonId(personId).stream().filter(item -> item.getInformationType() == type).collect(Collectors.toList());
     }
 }

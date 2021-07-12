@@ -31,6 +31,7 @@ public class AddressService {
     public void delete(Address address) {
         if (isNull(address)) return;
         address.setStatus(Status.INACTIVE);
+        addressRepository.save(address);
     }
 
     private boolean isNull(Address address) {

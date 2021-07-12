@@ -28,10 +28,6 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
-    public List<Employee> findByKitchenId(Long id) {
-        return employeeRepository.findByKitchenId(id);
-    }
-
     public List<Employee> findByPersonId(Long id) {
         return employeeRepository.findByPersonId(id);
     }
