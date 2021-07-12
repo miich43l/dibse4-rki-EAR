@@ -12,7 +12,7 @@ public class LoginIT extends AbstractTest {
     @Test
     public void loginAsValidUserSucceeds() {
         LoginViewElement loginView = $(LoginViewElement.class).onPage().first();
-        Assert.assertTrue(loginView.login("user", "password"));
+        Assert.assertTrue(loginView.login("admin", "changeMe"));
     }
 
     @Test

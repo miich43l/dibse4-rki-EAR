@@ -1,11 +1,12 @@
 package com.rki.essenAufRaedern.it.elements.login;
 
 import com.vaadin.flow.component.login.testbench.LoginFormElement;
+import com.vaadin.flow.component.login.testbench.LoginOverlayElement;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.testbench.annotations.Attribute;
 
 @Attribute(name = "class", contains = "login-view")
-public class LoginViewElement extends VerticalLayoutElement {
+public class LoginViewElement extends LoginOverlayElement {
 
     public boolean login(String username, String password) {
         LoginFormElement form = $(LoginFormElement.class).first();
