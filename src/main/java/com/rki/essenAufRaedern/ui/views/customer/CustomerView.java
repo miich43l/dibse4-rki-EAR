@@ -41,19 +41,20 @@ import java.util.Map;
 @Secured({"ADMINISTRATION", "LOCAL_COMMUNITY", "DEVELOPER"})
 public class CustomerView extends VerticalLayout {
 
-    GeneralCustomerForm personForm;
-    AddressEditorComponent addressForm;
-    AdditionalInformationComponent additionalInformationComponent;
-    AdditionalInformationForm addAdditionalInformationForm;
-    OrderInformationComponent orderInformationComponent;
-    ContactPersonComponent contactPersonComponent;
-    ContactPersonForm contactPersonForm;
+    // UI Elements:
+    private GeneralCustomerForm personForm;
+    private AddressEditorComponent addressForm;
+    private AdditionalInformationComponent additionalInformationComponent;
+    private AdditionalInformationForm addAdditionalInformationForm;
+    private OrderInformationComponent orderInformationComponent;
+    private ContactPersonComponent contactPersonComponent;
+    private ContactPersonForm contactPersonForm;
+    private Dialog editDialog;
     private final Grid<Person> customerGrid = new Grid<>(Person.class);
     private final TextField filterText = new TextField();
-    Dialog editDialog;
     private final Map<Tab, VerticalLayout> tabViews = new HashMap<>();
 
-    //Services:
+    // Services:
     private final PersonService personService;
     private final AddressService addressService;
     private final AdditionalInformationService additionalInformationService;
@@ -83,9 +84,7 @@ public class CustomerView extends VerticalLayout {
 
     private void addPerson() {
         customerGrid.asSingleSelect().clear();
-
         Person newPerson = createNewPerson(PersonType.CLIENT);
-
         editPerson(newPerson);
     }
 
@@ -293,6 +292,29 @@ public class CustomerView extends VerticalLayout {
         tabViews.put(tab, tabLayout);
     }
 
+    private void createDialogButtonsLayout(Person person, Dialog dialog) {
+        HorizontalLayout layout = new HorizontalLayout();
+        dialog.add(layout);
+
+        Button save = new Button("Speichern");
+        Button delete = new Button("Löschen");
+        Button close = new Button("Schließen");
+        layout.add(save, delete, close);
+
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+
+        save.addClickShortcut(Key.ENTER);
+        close.addClickShortcut(Key.ESCAPE);
+
+        save.addClickListener(click -> validateAndSave(person));
+        delete.addClickListener(click -> deletePerson());
+        close.addClickListener(click -> {
+            closeEditor();
+        });
+    }
+
 
     public Person createNewPerson(PersonType personType) {
         Person newPerson = new Person();
@@ -371,28 +393,4 @@ public class CustomerView extends VerticalLayout {
         customerGrid.getColumns().forEach(col -> col.setAutoWidth(true));
         customerGrid.asSingleSelect().addValueChangeListener(evt -> editPerson(evt.getValue()));
     }
-
-    private void createDialogButtonsLayout(Person person, Dialog dialog) {
-        HorizontalLayout layout = new HorizontalLayout();
-        dialog.add(layout);
-
-        Button save = new Button("Speichern");
-        Button delete = new Button("Löschen");
-        Button close = new Button("Schließen");
-        layout.add(save, delete, close);
-
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-
-        save.addClickShortcut(Key.ENTER);
-        close.addClickShortcut(Key.ESCAPE);
-
-        save.addClickListener(click -> validateAndSave(person));
-        delete.addClickListener(click -> deletePerson());
-        close.addClickListener(click -> {
-            closeEditor();
-        });
-    }
-
 }

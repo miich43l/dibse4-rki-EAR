@@ -9,13 +9,11 @@ import com.rki.essenAufRaedern.algorithm.tsp.util.AdjacencyMatrix;
 import com.rki.essenAufRaedern.algorithm.tsp.util.TspPath;
 import com.rki.essenAufRaedern.algorithm.tsp.util.TspPathSequence;
 import com.rki.essenAufRaedern.backend.entity.Address;
-import com.rki.essenAufRaedern.backend.entity.Order;
 import org.springframework.stereotype.Service;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
