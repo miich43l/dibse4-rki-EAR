@@ -1,9 +1,6 @@
 package com.rki.essenAufRaedern.backend.service;
 
-import com.rki.essenAufRaedern.backend.entity.Address;
-import com.rki.essenAufRaedern.backend.entity.Employee;
-import com.rki.essenAufRaedern.backend.entity.Kitchen;
-import com.rki.essenAufRaedern.backend.entity.Person;
+import com.rki.essenAufRaedern.backend.entity.*;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 
@@ -52,6 +49,16 @@ public class TestUtil {
         employee.setKitchen(createDummyKitchen());
 
         return employee;
+    }
+
+    public static Order createOrderForKitchenAndDateAndPerson(Kitchen kitchen, Date date, Person person) {
+        Order order = new Order();
+        order.setStatus(Status.ACTIVE);
+        order.setDt(date);
+        order.setKitchen(kitchen);
+        order.setPerson(person);
+
+        return order;
     }
 
 }
