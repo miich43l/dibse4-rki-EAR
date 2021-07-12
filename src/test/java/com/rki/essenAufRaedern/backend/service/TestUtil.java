@@ -51,6 +51,16 @@ public class TestUtil {
         return employee;
     }
 
+    public static Order createOrderForKitchenAndDateAndPerson(Kitchen kitchen, Date date, Person person) {
+        Order order = new Order();
+        order.setStatus(Status.ACTIVE);
+        order.setDt(date);
+        order.setKitchen(kitchen);
+        order.setPerson(person);
+
+        return order;
+    }
+
     public static OrderInformation createDummyOrderInformation() {
         OrderInformation orderInformation = new OrderInformation();
         orderInformation.setDt_form(new Date());
