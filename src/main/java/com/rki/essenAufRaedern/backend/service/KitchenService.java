@@ -57,7 +57,7 @@ public class KitchenService {
             return new ArrayList<>();
         }
         List<Employee> employees = employeeRepository.findByKitchenId(kitchen.get().getId());
-        if (!employees.isEmpty()) {
+        if (employees.isEmpty()) {
             LOGGER.log(Level.SEVERE,
                     "no Employees for Kitchen with id = " + kitchen.get().getId());
             return new ArrayList<>();

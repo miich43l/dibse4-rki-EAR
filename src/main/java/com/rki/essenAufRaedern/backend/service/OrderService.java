@@ -51,28 +51,6 @@ public class OrderService {
         return orderRepository.findByDtAndKitchenIdAndStatus(date, kitchenId, Status.ACTIVE);
     }
 
-    /*
-    public List<Order> getOrdersForKitchenAndDay(Long kitchenId, Date date) {
-        Predicate<Order> orderPredicate = order -> {
-            Calendar c1 = Calendar.getInstance();
-            c1.setTime(date);
-
-            Calendar c2 = Calendar.getInstance();
-            c2.setTime(order.getDt());
-
-            return (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
-                    && c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
-                    && c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH))
-                    && (order.getDelivered() == null
-                    && order.getNotDeliverable() == null)
-                    && order.getKitchen() != null
-                    && order.getKitchen().getId().equals(kitchenId);
-        };
-
-        return findAll().stream().filter(orderPredicate).collect(Collectors.toList());
-    }
-     */
-
     public void markAsDelivered(Order order) {
         order.setDelivered(new Timestamp(new Date().getTime()));
         orderRepository.save(order);

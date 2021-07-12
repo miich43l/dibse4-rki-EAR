@@ -1,9 +1,6 @@
 package com.rki.essenAufRaedern.backend.service;
 
-import com.rki.essenAufRaedern.backend.entity.Address;
-import com.rki.essenAufRaedern.backend.entity.Employee;
-import com.rki.essenAufRaedern.backend.entity.Kitchen;
-import com.rki.essenAufRaedern.backend.entity.Person;
+import com.rki.essenAufRaedern.backend.entity.*;
 import com.rki.essenAufRaedern.backend.utility.PersonType;
 import com.rki.essenAufRaedern.backend.utility.Status;
 
@@ -52,6 +49,45 @@ public class TestUtil {
         employee.setKitchen(createDummyKitchen());
 
         return employee;
+    }
+
+    public static OrderInformation createDummyOrderInformation() {
+        OrderInformation orderInformation = new OrderInformation();
+        orderInformation.setDt_form(new Date());
+        orderInformation.setMonday(Status.ACTIVE);
+        orderInformation.setTuesday(Status.ACTIVE);
+        orderInformation.setWednesday(Status.ACTIVE);
+        orderInformation.setThursday(Status.ACTIVE);
+        orderInformation.setFriday(Status.ACTIVE);
+        orderInformation.setSaturday(Status.ACTIVE);
+        orderInformation.setSunday(Status.ACTIVE);
+        orderInformation.setStatus(Status.ACTIVE);
+        Person person = TestUtil.createDummyPerson();
+        orderInformation.setPerson(person);
+
+        return orderInformation;
+    }
+
+    public static Order createDummyOrder() {
+        Order order = new Order();
+        order.setKitchen(createDummyKitchen());
+        order.setPerson(createDummyPerson());
+        order.setDt(new Date());
+        order.setStatus(Status.ACTIVE);
+
+        return order;
+    }
+
+    public static User createDummyUser() {
+        Person userPerson = createDummyPerson();
+        User user = new User();
+        user.setUsername("TestUser");
+        user.setEmail(userPerson.getFirstName() + "." + userPerson.getLastName() + "@test.at");
+        user.setStatus(Status.ACTIVE);
+        user.setPerson(userPerson);
+        user.setPassword("changeMe");
+
+        return user;
     }
 
 }
